@@ -4,11 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'toastr/build/toastr.min.css';
 import toastr from 'toastr';
 import IndicatorTable from './IndicatorTable'
+import Navbar from './templates/Navbar';
+import Footer from './templates/Footer';
 
 class App extends React.Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.deleteIndicator = this.deleteIndicator.bind(this);
 
         this.state = {
@@ -44,7 +46,15 @@ class App extends React.Component {
     }
 
     render() {
-        return (<IndicatorTable indicators={this.state.indicators} deleteIndicator={this.deleteIndicator}/>);
+        return (
+            <div>
+                <Navbar/>
+                <div className='container'>
+                    <IndicatorTable indicators={this.state.indicators} deleteIndicator={this.deleteIndicator}/>
+                    <Footer/>
+                </div>
+            </div>
+        );
     }
 }
 

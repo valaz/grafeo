@@ -1,5 +1,5 @@
 import React from "react";
-import Indicator from './Indicator'
+import IndicatorCard from './IndicatorCard'
 
 
 class IndicatorTable extends React.Component {
@@ -10,19 +10,13 @@ class IndicatorTable extends React.Component {
 
     render() {
         const indicators = this.props.indicators.map(indicator =>
-            <Indicator key={indicator._links.self.href} indicator={indicator}
-                       deleteIndicator={this.props.deleteIndicator}/>
+            <IndicatorCard key={indicator._links.self.href} indicator={indicator}
+                           deleteIndicator={this.props.deleteIndicator}/>
         );
         return (
-            <table className="table table-striped">
-                <thead>
-                <tr>
-                    <th>Name!</th>
-                    <th>Delete!</th>
-                </tr>
-                </thead>
-                <tbody>{indicators}</tbody>
-            </table>
+            <div className="row">
+                {indicators}
+            </div>
         );
     }
 }
