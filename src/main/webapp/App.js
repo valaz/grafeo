@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'toastr/build/toastr.min.css';
 import toastr from 'toastr';
@@ -58,5 +57,4 @@ class App extends React.Component {
     }
 }
 
-
-ReactDOM.render(<App/>, document.getElementById('root'));
+export default App;
