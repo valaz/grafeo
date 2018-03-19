@@ -61,17 +61,18 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         long indicatorCount = indicatorRepository.countByCreatedBy(user.getId());
+        long recordCount = recordRepository.countByCreatedBy(user.getId());
 
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), indicatorCount);
+        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
 
         return userProfile;
     }
 
     @GetMapping("/users/{username}/indicators")
-    public PagedResponse<IndicatorResponse> getPollsCreatedBy(@PathVariable(value = "username") String username,
-                                                              @CurrentUser UserPrincipal currentUser,
-                                                              @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                              @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+    public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(@PathVariable(value = "username") String username,
+                                                                   @CurrentUser UserPrincipal currentUser,
+                                                                   @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                                   @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return indicatorService.getIndicatorsCreatedBy(username, currentUser, page, size);
     }
 }

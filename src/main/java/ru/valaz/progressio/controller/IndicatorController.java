@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.valaz.progressio.exeption.ForbiddenException;
 import ru.valaz.progressio.exeption.ResourceNotFoundException;
 import ru.valaz.progressio.model.Indicator;
 import ru.valaz.progressio.model.Record;
@@ -49,7 +50,7 @@ public class IndicatorController {
     public PagedResponse<IndicatorResponse> getIndicators(@CurrentUser UserPrincipal currentUser,
                                                           @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                           @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return indicatorService.getAllPolls(currentUser, page, size);
+        return indicatorService.getAllIndicators(currentUser, page, size);
     }
 
 
@@ -58,10 +59,6 @@ public class IndicatorController {
     public ResponseEntity<?> createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
         Indicator indicator = new Indicator();
         indicator.setName(indicatorRequest.getName());
-
-        indicatorRequest.getRecords().forEach(recordRequest -> {
-            indicator.addCRecord(new Record(recordRequest.getText(), recordRequest.getDate()));
-        });
 
         Instant now = Instant.now();
 
@@ -81,10 +78,12 @@ public class IndicatorController {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
                 () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
 
-        // Retrieve poll creator details
+        // Retrieve indicator creator details
         User creator = userRepository.findById(indicator.getCreatedBy())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", indicator.getCreatedBy()));
-
+        if (!creator.getId().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
 
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
     }

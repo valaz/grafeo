@@ -2,6 +2,7 @@ package ru.valaz.progressio.model;
 
 
 import com.google.common.base.Objects;
+import ru.valaz.progressio.model.audit.UserDateAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,7 +12,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "records")
-public class Record {
+public class Record extends UserDateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

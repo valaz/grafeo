@@ -8,13 +8,15 @@ public class UserProfile {
     private String name;
     private Instant joinedAt;
     private Long indicatorCount;
+    private Long recordCount;
 
-    public UserProfile(Long id, String username, String name, Instant joinedAt, Long indicatorCount) {
+    public UserProfile(Long id, String username, String name, Instant joinedAt, Long indicatorCount, Long recordCount) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.joinedAt = joinedAt;
         this.indicatorCount = indicatorCount;
+        this.recordCount = recordCount;
     }
 
     public Long getId() {
@@ -55,5 +57,13 @@ public class UserProfile {
 
     public void setIndicatorCount(Long indicatorCount) {
         this.indicatorCount = indicatorCount;
+    }
+
+    public Long getRecordCount() {
+        return recordCount;
+    }
+
+    public void setRecordCount(Long recordCount) {
+        this.recordCount = recordCount;
     }
 }

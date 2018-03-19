@@ -19,7 +19,7 @@ public interface IndicatorRepository extends JpaRepository<Indicator, Long> {
 
     long countByCreatedBy(Long userId);
 
-    List<Indicator> findByIdIn(List<Long> pollIds);
+    List<Indicator> findByIdIn(List<Long> indicatorIds);
 
-    List<Indicator> findByIdIn(List<Long> pollIds, Sort sort);
+    List<Indicator> findByIdIn(List<Long> indicatorIds, Sort sort);
 }

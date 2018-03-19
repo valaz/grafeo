@@ -42,28 +42,28 @@ public class IndicatorService {
 
     private static final Logger logger = LoggerFactory.getLogger(IndicatorService.class);
 
-    public PagedResponse<IndicatorResponse> getAllPolls(UserPrincipal currentUser, int page, int size) {
+    public PagedResponse<IndicatorResponse> getAllIndicators(UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
 
-        // Retrieve Polls
+        // Retrieve Indicators
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Indicator> indicators = indicatorRepository.findAll(pageable);
+        Page<Indicator> indicators = indicatorRepository.findByCreatedBy(currentUser.getId(), pageable);
 
         if (indicators.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), indicators.getNumber(),
                     indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
         }
 
-        // Map Polls to PollResponses containing vote counts and poll creator details
-        List<Long> pollIds = indicators.map(Indicator::getId).getContent();
+        // Map Indicators to IndicatorResponses containing vote counts and indicator creator details
+        List<Long> indicatorIds = indicators.map(Indicator::getId).getContent();
         Map<Long, User> creatorMap = getIndicatorCreatorMap(indicators.getContent());
 
-        List<IndicatorResponse> pollResponses = indicators.map(indicator -> {
+        List<IndicatorResponse> indicatorResponses = indicators.map(indicator -> {
             return ModelMapper.mapIndicatorToIndicatorResponse(indicator,
                     creatorMap.get(indicator.getCreatedBy()));
         }).getContent();
 
-        return new PagedResponse<>(pollResponses, indicators.getNumber(),
+        return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
     }
 
@@ -82,14 +82,14 @@ public class IndicatorService {
                     indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
         }
 
-        // Map Polls to PollResponses containing vote counts and poll creator details
-        List<Long> pollIds = indicators.map(Indicator::getId).getContent();
+        // Map Indicators to IndicatorResponses containing vote counts and indicator creator details
+        List<Long> indicatorIds = indicators.map(Indicator::getId).getContent();
 
-        List<IndicatorResponse> pollResponses = indicators.map(poll -> {
-            return ModelMapper.mapIndicatorToIndicatorResponse(poll, user);
+        List<IndicatorResponse> indicatorResponses = indicators.map(indicator -> {
+            return ModelMapper.mapIndicatorToIndicatorResponse(indicator, user);
         }).getContent();
 
-        return new PagedResponse<>(pollResponses, indicators.getNumber(),
+        return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
     }
 
@@ -104,7 +104,7 @@ public class IndicatorService {
     }
 
     Map<Long, User> getIndicatorCreatorMap(List<Indicator> indicators) {
-        // Get Poll Creator details of the given list of indicators
+        // Get Indicator Creator details of the given list of indicators
         List<Long> creatorIds = indicators.stream()
                 .map(Indicator::getCreatedBy)
                 .distinct()

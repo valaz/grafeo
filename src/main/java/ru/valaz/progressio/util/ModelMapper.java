@@ -13,7 +13,7 @@ public class ModelMapper {
     public static IndicatorResponse mapIndicatorToIndicatorResponse(Indicator indicator, User creator) {
         IndicatorResponse indicatorResponse = new IndicatorResponse();
         indicatorResponse.setId(indicator.getId());
-        indicator.setName(indicator.getName());
+        indicatorResponse.setName(indicator.getName());
         indicatorResponse.setCreationDateTime(indicator.getCreatedAt());
 
         List<RecordResponse> recordResponses = indicator.getRecords().stream().map(record -> {
