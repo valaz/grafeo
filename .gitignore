@@ -22,7 +22,3 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-
-package-lock.json
-src/main/webapp/public/bundle.js
-node_modules/
