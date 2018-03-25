@@ -40,11 +40,10 @@ class IndicatorList extends Component {
 
         promise
             .then(response => {
-                const polls = this.state.indicators.slice();
+                const indicators = this.state.indicators.slice();
                 const currentVotes = this.state.currentVotes.slice();
-
                 this.setState({
-                    indicators: polls.concat(response.content),
+                    indicators: indicators.concat(response.content),
                     page: response.page,
                     size: response.size,
                     totalElements: response.totalElements,
@@ -52,7 +51,7 @@ class IndicatorList extends Component {
                     last: response.last,
                     currentVotes: currentVotes.concat(Array(response.content.length).fill(null)),
                     isLoading: false
-                })
+                });
             }).catch(error => {
             this.setState({
                 isLoading: false

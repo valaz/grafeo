@@ -99,6 +99,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <jvmArguments>-Denvironment=local</jvmArguments>
                     <addResources>true</addResources>
                 </configuration>
             </plugin>

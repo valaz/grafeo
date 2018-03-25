@@ -5,10 +5,8 @@ import com.google.common.base.Objects;
 import ru.valaz.progressio.model.audit.UserDateAudit;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "records")
@@ -18,13 +16,12 @@ public class Record extends UserDateAudit {
     private Long id;
 
 
-    @NotBlank
-    @Size(max = 40)
-    private String text;
+    @NotNull
+    private Double value;
 
 
     @NotNull
-    private Instant date;
+    private LocalDate date;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,8 +31,8 @@ public class Record extends UserDateAudit {
     public Record() {
     }
 
-    public Record(String text, Instant date) {
-        this.text = text;
+    public Record(Double value, LocalDate date) {
+        this.value = value;
         this.date = date;
     }
 
@@ -47,19 +44,19 @@ public class Record extends UserDateAudit {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public Double getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(Double value) {
+        this.value = value;
     }
 
-    public Instant getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

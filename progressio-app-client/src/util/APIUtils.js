@@ -1,11 +1,11 @@
-import { API_BASE_URL, INDICATOR_LIST_SIZE, ACCESS_TOKEN } from '../constants';
+import {ACCESS_TOKEN, API_BASE_URL, INDICATOR_LIST_SIZE} from '../constants';
 
 const request = (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     });
 
-    if(localStorage.getItem(ACCESS_TOKEN)) {
+    if (localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
 
@@ -15,7 +15,7 @@ const request = (options) => {
     return fetch(options.url, options)
         .then(response =>
             response.json().then(json => {
-                if(!response.ok) {
+                if (!response.ok) {
                     return Promise.reject(json);
                 }
                 return json;
@@ -32,6 +32,7 @@ export function getAllPolls(page, size) {
         method: 'GET'
     });
 }
+
 export function getIndicator(id) {
     return request({
         url: API_BASE_URL + "/indicators/" + id,
@@ -39,11 +40,27 @@ export function getIndicator(id) {
     });
 }
 
-export function createIndicator(pollData) {
+export function createIndicator(indicatorData) {
     return request({
         url: API_BASE_URL + "/indicators",
         method: 'POST',
-        body: JSON.stringify(pollData)
+        body: JSON.stringify(indicatorData)
+    });
+}
+
+export function addRecord(recordData) {
+    return request({
+        url: API_BASE_URL + "/indicators/" + recordData.indicatorId + "/records",
+        method: 'POST',
+        body: JSON.stringify(recordData)
+    });
+}
+
+export function removeRecord(recordData) {
+    return request({
+        url: API_BASE_URL + "/indicators/" + recordData.indicatorId + "/records",
+        method: 'DELETE',
+        body: JSON.stringify(recordData)
     });
 }
 
@@ -87,7 +104,7 @@ export function checkEmailAvailability(email) {
 
 
 export function getCurrentUser() {
-    if(!localStorage.getItem(ACCESS_TOKEN)) {
+    if (!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
     }
 
