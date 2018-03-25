@@ -1,32 +1,40 @@
 package ru.valaz.progressio.payload;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.Instant;
+import java.time.LocalDate;
 
 public class RecordRequest {
 
-    @NotBlank
-    @Size(max = 40)
-    private String text;
+    @NotNull
+    private Long indicatorId;
 
     @NotNull
-    private Instant date;
+    private Double value;
 
-    public String getText() {
-        return text;
+    @NotNull
+    private LocalDate date;
+
+    public Double getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(Double value) {
+        this.value = value;
     }
 
-    public Instant getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Long getIndicatorId() {
+        return indicatorId;
+    }
+
+    public void setIndicatorId(Long indicatorId) {
+        this.indicatorId = indicatorId;
     }
 }

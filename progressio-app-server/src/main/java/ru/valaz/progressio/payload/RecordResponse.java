@@ -1,11 +1,11 @@
 package ru.valaz.progressio.payload;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
-public class RecordResponse {
+public class RecordResponse implements Comparable<RecordResponse> {
     private long id;
-    private String text;
-    private Instant date;
+    private Double value;
+    private LocalDate date;
 
     public long getId() {
         return id;
@@ -15,19 +15,24 @@ public class RecordResponse {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public Double getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(Double value) {
+        this.value = value;
     }
 
-    public Instant getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public int compareTo(RecordResponse o) {
+        return date.compareTo(o.getDate());
     }
 }

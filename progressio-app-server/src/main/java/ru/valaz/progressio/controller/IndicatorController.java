@@ -1,6 +1,7 @@
 package ru.valaz.progressio.controller;
 
 
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,13 +78,13 @@ public class IndicatorController {
                                               @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
                 () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
-
+        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
         // Retrieve indicator creator details
         User creator = userRepository.findById(indicator.getCreatedBy())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", indicator.getCreatedBy()));
-        if (!creator.getId().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
-        }
+
 
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
     }
@@ -91,21 +92,47 @@ public class IndicatorController {
 
     @PostMapping("/{indicatorId}/records")
     @PreAuthorize("hasRole('USER')")
-    public IndicatorResponse castVote(@CurrentUser UserPrincipal userPrincipal,
-                                      @PathVariable Long indicatorId,
-                                      @Valid @RequestBody RecordRequest recordRequest) {
+    public IndicatorResponse addRecord(@CurrentUser UserPrincipal currentUser,
+                                       @PathVariable Long indicatorId,
+                                       @Valid @RequestBody RecordRequest recordRequest) {
 
         Indicator indicator = indicatorRepository.findById(indicatorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+        if (!indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
 
-        User user = userRepository.getOne(userPrincipal.getId());
+        Preconditions.checkNotNull(recordRequest.getValue());
+        Preconditions.checkNotNull(recordRequest.getDate());
 
-        Record record = new Record();
-        record.setText(recordRequest.getText());
-        record.setDate(recordRequest.getDate());
-        record = recordRepository.save(record);
+        Record record = new Record(recordRequest.getValue(), recordRequest.getDate());
+//        record = recordRepository.save(record);
 
-        indicator.addCRecord(record);
+        indicator.addRecord(record);
+        indicator = indicatorRepository.save(indicator);
+
+        Long createdBy = indicator.getCreatedBy();
+        User creator = userRepository.findById(createdBy)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", createdBy));
+        logger.debug("Added record: {} - {} for indicator {}", record.getDate(), record.getValue(), indicator.getId());
+        return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
+    }
+
+    @DeleteMapping("/{indicatorId}/records")
+    @PreAuthorize("hasRole('USER')")
+    public IndicatorResponse deleteRecord(@CurrentUser UserPrincipal currentUser,
+                                          @PathVariable Long indicatorId,
+                                          @Valid @RequestBody RecordRequest recordRequest) {
+
+        Indicator indicator = indicatorRepository.findById(indicatorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+        if (!indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
+
+        Preconditions.checkNotNull(recordRequest.getDate());
+
+        indicator.removeRecord(recordRequest.getDate());
         indicator = indicatorRepository.save(indicator);
 
         Long createdBy = indicator.getCreatedBy();

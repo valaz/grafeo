@@ -19,10 +19,10 @@ public class ModelMapper {
         List<RecordResponse> recordResponses = indicator.getRecords().stream().map(record -> {
             RecordResponse recordResponse = new RecordResponse();
             recordResponse.setId(record.getId());
-            recordResponse.setText(record.getText());
+            recordResponse.setValue(record.getValue());
             recordResponse.setDate(record.getDate());
             return recordResponse;
-        }).collect(Collectors.toList());
+        }).sorted().collect(Collectors.toList());
 
         indicatorResponse.setRecords(recordResponses);
 

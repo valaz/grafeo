@@ -8,6 +8,7 @@ import ru.valaz.progressio.model.audit.UserDateAudit;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,11 @@ public class Indicator extends UserDateAudit {
         this.records = choices;
     }
 
-    public void addCRecord(Record record) {
+    public void addRecord(Record record) {
+        records.stream()
+                .filter(r -> r.getDate().equals(record.getDate()))
+                .findFirst()
+                .ifPresent(r -> records.remove(r));
         records.add(record);
         record.setIndicator(this);
     }
@@ -72,5 +77,13 @@ public class Indicator extends UserDateAudit {
     public void removeRecord(Record record) {
         records.remove(record);
         record.setIndicator(null);
+    }
+
+    public void removeRecord(LocalDate date) {
+        records.stream()
+                .filter(r -> r.getDate().equals(date))
+                .findFirst()
+                .ifPresent(r -> records.remove(r));
+
     }
 }
