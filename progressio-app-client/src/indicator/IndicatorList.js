@@ -3,7 +3,7 @@ import './IndicatorList.css';
 import {getUserCreatedIndicators} from '../util/APIUtils';
 import Indicator from './Indicator';
 import LoadingIndicator from '../common/LoadingIndicator';
-import {Button, Icon} from 'antd';
+import {Button, Icon, Row} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 
@@ -97,7 +97,9 @@ class IndicatorList extends Component {
 
         return (
             <div className="polls-container">
-                {indicatorViews}
+                <Row>
+                    {indicatorViews}
+                </Row>
                 {
                     !this.state.isLoading && this.state.indicators.length === 0 ? (
                         <div className="no-polls-found">

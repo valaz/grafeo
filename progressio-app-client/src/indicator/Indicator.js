@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Card, Icon} from 'antd';
+import {Card, Col, Icon} from 'antd';
 import {withRouter} from "react-router-dom";
 import IndicatorChart from "./IndicatorChart";
 
@@ -22,18 +22,17 @@ class Indicator extends Component {
 
     render() {
         return (
-            <div>
-                <Card
-                    cover={<IndicatorChart showAllData={false} data={this.state.records}/>}
-                    actions={[<Icon type="eye-o" onClick={() => this.handleView()}/>, <Icon type="setting"/>]}
+            <Col xs={24} md={12} xl={8}>
+                <Card className="indicator-card"
+                      cover={<IndicatorChart showAllData={false} data={this.state.records}
+                                             name={this.props.indicator.name}/>}
+                      actions={[<Icon type="eye-o" onClick={() => this.handleView()}/>, <Icon type="setting"/>]}
                 >
                     <Meta
                         title={this.props.indicator.name}
-                        description="This is the description"
                     />
                 </Card>
-                <br/>
-            </div>
+            </Col>
         )
     }
 }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {getUserProfile} from '../../util/APIUtils';
 import {Avatar, Col, Row, Tabs} from 'antd';
-import {getAvatarColor} from '../../util/Colors';
+import {getRandomColor} from '../../util/Colors';
 import {formatDate} from '../../util/Helpers';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import './Profile.css';
@@ -76,13 +76,13 @@ class Profile extends Component {
         };
 
         return (
-            <div className="profile">
+            <div>
                 {
                     this.state.user ? (
                         <Row className="user-details">
                             <Col xs={24} sm={8} md={9} className="user-avatar">
                                 <Avatar className="user-avatar-circle"
-                                        style={{backgroundColor: getAvatarColor(this.state.user.name)}}>
+                                        style={{backgroundColor: getRandomColor(this.state.user.name)}}>
                                     {this.state.user.name[0].toUpperCase()}
                                 </Avatar>
                             </Col>

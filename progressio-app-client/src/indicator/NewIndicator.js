@@ -5,7 +5,6 @@ import './NewIndicator.css';
 import {Button, Form, Icon, Input, notification} from 'antd';
 
 const FormItem = Form.Item;
-const {TextArea} = Input;
 
 class NewIndicator extends Component {
     constructor(props) {
@@ -124,18 +123,18 @@ class NewIndicator extends Component {
     render() {
         return (
             <div className="new-poll-container">
-                <h1 className="page-title">Create Poll</h1>
+                <h1 className="page-title">Create Indicator</h1>
                 <div className="new-poll-content">
                     <Form onSubmit={this.handleSubmit} className="create-poll-form">
                         <FormItem validateStatus={this.state.question.validateStatus}
                                   help={this.state.question.errorMsg} className="poll-form-row">
-                        <TextArea
-                            placeholder="Enter your indicator name"
-                            style={{fontSize: '16px'}}
-                            autosize={{minRows: 3, maxRows: 6}}
-                            name="question"
-                            value={this.state.question.text}
-                            onChange={this.handleQuestionChange}/>
+                            <Input
+                                placeholder="Enter your indicator name"
+                                style={{fontSize: '16px'}}
+                                autosize={{minRows: 3, maxRows: 6}}
+                                name="question"
+                                value={this.state.question.text}
+                                onChange={this.handleQuestionChange}/>
                         </FormItem>
                         <FormItem className="poll-form-row">
                             <Button type="primary"
@@ -144,7 +143,7 @@ class NewIndicator extends Component {
                                     disabled={this.isFormInvalid()}
                                     className="create-poll-form-button">
                                 <Icon type="plus"/>
-                                Create Poll</Button>
+                                Create Indicator</Button>
                         </FormItem>
                     </Form>
                 </div>

@@ -1,16 +1,10 @@
 import React from 'react';
 import './App.css';
-import {
-    Route,
-    withRouter,
-    Switch
-} from 'react-router-dom';
-
-import { getCurrentUser } from '../util/APIUtils';
-import { ACCESS_TOKEN } from '../constants';
+import {Route, Switch, withRouter} from 'react-router-dom';
+import {getCurrentUser} from '../util/APIUtils';
+import {ACCESS_TOKEN} from '../constants';
 import AppHeader from "../common/AppHeader";
-
-import { Layout, notification } from 'antd';
+import {Layout, notification} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
@@ -20,7 +14,8 @@ import Profile from "../user/profile/Profile";
 import NewIndicator from "../indicator/NewIndicator";
 import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
-const { Content } = Layout;
+
+const {Content} = Layout;
 
 class App extends React.Component {
     constructor(props) {
@@ -63,7 +58,7 @@ class App extends React.Component {
         this.loadCurrentUser();
     }
 
-    handleLogout(redirectTo="/", notificationType="success", description="You're successfully logged out.") {
+    handleLogout(redirectTo = "/", notificationType = "success", description = "You're successfully logged out.") {
         localStorage.removeItem(ACCESS_TOKEN);
 
         this.setState({
@@ -103,24 +98,24 @@ class App extends React.Component {
                         <Switch>
                             <Route exact path="/"
                                    render={(props) => <IndicatorList isAuthenticated={this.state.isAuthenticated}
-                                                                currentUser={this.state.currentUser}
-                                                                handleLogout={this.handleLogout} {...props} />}>
+                                                                     currentUser={this.state.currentUser}
+                                                                     handleLogout={this.handleLogout} {...props} />}>
                             </Route>
                             <Route path="/login"
-                                   render={(props) => <Login onLogin={this.handleLogin} isAuthenticated={this.state.isAuthenticated}
-                                                             currentUser={this.state.currentUser} />}></Route>
+                                   render={(props) => <Login onLogin={this.handleLogin}
+                                                             isAuthenticated={this.state.isAuthenticated}
+                                                             currentUser={this.state.currentUser}/>}/>
                             <Route path="/signup" component={Signup}/>
                             <Route path="/users/:username"
                                    render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                currentUser={this.state.currentUser} {...props}  />}>
                             </Route>
                             <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
-                                          component={NewIndicator} handleLogout={this.handleLogout}></PrivateRoute>
-                            <Route path="/indicator/:id"
-                                   render={(props) => <IndicatorPage isAuthenticated={this.state.isAuthenticated} {...props} />}>
-                            </Route>
-                            <Route component={NotFound}></Route>
-                            <Route component={NotFound}></Route>
+                                          component={NewIndicator} handleLogout={this.handleLogout}/>
+                            <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
+                                          component={IndicatorPage} handleLogout={this.handleLogout}
+                                          isAuthenticated={this.state.isAuthenticated}/>
+                            <Route component={NotFound}/>
                         </Switch>
                     </div>
                 </Content>

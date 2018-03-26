@@ -7,7 +7,7 @@ const colors = [
     '#4CAF50', '#ffeb3b', '#ffc107',
 ];
 
-export function getAvatarColor(name) {
+export function getRandomColor(name) {
     name = name.substr(0, 6);
 
     var hash = 0;

@@ -1,5 +1,5 @@
 .polls-container {
-    max-width: 600px;
+    /*max-width: 600px;*/
     margin: 0 auto;
     margin-top: 20px;
 }
@@ -180,4 +180,13 @@
     color: #657786;
     font-size: 13px;
     margin-top: 2px;
+}
+
+.indicator-card {
+    margin: 20px 15px 20px 15px;
+}
+
+.form-inputs {
+    padding: 5px 15px 5px 15px;
+
 }

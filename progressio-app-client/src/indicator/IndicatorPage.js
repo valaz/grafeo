@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Card, Divider, Icon, Table} from 'antd';
+import {Button, Card, Col, Divider, Row, Table} from 'antd';
 import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
 import IndicatorChart from "./IndicatorChart";
 import {withRouter} from "react-router-dom";
 import WrappedAddRecordForm from "./AddRecordForm";
+import LoadingIndicator from "../common/LoadingIndicator";
+import NotFound from "../common/NotFound";
+import ServerError from "../common/ServerError";
 
 const {Meta} = Card;
 
@@ -14,7 +17,9 @@ class IndicatorPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            indicator: null,
+            indicator: {
+                name: ''
+            },
             records: [],
             page: 0,
             size: 10,
@@ -34,6 +39,10 @@ class IndicatorPage extends Component {
     componentWillMount() {
         const id = this.props.match.params.id;
         this.loadIndicator(id);
+        this.setState({
+            editDate: this.props.editDate,
+            editValue: this.props.editValue
+        })
     }
 
     loadIndicator(id) {
@@ -57,17 +66,22 @@ class IndicatorPage extends Component {
                     isLoading: false
                 })
             }).catch(error => {
+            if (error.status === 404 || error.status === 403) {
+                this.setState({
+                    notFound: true,
+                    isLoading: false
+                });
+            } else {
+                this.setState({
+                    serverError: true,
+                    isLoading: false
+                });
+            }
             console.log(error);
-            this.setState({
-                isLoading: false
-            })
         });
     }
 
     handleSubmit(date, value) {
-        this.setState({
-            isLoading: true
-        });
         const recordRequest = {
             indicatorId: this.state.indicator.id,
             value: value,
@@ -80,9 +94,10 @@ class IndicatorPage extends Component {
                     description: "Record added successfully",
                 });
                 this.setState({
-                    isLoading: false,
                     indicator: response,
-                    records: response.records
+                    records: response.records,
+                    editDate: null,
+                    editValue: null
                 });
             }).catch(error => {
             console.log(error);
@@ -91,16 +106,14 @@ class IndicatorPage extends Component {
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
             this.setState({
-                isLoading: false
+                editDate: null,
+                editValue: null
             });
         });
 
     }
 
     handleDelete(text, record) {
-        this.setState({
-            isLoading: true
-        });
         const recordRequest = {
             indicatorId: this.state.indicator.id,
             value: record.value,
@@ -113,7 +126,6 @@ class IndicatorPage extends Component {
                     description: "Record removed successfully",
                 });
                 this.setState({
-                    isLoading: false,
                     indicator: response,
                     records: response.records
                 });
@@ -123,24 +135,32 @@ class IndicatorPage extends Component {
                 message: 'Polling App',
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
-            this.setState({
-                isLoading: false
-            });
         });
     }
 
     handleEdit(text, record) {
         this.setState({
-            isLoading: true
-        });
-        this.setState({
             editDate: record.date,
             editValue: record.value,
         })
+
     }
 
     render() {
-        var view = null;
+
+        if (this.state.isLoading) {
+            return <LoadingIndicator/>;
+        }
+
+        if (this.state.notFound) {
+            return <NotFound/>;
+        }
+
+        if (this.state.serverError) {
+            return <ServerError/>;
+        }
+
+        var card = null;
         var recordTable = null;
         const columns = [{
             title: 'Date',
@@ -155,9 +175,11 @@ class IndicatorPage extends Component {
             key: 'action',
             render: (text, record) => (
                 <span>
-                  <Icon onClick={() => this.handleEdit(text, record)} type="edit"/>
+                  <Button onClick={() => this.handleEdit(text, record)} icon="edit"
+                          style={{fontSize: 16, color: '#08c'}}/>
                     <Divider type="vertical"/>
-                  <Icon onClick={() => this.handleDelete(text, record)} type="delete"/>
+                  <Button onClick={() => this.handleDelete(text, record)} icon="delete"
+                          style={{fontSize: 16, color: '#ff0000'}}/>
                 </span>
             ),
         }];
@@ -165,25 +187,30 @@ class IndicatorPage extends Component {
         var tableRecords = this.state.records.slice(0);
         tableRecords = tableRecords.reverse();
         if (indicator) {
-            view =
+            card =
                 <Card>
                     <Meta
                         title={indicator.name}
-                        description="This is the description"
                     />
                 </Card>;
             recordTable = <Table rowKey="date" dataSource={tableRecords} columns={columns}/>
         } else {
-            view = <div>NOTHING</div>
+            card = <div>NOTHING</div>
         }
         return (
-            <div className="polls-container">
-                {view}
-                <IndicatorChart showAllData={true} data={this.state.records}/>
-                <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                      editValue={this.state.editValue}/>
+            <Row>
+                <Col>
+                    {card}
+                </Col>
+                <Col>
+                    <IndicatorChart showAllData={true} data={this.state.records} name={this.state.indicator.name}/>
+                </Col>
+                <Col>
+                    <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                          editValue={this.state.editValue}/>
+                </Col>
                 {recordTable}
-            </div>
+            </Row>
         )
     }
 
