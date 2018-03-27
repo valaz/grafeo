@@ -129,6 +129,7 @@ class NewIndicator extends Component {
                         <FormItem validateStatus={this.state.question.validateStatus}
                                   help={this.state.question.errorMsg} className="poll-form-row">
                             <Input
+                                autoFocus
                                 placeholder="Enter your indicator name"
                                 style={{fontSize: '16px'}}
                                 autosize={{minRows: 3, maxRows: 6}}

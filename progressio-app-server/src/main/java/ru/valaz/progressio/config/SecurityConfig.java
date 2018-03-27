@@ -84,6 +84,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/user/checkUsernameAvailability", "/user/checkEmailAvailability")
                 .permitAll()
+                .antMatchers("/h2-console/**")
+                .permitAll()
                 .antMatchers(HttpMethod.GET, "/indicators/**", "/users/**")
                 .permitAll()
                 .anyRequest()
@@ -92,5 +94,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        http.headers().frameOptions().disable();
     }
 }
