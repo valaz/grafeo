@@ -12,7 +12,8 @@ class Indicator extends Component {
 
     componentWillMount() {
         this.setState({
-            records: this.props.indicator.records
+            records: this.props.indicator.records,
+            isDeleted: false
         });
     }
 
@@ -20,13 +21,25 @@ class Indicator extends Component {
         this.props.history.push("/indicator/" + this.props.indicator.id);
     }
 
+    handleDelete() {
+        this.props.handleDelete(this.props.indicator.id);
+        this.setState({
+            isDeleted: true
+    })
+
+    }
+
     render() {
+        if(this.state.isDeleted){
+            return null;
+        }
         return (
             <Col xs={24} md={12} xl={8}>
                 <Card className="indicator-card"
                       cover={<IndicatorChart showAllData={false} data={this.state.records}
                                              name={this.props.indicator.name}/>}
-                      actions={[<Icon type="eye-o" onClick={() => this.handleView()}/>, <Icon type="setting"/>]}
+                      actions={[<Icon type="eye-o" onClick={() => this.handleView()}/>, <Icon type="setting"/>,
+                          <Icon type="delete" onClick={() => this.handleDelete()}/>]}
                 >
                     <Meta
                         title={this.props.indicator.name}

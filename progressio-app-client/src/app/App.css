@@ -1,3 +1,7 @@
 .app-content {
   margin-top: 64px;   
 }
+
+.app-container{
+  min-width: 300px;
+}

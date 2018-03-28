@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './IndicatorList.css';
-import {getUserCreatedIndicators} from '../util/APIUtils';
+import {deleteIndicator, getUserCreatedIndicators} from '../util/APIUtils';
 import Indicator from './Indicator';
 import LoadingIndicator from '../common/LoadingIndicator';
 import {Button, Icon, Row} from 'antd';
@@ -22,6 +22,7 @@ class IndicatorList extends Component {
         };
         this.loadIndicatorList = this.loadIndicatorList.bind(this);
         this.handleLoadMore = this.handleLoadMore.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     loadIndicatorList(page = 0, size = INDICATOR_LIST_SIZE) {
@@ -66,23 +67,49 @@ class IndicatorList extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
-            // Reset State
-            this.setState({
-                indicators: [],
-                page: 0,
-                size: 10,
-                totalElements: 0,
-                totalPages: 0,
-                last: true,
-                currentVotes: [],
-                isLoading: false
-            });
+            this.resetState();
             this.loadIndicatorList();
         }
     }
 
+    resetState() {
+        this.setState({
+            indicators: [],
+            page: 0,
+            size: 10,
+            totalElements: 0,
+            totalPages: 0,
+            last: true,
+            currentVotes: [],
+            isLoading: false
+        });
+    }
+
     handleLoadMore() {
         this.loadIndicatorList(this.state.page + 1);
+    }
+
+    handleDelete(id) {
+        let promise;
+        if (this.props.isAuthenticated) {
+            promise = deleteIndicator(id);
+        }
+
+        if (!promise) {
+            return;
+        }
+
+        this.setState({
+            isLoading: true
+        });
+        promise
+            .then(response => {
+            }).catch(error => {
+                console.log(error);
+            });
+        this.setState({
+            isLoading: false
+        });
     }
 
     render() {
@@ -91,7 +118,9 @@ class IndicatorList extends Component {
             this.state.indicators.forEach((indicator) => {
                 indicatorViews.push(<Indicator
                     key={indicator.id}
-                    indicator={indicator}/>)
+                    indicator={indicator}
+                    handleDelete={this.handleDelete}
+                />)
             });
         }
 

@@ -1,5 +1,3 @@
-export const API_BASE_URL = 'http://192.168.1.170:8090';
-//export const API_BASE_URL = 'http://polls.callicoder.com';
 export const ACCESS_TOKEN = 'accessToken';
 
 export const INDICATOR_LIST_SIZE = 30;
