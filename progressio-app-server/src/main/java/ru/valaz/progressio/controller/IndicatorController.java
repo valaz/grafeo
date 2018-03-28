@@ -89,6 +89,20 @@ public class IndicatorController {
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
     }
 
+    @DeleteMapping("/{indicatorId}")
+    public ApiResponse deleteIndicatorById(@CurrentUser UserPrincipal currentUser,
+                                              @PathVariable Long indicatorId) {
+        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
+                () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
+
+        indicatorRepository.deleteById(indicator.getId());
+
+        return new ApiResponse(true, "Indicator deleted");
+    }
+
 
     @PostMapping("/{indicatorId}/records")
     @PreAuthorize("hasRole('USER')")

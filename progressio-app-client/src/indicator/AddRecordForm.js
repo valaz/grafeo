@@ -47,8 +47,8 @@ class AddRecordForm extends Component {
             rules: [{type: 'number', required: true, message: 'Please input value!'}],
         };
         children.push(
-            <Col xs={24} sm={12} md={8} lg={6}>
-                <FormItem key={"dateInput"}>
+            <Col xs={{span: 22, offset: 1}} sm={{span: 10, offset: 1}} md={{span: 6, offset: 1}} key={"dateInput"}>
+                <FormItem>
                     {getFieldDecorator("dateInput", dateInputConfig)(
                         <DatePicker
                             style={{width: '100%'}}
@@ -57,8 +57,8 @@ class AddRecordForm extends Component {
                 </FormItem>
             </Col>);
         children.push(
-            <Col xs={24} sm={12} md={8} lg={6}>
-                <FormItem key={"valueInput"}>
+            <Col xs={{span: 22, offset: 1}} sm={{span: 10, offset: 2}} md={{span: 6, offset: 2}} key={"valueInput"}>
+                <FormItem>
                     {getFieldDecorator("valueInput", valueInputConfig)(
                         <InputNumber prefix={<Icon type="info-circle-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
                                      ref={valueInput => (this.valueInput = valueInput)}
@@ -75,10 +75,10 @@ class AddRecordForm extends Component {
 
         return (
             <Form onSubmit={this.handleSubmit} style={{textAlign: 'center'}}>
-                <Row gutter={24}>
+                <Row>
                     {this.getInputFields()}
-                    <Col xs={24} sm={24} md={8} lg={6}>
-                        <FormItem {...formItemLayout}>
+                    <Col xs={{span: 22, offset: 1}} sm={{span: 22, offset: 1}} md={{span: 6, offset: 2}}>
+                        <FormItem>
                             <Button
                                 type="primary"
                                 htmlType="submit"

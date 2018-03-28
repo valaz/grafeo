@@ -89,10 +89,6 @@ class IndicatorPage extends Component {
         };
         addRecord(recordRequest)
             .then(response => {
-                notification.success({
-                    message: 'Polling App',
-                    description: "Record added successfully",
-                });
                 this.setState({
                     indicator: response,
                     records: response.records,
@@ -121,10 +117,6 @@ class IndicatorPage extends Component {
         };
         removeRecord(recordRequest)
             .then(response => {
-                notification.success({
-                    message: 'Polling App',
-                    description: "Record removed successfully",
-                });
                 this.setState({
                     indicator: response,
                     records: response.records

@@ -1,4 +1,4 @@
-import {ACCESS_TOKEN, API_BASE_URL, INDICATOR_LIST_SIZE} from '../constants';
+import {ACCESS_TOKEN, INDICATOR_LIST_SIZE} from '../constants';
 
 const request = (options) => {
     const headers = new Headers({
@@ -28,29 +28,36 @@ export function getAllPolls(page, size) {
     size = size || INDICATOR_LIST_SIZE;
 
     return request({
-        url: API_BASE_URL + "/indicators?page=" + page + "&size=" + size,
+        url: "/indicators?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
 
 export function getIndicator(id) {
     return request({
-        url: API_BASE_URL + "/indicators/" + id,
+        url: "/indicators/" + id,
         method: 'GET'
     });
 }
 
 export function createIndicator(indicatorData) {
     return request({
-        url: API_BASE_URL + "/indicators",
+        url: "/indicators",
         method: 'POST',
         body: JSON.stringify(indicatorData)
     });
 }
 
+export function deleteIndicator(id) {
+    return request({
+        url: "/indicators/" + id,
+        method: 'DELETE'
+    });
+}
+
 export function addRecord(recordData) {
     return request({
-        url: API_BASE_URL + "/indicators/" + recordData.indicatorId + "/records",
+        url: "/indicators/" + recordData.indicatorId + "/records",
         method: 'POST',
         body: JSON.stringify(recordData)
     });
@@ -58,7 +65,7 @@ export function addRecord(recordData) {
 
 export function removeRecord(recordData) {
     return request({
-        url: API_BASE_URL + "/indicators/" + recordData.indicatorId + "/records",
+        url: "/indicators/" + recordData.indicatorId + "/records",
         method: 'DELETE',
         body: JSON.stringify(recordData)
     });
@@ -66,7 +73,7 @@ export function removeRecord(recordData) {
 
 export function castVote(voteData) {
     return request({
-        url: API_BASE_URL + "/indicators/" + voteData.pollId + "/votes",
+        url: "/indicators/" + voteData.pollId + "/votes",
         method: 'POST',
         body: JSON.stringify(voteData)
     });
@@ -74,7 +81,7 @@ export function castVote(voteData) {
 
 export function login(loginRequest) {
     return request({
-        url: API_BASE_URL + "/auth/signin",
+        url: "/auth/signin",
         method: 'POST',
         body: JSON.stringify(loginRequest)
     });
@@ -82,7 +89,7 @@ export function login(loginRequest) {
 
 export function signup(signupRequest) {
     return request({
-        url: API_BASE_URL + "/auth/signup",
+        url: "/auth/signup",
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
@@ -90,14 +97,14 @@ export function signup(signupRequest) {
 
 export function checkUsernameAvailability(username) {
     return request({
-        url: API_BASE_URL + "/user/checkUsernameAvailability?username=" + username,
+        url: "/user/checkUsernameAvailability?username=" + username,
         method: 'GET'
     });
 }
 
 export function checkEmailAvailability(email) {
     return request({
-        url: API_BASE_URL + "/user/checkEmailAvailability?email=" + email,
+        url: "/user/checkEmailAvailability?email=" + email,
         method: 'GET'
     });
 }
@@ -109,14 +116,14 @@ export function getCurrentUser() {
     }
 
     return request({
-        url: API_BASE_URL + "/user/me",
+        url: "/user/me",
         method: 'GET'
     });
 }
 
 export function getUserProfile(username) {
     return request({
-        url: API_BASE_URL + "/users/" + username,
+        url: "/users/" + username,
         method: 'GET'
     });
 }
@@ -126,7 +133,7 @@ export function getUserCreatedIndicators(username, page, size) {
     size = size || INDICATOR_LIST_SIZE;
 
     return request({
-        url: API_BASE_URL + "/users/" + username + "/indicators?page=" + page + "&size=" + size,
+        url: "/users/" + username + "/indicators?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -136,7 +143,7 @@ export function getUserVotedPolls(username, page, size) {
     size = size || INDICATOR_LIST_SIZE;
 
     return request({
-        url: API_BASE_URL + "/users/" + username + "/votes?page=" + page + "&size=" + size,
+        url: "/users/" + username + "/votes?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }

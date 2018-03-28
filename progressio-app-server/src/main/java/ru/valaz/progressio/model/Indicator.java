@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "indicarors")
@@ -65,13 +66,21 @@ public class Indicator extends UserDateAudit {
         this.records = choices;
     }
 
-    public void addRecord(Record record) {
-        records.stream()
-                .filter(r -> r.getDate().equals(record.getDate()))
-                .findFirst()
-                .ifPresent(r -> records.remove(r));
-        records.add(record);
-        record.setIndicator(this);
+    public void addRecord(Record newRecord) {
+        Optional<Record> currentRecord = records.stream()
+                .filter(r -> r.getDate().equals(newRecord.getDate()))
+                .findFirst();
+
+        if (currentRecord.isPresent()) {
+            Record oldRecord = currentRecord.get();
+            if (oldRecord.getValue().equals(newRecord.getValue())) {
+                return;
+            } else {
+                records.remove(oldRecord);
+            }
+        }
+        records.add(newRecord);
+        newRecord.setIndicator(this);
     }
 
     public void removeRecord(Record record) {

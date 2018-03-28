@@ -19,7 +19,9 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        this.roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-        this.roleRepository.save(new Role(RoleName.ROLE_USER));
+        if (this.roleRepository.findAll().isEmpty()) {
+            this.roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+            this.roleRepository.save(new Role(RoleName.ROLE_USER));
+        }
     }
 }
