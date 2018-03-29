@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <npm.skip>false</npm.skip>
     </properties>
 
     <dependencies>
@@ -98,6 +99,15 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>skipNpm</id>
+            <properties>
+                <npm.skip>true</npm.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -114,8 +124,7 @@
                 <version>1.6</version>
                 <configuration>
                     <workingDirectory>${basedir}/web</workingDirectory>
-                    <nodeVersion>v8.9.4</nodeVersion>
-                    <npmVersion>5.6.0</npmVersion>
+                    <skip>${npm.skip}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -151,6 +160,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <skip>${npm.skip}</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>Copy frontend build to target</id>
