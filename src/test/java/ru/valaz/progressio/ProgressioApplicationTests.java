@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = {
-        "environment=test",
+        "environment=local",
 })
 public class ProgressioApplicationTests {
 
