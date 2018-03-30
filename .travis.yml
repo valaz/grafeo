@@ -1,5 +1,13 @@
 language: java
 jdk: oraclejdk8
 
-install: ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script: ./mvnw test -B -PskipNpm
+install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+script: "./mvnw test -B -PskipNpm"
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: iQJiRRtgdHKTKc3vIBUZ8y4tpF9GHr8so4GvBaH0ofSPnF95tpFZRJMheLIYuPjnakDj+bWtw+ZrKCvP7GdWftV+ZrnpSOLKF7iiGptswtuCpe5SNy+bLoHbHBD53FeNcoDRd652woY5Hv4Q9Oh7e8ZYExOj3Ot23b6f9kY+L2wgSBs8aAD5vlAL3kUP+w3d+42snwSOZbq3zCFSMltIg9sBdG8Y/ziscDVSHmwmL7R66Iw7qHDUoHT+t+aowHeTNczH9hOAaV/mRi0lXbTskHGbRmDnxD5M7eH9RXY/Dsf71SUp/WC9kWLfkDQqR80eC++XE7A0gkOWFRAxuewklLFFFtkkuMqlCCSYs4SXM2+w8A9+sceUACPMFRGCAoVwTmbVBb5xBQ1Ob3vuUQbUtEC1g569UmbJMerFUwBuivfLtGVKaSPbKrLBbmKW/q/xuchKhtv5qH5UcF3jZjwkAaTSAJxCGUh15c7VIAM7QIFUHaO9G4rD/tNvBdoduXJDfP03JzQVBYvOnFoHT+r+s+DHkGTiaGLCLTo7zNxMPDMx+6KwNQsoqzUzoKxB3l2bFYkPViv+N2eOqq3BIuRSRQVyg+uWuHEcQK5Ycrp+c3PYw2HIdwohgwMUKHeK2KYfKnWgwIr95RDUfzrKcDaLBAFzjCG61EPvhCcKKEVi5mM=
+  app:
+    master: progressio
+    develop: progressio-dev
