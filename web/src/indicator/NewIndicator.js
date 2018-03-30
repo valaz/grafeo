@@ -57,7 +57,7 @@ class NewIndicator extends Component {
 
         createIndicator(indicatorData)
             .then(response => {
-                this.props.history.push("/");
+                this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create indicator.');

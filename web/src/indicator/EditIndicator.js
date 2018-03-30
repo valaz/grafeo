@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {createIndicator} from '../util/APIUtils';
+import {editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
 import './NewIndicator.css';
 import {Button, Form, Icon, Input, notification} from 'antd';
+import {withRouter} from "react-router-dom";
 
 const FormItem = Form.Item;
 
@@ -10,45 +11,68 @@ class EditIndicator extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            question: {
-                text: ''
+            indicator: {
+                name: ''
             }
         };
-        this.addChoice = this.addChoice.bind(this);
-        this.removeChoice = this.removeChoice.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleQuestionChange = this.handleQuestionChange.bind(this);
-        this.handleIndicatorDaysChange = this.handleIndicatorDaysChange.bind(this);
-        this.handleIndicatorHoursChange = this.handleIndicatorHoursChange.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
     }
 
-    addChoice(event) {
-        const choices = this.state.choices.slice();
+    loadIndicator(id) {
+        let promise;
+        if (this.props.isAuthenticated) {
+            promise = getIndicator(id);
+        }
+
+        if (!promise) {
+            return;
+        }
+
         this.setState({
-            choices: choices.concat([{
-                text: ''
-            }])
+            isLoading: true
+        });
+        promise
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    indicator: response,
+                    isLoading: false
+                })
+            }).catch(error => {
+            if (error.status === 404 || error.status === 403) {
+                this.setState({
+                    notFound: true,
+                    isLoading: false
+                });
+            } else {
+                this.setState({
+                    serverError: true,
+                    isLoading: false
+                });
+            }
+            console.log(error);
         });
     }
 
-    removeChoice(choiceNumber) {
-        const choices = this.state.choices.slice();
-        this.setState({
-            choices: [...choices.slice(0, choiceNumber), ...choices.slice(choiceNumber + 1)]
-        });
+    componentDidMount() {
+        const id = this.props.match.params.id;
+        this.loadIndicator(id);
     }
 
     handleSubmit(event) {
         event.preventDefault();
         const indicatorData = {
-            name: this.state.question.text,
+            id: this.state.indicator.id,
+            name: this.state.indicator.name,
             indicatorLength: this.state.indicatorLength
         };
-
-        createIndicator(indicatorData)
+        console.log(indicatorData);
+        editIndicator(indicatorData)
             .then(response => {
-                this.props.history.push("/");
+                console.log(response);
+                this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create indicator.');
@@ -83,30 +107,16 @@ class EditIndicator extends Component {
     handleQuestionChange(event) {
         const value = event.target.value;
         this.setState({
-            question: {
-                text: value,
+            indicator: {
+                id: this.state.indicator.id,
+                name: value,
                 ...this.validateQuestion(value)
             }
         });
     }
 
-
-    handleIndicatorDaysChange(value) {
-        const indicatorLength = Object.assign(this.state.indicatorLength, {days: value});
-        this.setState({
-            indicatorLength: indicatorLength
-        });
-    }
-
-    handleIndicatorHoursChange(value) {
-        const indicatorLength = Object.assign(this.state.indicatorLength, {hours: value});
-        this.setState({
-            indicatorLength: indicatorLength
-        });
-    }
-
     isFormInvalid() {
-        if (this.state.question.validateStatus !== 'success') {
+        if (this.state.indicator.validateStatus !== 'success') {
             return true;
         }
     }
@@ -114,18 +124,18 @@ class EditIndicator extends Component {
     render() {
         return (
             <div className="new-poll-container">
-                <h1 className="page-title">Create Indicator</h1>
+                <h1 className="page-title">Edit Indicator</h1>
                 <div className="new-poll-content">
                     <Form onSubmit={this.handleSubmit} className="create-poll-form">
-                        <FormItem validateStatus={this.state.question.validateStatus}
-                                  help={this.state.question.errorMsg} className="poll-form-row">
+                        <FormItem validateStatus={this.state.indicator.validateStatus}
+                                  help={this.state.indicator.errorMsg} className="poll-form-row">
                             <Input
                                 autoFocus
                                 placeholder="Enter your indicator name"
                                 style={{fontSize: '16px'}}
                                 autosize={{minRows: 3, maxRows: 6}}
                                 name="question"
-                                value={this.state.question.text}
+                                value={this.state.indicator.name}
                                 onChange={this.handleQuestionChange}/>
                         </FormItem>
                         <FormItem className="poll-form-row">
@@ -134,8 +144,8 @@ class EditIndicator extends Component {
                                     size="large"
                                     disabled={this.isFormInvalid()}
                                     className="create-poll-form-button">
-                                <Icon type="plus"/>
-                                Create Indicator</Button>
+                                <Icon type="edit"/>
+                                Edit Indicator</Button>
                         </FormItem>
                     </Form>
                 </div>
@@ -145,4 +155,4 @@ class EditIndicator extends Component {
 }
 
 
-export default EditIndicator;
+export default withRouter(EditIndicator);
