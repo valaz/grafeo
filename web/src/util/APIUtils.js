@@ -48,6 +48,14 @@ export function createIndicator(indicatorData) {
     });
 }
 
+export function editIndicator(indicatorData) {
+    return request({
+        url: "/indicators",
+        method: 'PUT',
+        body: JSON.stringify(indicatorData)
+    });
+}
+
 export function deleteIndicator(id) {
     return request({
         url: "/indicators/" + id,

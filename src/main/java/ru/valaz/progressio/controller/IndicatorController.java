@@ -5,10 +5,8 @@ import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.valaz.progressio.exeption.ForbiddenException;
 import ru.valaz.progressio.exeption.ResourceNotFoundException;
 import ru.valaz.progressio.model.Indicator;
@@ -25,8 +23,6 @@ import ru.valaz.progressio.util.AppConstants;
 import ru.valaz.progressio.util.ModelMapper;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.time.Instant;
 
 @RestController
 @RequestMapping("/indicators")
@@ -54,23 +50,39 @@ public class IndicatorController {
         return indicatorService.getAllIndicators(currentUser, page, size);
     }
 
-
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
+    public IndicatorResponse createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
         Indicator indicator = new Indicator();
         indicator.setName(indicatorRequest.getName());
 
-        Instant now = Instant.now();
+        Indicator result = indicatorRepository.save(indicator);
+
+        // Retrieve indicator creator details
+        User creator = userRepository.findById(indicator.getCreatedBy())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
+        return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('USER')")
+    public IndicatorResponse editIndicator(@CurrentUser UserPrincipal currentUser,
+                                           @Valid @RequestBody IndicatorRequest indicatorRequest) {
+        Long indicatorId = indicatorRequest.getId();
+        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
+                () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException("You have no access");
+        }
+
+        indicator = indicatorService.updateIndicator(indicator, indicatorRequest);
 
         Indicator result = indicatorRepository.save(indicator);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{indicatorId}")
-                .buildAndExpand(result.getId()).toUri();
-
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "Indicator Created Successfully"));
+        // Retrieve indicator creator details
+        User creator = userRepository.findById(indicator.getCreatedBy())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
+        return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
     }
 
     @GetMapping("/{indicatorId}")
@@ -91,7 +103,7 @@ public class IndicatorController {
 
     @DeleteMapping("/{indicatorId}")
     public ApiResponse deleteIndicatorById(@CurrentUser UserPrincipal currentUser,
-                                              @PathVariable Long indicatorId) {
+                                           @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
                 () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
         if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {

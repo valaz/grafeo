@@ -12,6 +12,7 @@ import ru.valaz.progressio.exeption.BadRequestException;
 import ru.valaz.progressio.exeption.ResourceNotFoundException;
 import ru.valaz.progressio.model.Indicator;
 import ru.valaz.progressio.model.User;
+import ru.valaz.progressio.payload.IndicatorRequest;
 import ru.valaz.progressio.payload.IndicatorResponse;
 import ru.valaz.progressio.payload.PagedResponse;
 import ru.valaz.progressio.repository.IndicatorRepository;
@@ -21,6 +22,7 @@ import ru.valaz.progressio.security.UserPrincipal;
 import ru.valaz.progressio.util.AppConstants;
 import ru.valaz.progressio.util.ModelMapper;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -115,5 +117,11 @@ public class IndicatorService {
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
         return creatorMap;
+    }
+
+    public Indicator updateIndicator(Indicator indicator, @Valid IndicatorRequest indicatorRequest) {
+        indicator.setName(indicatorRequest.getName());
+        return indicatorRepository.save(indicator);
+
     }
 }
