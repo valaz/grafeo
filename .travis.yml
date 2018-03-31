@@ -9,7 +9,7 @@ addons:
 
 install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 script:
-- ./mvnw test -B -PskipNpm
+- ./mvnw clean install -B -PskipNpm
 - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 
 deploy:
