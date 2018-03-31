@@ -49,7 +49,6 @@ public class User extends DateAudit {
     private Set<Role> roles = new HashSet<>();
 
     public User() {
-
     }
 
     public User(String name, String username, String email, String password) {

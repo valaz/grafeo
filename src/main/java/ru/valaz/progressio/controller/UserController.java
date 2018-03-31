@@ -1,7 +1,5 @@
 package ru.valaz.progressio.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,13 +32,10 @@ public class UserController {
     @Autowired
     private IndicatorService indicatorService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
-        return userSummary;
+        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
     }
 
     @GetMapping("/user/checkUsernameAvailability")
@@ -63,9 +58,7 @@ public class UserController {
         long indicatorCount = indicatorRepository.countByCreatedBy(user.getId());
         long recordCount = recordRepository.countByCreatedBy(user.getId());
 
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
-
-        return userProfile;
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
     }
 
     @GetMapping("/users/{username}/indicators")

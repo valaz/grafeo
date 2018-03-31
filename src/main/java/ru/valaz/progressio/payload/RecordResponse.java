@@ -1,5 +1,7 @@
 package ru.valaz.progressio.payload;
 
+import com.google.common.base.Objects;
+
 import java.time.LocalDate;
 
 public class RecordResponse implements Comparable<RecordResponse> {
@@ -34,5 +36,20 @@ public class RecordResponse implements Comparable<RecordResponse> {
     @Override
     public int compareTo(RecordResponse o) {
         return date.compareTo(o.getDate());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecordResponse that = (RecordResponse) o;
+        return id == that.id &&
+                Objects.equal(value, that.value) &&
+                Objects.equal(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, value, date);
     }
 }

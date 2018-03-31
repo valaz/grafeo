@@ -1,7 +1,5 @@
 package ru.valaz.progressio.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,8 +40,6 @@ public class IndicatorService {
     @Autowired
     private UserRepository userRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(IndicatorService.class);
-
     public PagedResponse<IndicatorResponse> getAllIndicators(UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
 
@@ -56,14 +52,11 @@ public class IndicatorService {
                     indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
         }
 
-        // Map Indicators to IndicatorResponses containing vote counts and indicator creator details
-        List<Long> indicatorIds = indicators.map(Indicator::getId).getContent();
         Map<Long, User> creatorMap = getIndicatorCreatorMap(indicators.getContent());
 
-        List<IndicatorResponse> indicatorResponses = indicators.map(indicator -> {
-            return ModelMapper.mapIndicatorToIndicatorResponse(indicator,
-                    creatorMap.get(indicator.getCreatedBy()));
-        }).getContent();
+        List<IndicatorResponse> indicatorResponses = indicators.map(indicator ->
+                ModelMapper.mapIndicatorToIndicatorResponse(indicator,
+                        creatorMap.get(indicator.getCreatedBy()))).getContent();
 
         return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
@@ -84,12 +77,9 @@ public class IndicatorService {
                     indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
         }
 
-        // Map Indicators to IndicatorResponses containing vote counts and indicator creator details
-        List<Long> indicatorIds = indicators.map(Indicator::getId).getContent();
 
-        List<IndicatorResponse> indicatorResponses = indicators.map(indicator -> {
-            return ModelMapper.mapIndicatorToIndicatorResponse(indicator, user);
-        }).getContent();
+        List<IndicatorResponse> indicatorResponses = indicators.map(indicator ->
+                ModelMapper.mapIndicatorToIndicatorResponse(indicator, user)).getContent();
 
         return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
@@ -113,10 +103,8 @@ public class IndicatorService {
                 .collect(Collectors.toList());
 
         List<User> creators = userRepository.findByIdIn(creatorIds);
-        Map<Long, User> creatorMap = creators.stream()
+        return creators.stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
-
-        return creatorMap;
     }
 
     public Indicator updateIndicator(Indicator indicator, @Valid IndicatorRequest indicatorRequest) {
