@@ -17,3 +17,8 @@ deploy:
   app:
     master: progressio
     develop: progressio-dev
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
