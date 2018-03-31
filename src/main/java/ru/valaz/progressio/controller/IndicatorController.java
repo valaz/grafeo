@@ -28,6 +28,8 @@ import javax.validation.Valid;
 @RequestMapping("/indicators")
 public class IndicatorController {
 
+    public static final String YOU_HAVE_NO_ACCESS = "You have no access";
+    public static final String INDICATOR = "Indicator";
     @Autowired
     private IndicatorRepository indicatorRepository;
 
@@ -70,9 +72,9 @@ public class IndicatorController {
                                            @Valid @RequestBody IndicatorRequest indicatorRequest) {
         Long indicatorId = indicatorRequest.getId();
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
         if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
 
         indicator = indicatorService.updateIndicator(indicator, indicatorRequest);
@@ -89,9 +91,9 @@ public class IndicatorController {
     public IndicatorResponse getIndicatorById(@CurrentUser UserPrincipal currentUser,
                                               @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
         if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
         // Retrieve indicator creator details
         User creator = userRepository.findById(indicator.getCreatedBy())
@@ -105,9 +107,9 @@ public class IndicatorController {
     public ApiResponse deleteIndicatorById(@CurrentUser UserPrincipal currentUser,
                                            @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
         if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
 
         indicatorRepository.deleteById(indicator.getId());
@@ -123,16 +125,15 @@ public class IndicatorController {
                                        @Valid @RequestBody RecordRequest recordRequest) {
 
         Indicator indicator = indicatorRepository.findById(indicatorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+                .orElseThrow(() -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
         if (!indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
 
         Preconditions.checkNotNull(recordRequest.getValue());
         Preconditions.checkNotNull(recordRequest.getDate());
 
         Record record = new Record(recordRequest.getValue(), recordRequest.getDate());
-//        record = recordRepository.save(record);
 
         indicator.addRecord(record);
         indicator = indicatorRepository.save(indicator);
@@ -151,9 +152,9 @@ public class IndicatorController {
                                           @Valid @RequestBody RecordRequest recordRequest) {
 
         Indicator indicator = indicatorRepository.findById(indicatorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Indicator", "id", indicatorId));
+                .orElseThrow(() -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
         if (!indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException("You have no access");
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
 
         Preconditions.checkNotNull(recordRequest.getDate());

@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModelMapper {
+
+    private ModelMapper() {
+    }
+
     public static IndicatorResponse mapIndicatorToIndicatorResponse(Indicator indicator, User creator) {
         IndicatorResponse indicatorResponse = new IndicatorResponse();
         indicatorResponse.setId(indicator.getId());
