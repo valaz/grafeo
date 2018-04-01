@@ -8,13 +8,13 @@ import {Layout, notification} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
-import IndicatorList from "../indicator/IndicatorList";
 import NotFound from "../common/NotFound";
 import Profile from "../user/profile/Profile";
 import NewIndicator from "../indicator/NewIndicator";
 import EditIndicator from "../indicator/EditIndicator";
 import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
+import Home from "./Home";
 
 const {Content} = Layout;
 
@@ -98,9 +98,9 @@ class App extends React.Component {
                     <div className="container">
                         <Switch>
                             <Route exact path="/"
-                                   render={(props) => <IndicatorList isAuthenticated={this.state.isAuthenticated}
-                                                                     currentUser={this.state.currentUser}
-                                                                     handleLogout={this.handleLogout} {...props} />}>
+                                   render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
+                                                            currentUser={this.state.currentUser}
+                                                            handleLogout={this.handleLogout} {...props} />}>
                             </Route>
                             <Route path="/login"
                                    render={(props) => <Login onLogin={this.handleLogin}

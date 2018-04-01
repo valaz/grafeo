@@ -4,6 +4,12 @@ import {Link} from 'react-router-dom';
 import {Button} from 'antd';
 
 class ServerError extends Component {
+
+
+    componentDidMount() {
+        document.title = "500";
+    }
+
     render() {
         return (
             <div className="server-error-page">

@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './NotFound.css';
-import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import {Link} from 'react-router-dom';
+import {Button} from 'antd';
 
 class NotFound extends Component {
+
+    componentDidMount() {
+        document.title = "404";
+    }
+
     render() {
         return (
             <div className="page-not-found">

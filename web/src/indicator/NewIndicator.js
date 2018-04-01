@@ -23,22 +23,14 @@ class NewIndicator extends Component {
                 hours: 0
             }
         };
-        this.addChoice = this.addChoice.bind(this);
         this.removeChoice = this.removeChoice.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleQuestionChange = this.handleQuestionChange.bind(this);
-        this.handleIndicatorDaysChange = this.handleIndicatorDaysChange.bind(this);
-        this.handleIndicatorHoursChange = this.handleIndicatorHoursChange.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
     }
 
-    addChoice(event) {
-        const choices = this.state.choices.slice();
-        this.setState({
-            choices: choices.concat([{
-                text: ''
-            }])
-        });
+    componentDidMount() {
+        document.title = "Create Indicator";
     }
 
     removeChoice(choiceNumber) {
@@ -96,21 +88,6 @@ class NewIndicator extends Component {
                 text: value,
                 ...this.validateQuestion(value)
             }
-        });
-    }
-
-
-    handleIndicatorDaysChange(value) {
-        const indicatorLength = Object.assign(this.state.indicatorLength, {days: value});
-        this.setState({
-            indicatorLength: indicatorLength
-        });
-    }
-
-    handleIndicatorHoursChange(value) {
-        const indicatorLength = Object.assign(this.state.indicatorLength, {hours: value});
-        this.setState({
-            indicatorLength: indicatorLength
         });
     }
 

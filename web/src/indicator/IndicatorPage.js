@@ -37,12 +37,18 @@ class IndicatorPage extends Component {
     }
 
     componentWillMount() {
-        const id = this.props.match.params.id;
-        this.loadIndicator(id);
         this.setState({
+            isLoading: true,
             editDate: this.props.editDate,
             editValue: this.props.editValue
-        })
+        });
+    }
+
+    componentDidMount() {
+        const id = this.props.match.params.id;
+        this.loadIndicator(id);
+        console.log(this.state.indicator.name);
+        document.title = "View Indicator";
     }
 
     loadIndicator(id) {
@@ -64,7 +70,8 @@ class IndicatorPage extends Component {
                     indicator: response,
                     records: response.records,
                     isLoading: false
-                })
+                });
+                document.title = this.state.indicator.name;
             }).catch(error => {
             if (error.status === 404 || error.status === 403) {
                 this.setState({

@@ -105,8 +105,8 @@ class IndicatorList extends Component {
         promise
             .then(response => {
             }).catch(error => {
-                console.log(error);
-            });
+            console.log(error);
+        });
         this.setState({
             isLoading: false
         });
