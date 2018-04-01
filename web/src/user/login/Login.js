@@ -28,6 +28,10 @@ class LoginForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        document.title = "Login";
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         this.props.form.validateFields((err, values) => {

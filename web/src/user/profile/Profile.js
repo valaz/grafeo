@@ -50,6 +50,7 @@ class Profile extends Component {
     componentDidMount() {
         const username = this.props.match.params.username;
         this.loadUserProfile(username);
+        document.title = "Profile";
     }
 
     componentWillReceiveProps(nextProps) {

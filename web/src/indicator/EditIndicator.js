@@ -59,6 +59,7 @@ class EditIndicator extends Component {
     componentDidMount() {
         const id = this.props.match.params.id;
         this.loadIndicator(id);
+        document.title = "Edit indicator";
     }
 
     handleSubmit(event) {

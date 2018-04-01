@@ -40,6 +40,10 @@ class Signup extends Component {
         this.isFormInvalid = this.isFormInvalid.bind(this);
     }
 
+    componentDidMount() {
+        document.title = "Signup";
+    }
+
     handleInputChange(event, validationFun) {
         const target = event.target;
         const inputName = target.name;
