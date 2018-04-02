@@ -1,8 +1,7 @@
 export const ACCESS_TOKEN = 'accessToken';
 
 export const INDICATOR_LIST_SIZE = 30;
-export const INDICATOR_NAME_MAX_LENGTH = 140;
-export const INDICATOR_RECORD_MAX_LENGTH = 40;
+export const INDICATOR_NAME_MAX_LENGTH = 30;
 
 export const NAME_MIN_LENGTH = 4;
 export const NAME_MAX_LENGTH = 40;

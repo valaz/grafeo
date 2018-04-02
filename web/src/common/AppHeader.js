@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import './AppHeader.css';
 import {Dropdown, Icon, Layout, Menu} from 'antd';
+import {FormattedMessage} from 'react-intl';
 
 const Header = Layout.Header;
 
@@ -40,10 +41,14 @@ class AppHeader extends Component {
         } else {
             menuItems = [
                 <Menu.Item key="/login">
-                    <Link to="/login">Login</Link>
+                    <Link to="/login">
+                        <FormattedMessage id="navbar.login"/>
+                    </Link>
                 </Menu.Item>,
                 <Menu.Item key="/signup">
-                    <Link to="/signup">Signup</Link>
+                    <Link to="/signup">
+                        <FormattedMessage id="navbar.signup"/>
+                    </Link>
                 </Menu.Item>
             ];
         }
@@ -80,10 +85,12 @@ function ProfileDropdownMenu(props) {
             </Menu.Item>
             <Menu.Divider/>
             <Menu.Item key="profile" className="dropdown-item">
-                <Link to={`/users/${props.currentUser.username}`}>Profile</Link>
+                <Link to={`/users/${props.currentUser.username}`}>
+                    <FormattedMessage id="navbar.profile"/>
+                </Link>
             </Menu.Item>
             <Menu.Item key="logout" className="dropdown-item">
-                Logout
+                <FormattedMessage id="navbar.logout"/>
             </Menu.Item>
         </Menu>
     );

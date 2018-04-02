@@ -4,6 +4,7 @@ import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
 import './NewIndicator.css';
 import {Button, Form, Icon, Input, notification} from 'antd';
 import {withRouter} from "react-router-dom";
+import {FormattedMessage, injectIntl} from 'react-intl';
 
 const FormItem = Form.Item;
 
@@ -59,7 +60,7 @@ class EditIndicator extends Component {
     componentDidMount() {
         const id = this.props.match.params.id;
         this.loadIndicator(id);
-        document.title = "Edit indicator";
+        document.title = this.props.intl.formatMessage({id: 'indicator.edit.header'});
     }
 
     handleSubmit(event) {
@@ -79,7 +80,7 @@ class EditIndicator extends Component {
                 this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create indicator.');
             } else {
                 notification.error({
-                    message: 'Progressio App',
+                    message: 'Progressio',
                     description: error.message || 'Sorry! Something went wrong. Please try again!'
                 });
             }
@@ -90,12 +91,18 @@ class EditIndicator extends Component {
         if (questionText.length === 0) {
             return {
                 validateStatus: 'error',
-                errorMsg: 'Please enter your question!'
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.edit.error.empty'})
             }
         } else if (questionText.length > INDICATOR_NAME_MAX_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: `Question is too long (Maximum ${INDICATOR_NAME_MAX_LENGTH} characters allowed)`
+                errorMsg: this.props.intl.formatMessage({
+                        id: 'indicator.edit.error.long'
+                    },
+                    {
+                        maxLength: INDICATOR_NAME_MAX_LENGTH
+                    }
+                )
             }
         } else {
             return {
@@ -125,13 +132,15 @@ class EditIndicator extends Component {
     render() {
         return (
             <div className="new-indicator-container">
-                <h1 className="page-title">Edit Indicator</h1>
+                <h1 className="page-title">
+                    <FormattedMessage id="indicator.edit.header"/>
+                </h1>
                 <Form onSubmit={this.handleSubmit} className="create-indicator-form">
                     <FormItem validateStatus={this.state.indicator.validateStatus}
                               help={this.state.indicator.errorMsg} className="indicator-form-row">
                         <Input
                             autoFocus
-                            placeholder="Enter your indicator name"
+                            placeholder={this.props.intl.formatMessage({id: 'indicator.edit.placeholder'})}
                             style={{fontSize: '16px'}}
                             autosize={{minRows: 3, maxRows: 6}}
                             name="question"
@@ -145,7 +154,8 @@ class EditIndicator extends Component {
                                 disabled={this.isFormInvalid()}
                                 className="create-indicator-form-button">
                             <Icon type="edit"/>
-                            Edit Indicator</Button>
+                            <FormattedMessage id="indicator.edit.button"/>
+                        </Button>
                     </FormItem>
                 </Form>
             </div>
@@ -153,5 +163,4 @@ class EditIndicator extends Component {
     }
 }
 
-
-export default withRouter(EditIndicator);
+export default injectIntl(withRouter(EditIndicator));
