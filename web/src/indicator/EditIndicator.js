@@ -124,32 +124,30 @@ class EditIndicator extends Component {
 
     render() {
         return (
-            <div className="new-poll-container">
+            <div className="new-indicator-container">
                 <h1 className="page-title">Edit Indicator</h1>
-                <div className="new-poll-content">
-                    <Form onSubmit={this.handleSubmit} className="create-poll-form">
-                        <FormItem validateStatus={this.state.indicator.validateStatus}
-                                  help={this.state.indicator.errorMsg} className="poll-form-row">
-                            <Input
-                                autoFocus
-                                placeholder="Enter your indicator name"
-                                style={{fontSize: '16px'}}
-                                autosize={{minRows: 3, maxRows: 6}}
-                                name="question"
-                                value={this.state.indicator.name}
-                                onChange={this.handleQuestionChange}/>
-                        </FormItem>
-                        <FormItem className="poll-form-row">
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    disabled={this.isFormInvalid()}
-                                    className="create-poll-form-button">
-                                <Icon type="edit"/>
-                                Edit Indicator</Button>
-                        </FormItem>
-                    </Form>
-                </div>
+                <Form onSubmit={this.handleSubmit} className="create-indicator-form">
+                    <FormItem validateStatus={this.state.indicator.validateStatus}
+                              help={this.state.indicator.errorMsg} className="indicator-form-row">
+                        <Input
+                            autoFocus
+                            placeholder="Enter your indicator name"
+                            style={{fontSize: '16px'}}
+                            autosize={{minRows: 3, maxRows: 6}}
+                            name="question"
+                            value={this.state.indicator.name}
+                            onChange={this.handleQuestionChange}/>
+                    </FormItem>
+                    <FormItem className="indicator-form-row">
+                        <Button type="primary"
+                                htmlType="submit"
+                                size="large"
+                                disabled={this.isFormInvalid()}
+                                className="create-indicator-form-button">
+                            <Icon type="edit"/>
+                            Edit Indicator</Button>
+                    </FormItem>
+                </Form>
             </div>
         );
     }
