@@ -44,7 +44,7 @@ public class IndicatorService {
         validatePageNumberAndSize(page, size);
 
         // Retrieve Indicators
-        Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
         Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByUpdatedAtDesc(currentUser.getId(), pageable);
 
         if (indicators.getNumberOfElements() == 0) {
@@ -62,14 +62,14 @@ public class IndicatorService {
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
     }
 
-    public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(String username, UserPrincipal currentUser, int page, int size) {
+    public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(String username, int page, int size) {
         validatePageNumberAndSize(page, size);
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         // Retrieve all indicators created by the given username
-        Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
         Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByUpdatedAtDesc(user.getId(), pageable);
 
         if (indicators.getNumberOfElements() == 0) {

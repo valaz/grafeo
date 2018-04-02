@@ -86,12 +86,6 @@ class App extends React.Component {
                     locale: ru_RU
                 });
                 break;
-            case 'en':
-                moment.locale('en');
-                this.setState({
-                    locale: en_US
-                });
-                break;
             default:
                 moment.locale('en');
                 this.setState({

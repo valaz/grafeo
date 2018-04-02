@@ -66,6 +66,6 @@ public class UserController {
                                                                    @CurrentUser UserPrincipal currentUser,
                                                                    @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                                    @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return indicatorService.getIndicatorsCreatedBy(username, currentUser, page, size);
+        return indicatorService.getIndicatorsCreatedBy(username, page, size);
     }
 }
