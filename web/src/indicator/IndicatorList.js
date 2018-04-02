@@ -125,20 +125,20 @@ class IndicatorList extends Component {
         }
 
         return (
-            <div className="polls-container">
+            <div className="indicators-container">
                 <Row>
                     {indicatorViews}
                 </Row>
                 {
                     !this.state.isLoading && this.state.indicators.length === 0 ? (
-                        <div className="no-polls-found">
+                        <div className="no-indicators-found">
                             <span>No Indicators Found.</span>
                         </div>
                     ) : null
                 }
                 {
                     !this.state.isLoading && !this.state.last ? (
-                        <div className="load-more-polls">
+                        <div className="load-more-indicators">
                             <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
                                 <Icon type="plus"/> Load more
                             </Button>

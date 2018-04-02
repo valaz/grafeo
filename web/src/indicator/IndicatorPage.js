@@ -105,7 +105,7 @@ class IndicatorPage extends Component {
             }).catch(error => {
             console.log(error);
             notification.error({
-                message: 'Polling App',
+                message: 'Progressio',
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
             this.setState({
@@ -131,7 +131,7 @@ class IndicatorPage extends Component {
             }).catch(error => {
             console.log(error);
             notification.error({
-                message: 'Polling App',
+                message: 'Progressio',
                 description: error.message || 'Sorry! Something went wrong. Please try again!'
             });
         });

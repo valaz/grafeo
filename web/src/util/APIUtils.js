@@ -23,7 +23,7 @@ const request = (options) => {
         );
 };
 
-export function getAllPolls(page, size) {
+export function getAllIndicators(page, size) {
     page = page || 0;
     size = size || INDICATOR_LIST_SIZE;
 
@@ -76,14 +76,6 @@ export function removeRecord(recordData) {
         url: "/indicators/" + recordData.indicatorId + "/records",
         method: 'DELETE',
         body: JSON.stringify(recordData)
-    });
-}
-
-export function castVote(voteData) {
-    return request({
-        url: "/indicators/" + voteData.pollId + "/votes",
-        method: 'POST',
-        body: JSON.stringify(voteData)
     });
 }
 
@@ -142,16 +134,6 @@ export function getUserCreatedIndicators(username, page, size) {
 
     return request({
         url: "/users/" + username + "/indicators?page=" + page + "&size=" + size,
-        method: 'GET'
-    });
-}
-
-export function getUserVotedPolls(username, page, size) {
-    page = page || 0;
-    size = size || INDICATOR_LIST_SIZE;
-
-    return request({
-        url: "/users/" + username + "/votes?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
