@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import {getUserProfile} from '../../util/APIUtils';
 import {Avatar, Col, Row, Tabs} from 'antd';
 import {getRandomColor} from '../../util/Colors';
-import {formatDate} from '../../util/Helpers';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import './Profile.css';
 import NotFound from '../../common/NotFound';
 import ServerError from '../../common/ServerError';
 import IndicatorList from "../../indicator/IndicatorList";
+
+import {FormattedDate, FormattedMessage, injectIntl} from 'react-intl';
 
 const TabPane = Tabs.TabPane;
 
@@ -32,6 +33,7 @@ class Profile extends Component {
                     user: response,
                     isLoading: false
                 });
+                document.title = this.state.user.name;
             }).catch(error => {
             if (error.status === 404) {
                 this.setState({
@@ -50,7 +52,7 @@ class Profile extends Component {
     componentDidMount() {
         const username = this.props.match.params.username;
         this.loadUserProfile(username);
-        document.title = "Profile";
+        document.title = this.props.intl.formatMessage({id: 'profile.title'});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -91,7 +93,14 @@ class Profile extends Component {
                                 <div className="full-name">{this.state.user.name}</div>
                                 <div className="username">@{this.state.user.username}</div>
                                 <div className="user-joined">
-                                    Joined {formatDate(this.state.user.joinedAt)}
+                                    <FormattedMessage id="profile.joined" values={{
+                                        date: <FormattedDate
+                                            value={new Date(this.state.user.joinedAt)}
+                                            year='numeric'
+                                            month='long'
+                                            day='2-digit'
+                                        />
+                                    }}/>
                                 </div>
                             </Col>
                             <Col xs={24}>
@@ -100,12 +109,19 @@ class Profile extends Component {
                                       tabBarStyle={tabBarStyle}
                                       size="large"
                                       className="profile-tabs">
-                                    <TabPane tab={`${this.state.user.indicatorCount} Indicators`} key="1">
+                                    <TabPane tab={
+                                        <span>
+                                            <FormattedMessage id="profile.indicators"/>
+                                        </span>}
+                                             key="1">
                                         <IndicatorList isAuthenticated={this.props.isAuthenticated}
                                                        currentUser={this.props.currentUser}
                                                        type="USER_CREATED_INDICATORS"/>
                                     </TabPane>
-                                    <TabPane tab={`${this.state.user.recordCount} Records`} key="2">
+                                    <TabPane tab={
+                                        <span>
+                                            <FormattedMessage id="profile.records"/>
+                                        </span>} key="2">
 
                                     </TabPane>
                                 </Tabs>
@@ -118,4 +134,4 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+export default injectIntl(Profile);

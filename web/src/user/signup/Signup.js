@@ -13,6 +13,7 @@ import {
 } from '../../constants';
 
 import {Button, Form, Input, notification} from 'antd';
+import {FormattedMessage, injectIntl} from "react-intl";
 
 const FormItem = Form.Item;
 
@@ -41,7 +42,7 @@ class Signup extends Component {
     }
 
     componentDidMount() {
-        document.title = "Signup";
+        document.title = this.props.intl.formatMessage({id: 'signup.header'});
     }
 
     handleInputChange(event, validationFun) {
@@ -70,13 +71,13 @@ class Signup extends Component {
             .then(response => {
                 notification.success({
                     message: 'Progressio',
-                    description: "Thank you! You're successfully registered. Please Login to continue!",
+                    description: this.props.intl.formatMessage({id: 'signup.notification.success'})
                 });
                 this.props.history.push("/login");
             }).catch(error => {
             notification.error({
                 message: 'Progressio',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
+                description: error.message || this.props.intl.formatMessage({id: 'notification.error'})
             });
         });
     }
@@ -92,11 +93,14 @@ class Signup extends Component {
     render() {
         return (
             <div className="signup-container">
-                <h1 className="page-title">Sign Up</h1>
+                <h1 className="page-title">
+                    <FormattedMessage id="signup.header"/>
+                </h1>
                 <div className="signup-content">
                     <Form onSubmit={this.handleSubmit} className="signup-form">
                         <FormItem
-                            label="Full Name"
+                            label={this.props.intl.formatMessage({id: 'signup.form.name.label'})}
+                            hasFeedback
                             validateStatus={this.state.name.validateStatus}
                             help={this.state.name.errorMsg}>
                             <Input
@@ -104,25 +108,26 @@ class Signup extends Component {
                                 size="large"
                                 name="name"
                                 autoComplete="off"
-                                placeholder="Your full name"
+                                placeholder={this.props.intl.formatMessage({id: 'signup.form.name.placeholder'})}
                                 value={this.state.name.value}
                                 onChange={(event) => this.handleInputChange(event, this.validateName)}/>
                         </FormItem>
-                        <FormItem label="Username"
-                                  hasFeedback
-                                  validateStatus={this.state.username.validateStatus}
-                                  help={this.state.username.errorMsg}>
+                        <FormItem
+                            label={this.props.intl.formatMessage({id: 'signup.form.username.label'})}
+                            hasFeedback
+                            validateStatus={this.state.username.validateStatus}
+                            help={this.state.username.errorMsg}>
                             <Input
                                 size="large"
                                 name="username"
                                 autoComplete="off"
-                                placeholder="A unique username"
+                                placeholder={this.props.intl.formatMessage({id: 'signup.form.username.placeholder'})}
                                 value={this.state.username.value}
                                 onBlur={this.validateUsernameAvailability}
                                 onChange={(event) => this.handleInputChange(event, this.validateUsername)}/>
                         </FormItem>
                         <FormItem
-                            label="Email"
+                            label={this.props.intl.formatMessage({id: 'signup.form.email.label'})}
                             hasFeedback
                             validateStatus={this.state.email.validateStatus}
                             help={this.state.email.errorMsg}>
@@ -131,13 +136,14 @@ class Signup extends Component {
                                 name="email"
                                 type="email"
                                 autoComplete="off"
-                                placeholder="Your email"
+                                placeholder={this.props.intl.formatMessage({id: 'signup.form.email.placeholder'})}
                                 value={this.state.email.value}
                                 onBlur={this.validateEmailAvailability}
                                 onChange={(event) => this.handleInputChange(event, this.validateEmail)}/>
                         </FormItem>
                         <FormItem
-                            label="Password"
+                            label={this.props.intl.formatMessage({id: 'signup.form.password.label'})}
+                            hasFeedback
                             validateStatus={this.state.password.validateStatus}
                             help={this.state.password.errorMsg}>
                             <Input
@@ -145,7 +151,7 @@ class Signup extends Component {
                                 name="password"
                                 type="password"
                                 autoComplete="off"
-                                placeholder="A password between 6 to 20 characters"
+                                placeholder={this.props.intl.formatMessage({id: 'signup.form.password.placeholder'})}
                                 value={this.state.password.value}
                                 onChange={(event) => this.handleInputChange(event, this.validatePassword)}/>
                         </FormItem>
@@ -154,8 +160,12 @@ class Signup extends Component {
                                     htmlType="submit"
                                     size="large"
                                     className="signup-form-button"
-                                    disabled={this.isFormInvalid()}>Sign up</Button>
-                            Already registed? <Link to="/login">Login now!</Link>
+                                    disabled={this.isFormInvalid()}>
+                                <FormattedMessage id="signup.form.submit"/>
+                            </Button>
+                            <FormattedMessage id="signup.form.login.registered"/> <Link to="/login">
+                            <FormattedMessage id="signup.form.login.now"/>
+                        </Link>
                         </FormItem>
                     </Form>
                 </div>
@@ -169,12 +179,12 @@ class Signup extends Component {
         if (name.length < NAME_MIN_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: `Name is too short (Minimum ${NAME_MIN_LENGTH} characters needed.)`
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.short'}, {minLength: NAME_MIN_LENGTH})
             }
         } else if (name.length > NAME_MAX_LENGTH) {
             return {
-                validationStatus: 'error',
-                errorMsg: `Name is too long (Maximum ${NAME_MAX_LENGTH} characters allowed.)`
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.long'}, {maxLength: NAME_MAX_LENGTH})
             }
         } else {
             return {
@@ -188,7 +198,7 @@ class Signup extends Component {
         if (!email) {
             return {
                 validateStatus: 'error',
-                errorMsg: 'Email may not be empty'
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.empty'})
             }
         }
 
@@ -196,14 +206,14 @@ class Signup extends Component {
         if (!EMAIL_REGEX.test(email)) {
             return {
                 validateStatus: 'error',
-                errorMsg: 'Email not valid'
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.invalid'})
             }
         }
 
         if (email.length > EMAIL_MAX_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: `Email is too long (Maximum ${EMAIL_MAX_LENGTH} characters allowed)`
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.long'}, {maxLength: EMAIL_MAX_LENGTH})
             }
         }
 
@@ -217,12 +227,12 @@ class Signup extends Component {
         if (username.length < USERNAME_MIN_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: `Username is too short (Minimum ${USERNAME_MIN_LENGTH} characters needed.)`
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.short'}, {minLength: USERNAME_MIN_LENGTH})
             }
         } else if (username.length > USERNAME_MAX_LENGTH) {
             return {
-                validationStatus: 'error',
-                errorMsg: `Username is too long (Maximum ${USERNAME_MAX_LENGTH} characters allowed.)`
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.long'}, {maxLength: USERNAME_MAX_LENGTH})
             }
         } else {
             return {
@@ -270,12 +280,12 @@ class Signup extends Component {
                         username: {
                             value: usernameValue,
                             validateStatus: 'error',
-                            errorMsg: 'This username is already taken'
+                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.taken'})
                         }
                     });
                 }
             }).catch(error => {
-            // Marking validateStatus as success, Form will be recchecked at server
+            // Marking validateStatus as success, Form will be rechecked at server
             this.setState({
                 username: {
                     value: usernameValue,
@@ -324,7 +334,7 @@ class Signup extends Component {
                         email: {
                             value: emailValue,
                             validateStatus: 'error',
-                            errorMsg: 'This Email is already registered'
+                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.taken'})
                         }
                     });
                 }
@@ -344,12 +354,12 @@ class Signup extends Component {
         if (password.length < PASSWORD_MIN_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: `Password is too short (Minimum ${PASSWORD_MIN_LENGTH} characters needed.)`
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.short'}, {minLength: PASSWORD_MIN_LENGTH})
             }
         } else if (password.length > PASSWORD_MAX_LENGTH) {
             return {
-                validationStatus: 'error',
-                errorMsg: `Password is too long (Maximum ${PASSWORD_MAX_LENGTH} characters allowed.)`
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.long'}, {maxLength: PASSWORD_MAX_LENGTH})
             }
         } else {
             return {
@@ -361,4 +371,4 @@ class Signup extends Component {
 
 }
 
-export default Signup;
+export default injectIntl(Signup);

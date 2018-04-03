@@ -15,6 +15,7 @@ import EditIndicator from "../indicator/EditIndicator";
 import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
+import {injectIntl} from "react-intl";
 
 const {Content} = Layout;
 
@@ -33,7 +34,7 @@ class App extends React.Component {
         notification.config({
             placement: 'topRight',
             top: 70,
-            duration: 3,
+            duration: 2,
         });
     }
 
@@ -59,7 +60,7 @@ class App extends React.Component {
         this.loadCurrentUser();
     }
 
-    handleLogout(redirectTo = "/", notificationType = "success", description = "You're successfully logged out.") {
+    handleLogout(redirectTo = "/", notificationType = "success", description = this.props.intl.formatMessage({id: 'notification.logout'})) {
         localStorage.removeItem(ACCESS_TOKEN);
 
         this.setState({
@@ -70,15 +71,15 @@ class App extends React.Component {
         this.props.history.push(redirectTo);
 
         notification[notificationType]({
-            message: 'Progressio App',
-            description: description,
+            message: 'Progressio',
+            description: description
         });
     }
 
     handleLogin() {
         notification.success({
-            message: 'Progressio App',
-            description: "You're successfully logged in.",
+            message: 'Progressio',
+            description: this.props.intl.formatMessage({id: 'login.notification.success'})
         });
         this.loadCurrentUser();
         this.props.history.push("/");
@@ -128,4 +129,4 @@ class App extends React.Component {
     }
 }
 
-export default withRouter(App);
+export default injectIntl(withRouter(App));

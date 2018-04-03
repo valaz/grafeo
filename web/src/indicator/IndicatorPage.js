@@ -5,10 +5,11 @@ import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
 import IndicatorChart from "./IndicatorChart";
 import {withRouter} from "react-router-dom";
-import WrappedAddRecordForm from "./AddRecordForm";
+import WrappedAddRecordForm from "./WrappedAddRecordForm";
 import LoadingIndicator from "../common/LoadingIndicator";
 import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
+import {injectIntl} from "react-intl";
 
 const {Meta} = Card;
 
@@ -162,15 +163,15 @@ class IndicatorPage extends Component {
         var card = null;
         var recordTable = null;
         const columns = [{
-            title: 'Date',
+            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.date'}),
             dataIndex: 'date',
             key: 'date',
         }, {
-            title: 'Value',
+            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.value'}),
             dataIndex: 'value',
             key: 'value',
         }, {
-            title: 'Action',
+            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.action'}),
             key: 'action',
             render: (text, record) => (
                 <span>
@@ -184,7 +185,7 @@ class IndicatorPage extends Component {
         }];
         let indicator = this.state.indicator;
         var tableRecords = this.state.records.slice(0);
-        tableRecords = tableRecords.reverse();
+        tableRecords.reverse();
         if (indicator) {
             card =
                 <Card>
@@ -219,4 +220,4 @@ class IndicatorPage extends Component {
 
 }
 
-export default withRouter(IndicatorPage);
+export default injectIntl(withRouter(IndicatorPage));

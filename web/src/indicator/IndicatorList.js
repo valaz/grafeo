@@ -6,6 +6,7 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import {Button, Icon, Row} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
+import {FormattedMessage} from "react-intl";
 
 class IndicatorList extends Component {
     constructor(props) {
@@ -132,7 +133,9 @@ class IndicatorList extends Component {
                 {
                     !this.state.isLoading && this.state.indicators.length === 0 ? (
                         <div className="no-indicators-found">
-                            <span>No Indicators Found.</span>
+                            <span>
+                                <FormattedMessage id="indicator.view.data.empty"/>
+                            </span>
                         </div>
                     ) : null
                 }
