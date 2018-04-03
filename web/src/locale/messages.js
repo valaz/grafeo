@@ -1,9 +1,14 @@
 export default {
     'en': {
+        notification: {
+            error: 'Sorry, some error on the server. PLease try again!',
+            logout: 'You successfully logged out!'
+        },
         profile: {
             title: 'Profile',
             indicators: 'Indicators',
-            records: 'Records'
+            records: 'Records',
+            joined: 'Joined at {date}'
         },
         navbar: {
             profile: 'Profile',
@@ -11,10 +16,138 @@ export default {
             login: 'Login',
             signup: "Signup"
         },
+        login: {
+            header: 'Login',
+            form: {
+                username: {
+                    placeholder: 'Username or email',
+                    error: {
+                        empty: 'Please input your username or email!'
+
+                    }
+                },
+                password: {
+                    placeholder: 'Password',
+                    error: {
+                        empty: 'PLease enter your password'
+
+                    }
+                },
+                submit: 'Login',
+                register: {
+                    or: 'Or',
+                    now: 'register now'
+                }
+            },
+            notification: {
+                incorrect: 'Your Username or Password is incorrect. Please try again!',
+                success: 'You\'re successfully logged out.'
+            }
+        },
+        signup: {
+            header: 'Signup',
+            form: {
+                name: {
+                    label: 'Full name',
+                    placeholder: 'Your full name',
+                    error: {
+                        short: 'Name is too short (Minimum {minLength} characters needed)',
+                        long: 'Name is too long (Maximum {maxLength} characters allowed)'
+                    }
+                },
+                username: {
+                    label: 'Username',
+                    placeholder: 'A unique username',
+                    error: {
+                        short: 'Username is too short (Minimum {minLength} characters needed)',
+                        long: 'Username is too long (Maximum {maxLength} characters allowed)',
+                        taken: 'This username is already taken'
+                    }
+                },
+                email: {
+                    label: 'Email',
+                    placeholder: 'Your email',
+                    error: {
+                        empty: 'Email may not be empty',
+                        invalid: 'Email not valid',
+                        long: 'Email is too long (Maximum {maxLength} characters allowed)',
+                        taken: 'This Email is already registered'
+                    }
+                },
+                password: {
+                    label: 'Password',
+                    placeholder: 'A password between 6 to 20 characters',
+                    error: {
+                        short: 'Password is too short (Minimum {minLength} characters needed)',
+                        long: 'Password is too long (Maximum {maxLength} characters allowed)',
+                    }
+
+                },
+                submit: 'Signup',
+                login: {
+                    registered: 'Already registered?',
+                    now: 'Login now!'
+                }
+            },
+            notification: {
+                success: 'Thank you! You\'re successfully registered. Please Login to continue!',
+            }
+
+        },
         indicator: {
-            create: 'Create indicator',
-            edit: 'Edit indicator'
+            create: {
+                header: 'Create indicator',
+                placeholder: 'Enter the name',
+                button: 'Create indicator',
+                error: {
+                    empty: 'PLease enter a name',
+                    long: 'Name is too long (Maximum {maxLength} characters allowed)'
+                },
+                notification: {
+                    logout: 'Please Login to create indicator'
+                }
+            },
+            edit: {
+                header: 'Edit Indicator',
+                placeholder: 'Enter the name',
+                button: 'Edit Indicator',
+                error: {
+                    empty: 'PLease enter the name',
+                    long: 'Name is too long (Maximum {maxLength} characters allowed)'
+                },
+                notification: {
+                    logout: 'Please Login to edit indicator'
+                }
+            },
+            view: {
+                form: {
+                    value: {
+                        placeholder: 'Value',
+                        error: {
+                            empty: 'Please enter a value'
+                        }
+                    },
+                    date: {
+                        error: {
+                            empty: 'Please select a date'
+                        }
+                    },
+                    submit: 'Submit'
+                },
+                table: {
+                    header: {
+                        date: 'Date',
+                        value: 'Value',
+                        action: 'Action'
+                    }
+                },
+                data: {
+                    empty: 'No Indicators found'
+                }
+
+            }
         }
+
     },
     'ru': {
         notification: {
@@ -39,17 +172,16 @@ export default {
                 username: {
                     placeholder: 'Логин или email',
                     error: {
-                        empty: 'Пожалуйста введите логин или email'
+                        empty: 'Пожалуйста введите Ваш логин или email'
 
                     }
                 },
                 password: {
                     placeholder: 'Пароль',
                     error: {
-                        empty: 'Пожалуйста введите пароль'
+                        empty: 'Пожалуйста введите Ваш пароль'
 
                     }
-
                 },
                 submit: 'Войти',
                 register: {
@@ -75,7 +207,7 @@ export default {
                 },
                 username: {
                     label: 'Логин',
-                    placeholder: 'Ваш уникальный Логин',
+                    placeholder: 'Уникальный Логин',
                     error: {
                         short: 'Логин слишком короткий (Минимальная длина {minLength})',
                         long: 'Логин слишком длинный (Максимальная длина {maxLength})',
