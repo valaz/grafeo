@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Col, DatePicker, Form, Icon, InputNumber, Row} from "antd";
 import moment from 'moment';
+import {FormattedMessage, injectIntl} from "react-intl";
 
 const FormItem = Form.Item;
 
@@ -41,10 +42,18 @@ class AddRecordForm extends Component {
         const {getFieldDecorator} = this.props.form;
         const children = [];
         const dateInputConfig = {
-            rules: [{type: 'object', required: true, message: 'Please select date!'}],
+            rules: [{
+                type: 'object',
+                required: true,
+                message: this.props.intl.formatMessage({id: 'indicator.view.form.date.error.empty'})
+            }],
         };
         const valueInputConfig = {
-            rules: [{type: 'number', required: true, message: 'Please input value!'}],
+            rules: [{
+                type: 'number',
+                required: true,
+                message: this.props.intl.formatMessage({id: 'indicator.view.form.value.error.empty'})
+            }],
         };
         children.push(
             <Col xs={{span: 22, offset: 1}} sm={{span: 10, offset: 1}} md={{span: 6, offset: 1}} key={"dateInput"}>
@@ -63,7 +72,8 @@ class AddRecordForm extends Component {
                         <InputNumber prefix={<Icon type="info-circle-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
                                      ref={valueInput => (this.valueInput = valueInput)}
                                      style={{width: '100%'}}
-                                     placeholder="Value"/>
+                                     placeholder={this.props.intl.formatMessage({id: 'indicator.view.form.value.placeholder'})}
+                        />
                     )}
                 </FormItem>
             </Col>
@@ -84,7 +94,7 @@ class AddRecordForm extends Component {
                                 htmlType="submit"
                                 style={{width: '100%'}}
                             >
-                                Submit
+                                <FormattedMessage id="indicator.view.form.submit"/>
                             </Button>
                         </FormItem>
                     </Col>
@@ -108,4 +118,4 @@ const WrappedAddRecordForm = Form.create({
     }
 })(AddRecordForm);
 
-export default WrappedAddRecordForm
+export default injectIntl(WrappedAddRecordForm)

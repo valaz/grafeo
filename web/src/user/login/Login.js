@@ -5,15 +5,18 @@ import {Link} from 'react-router-dom';
 import {ACCESS_TOKEN} from '../../constants';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
+import {FormattedMessage, injectIntl} from "react-intl";
 
 const FormItem = Form.Item;
 
 class Login extends Component {
     render() {
-        const AntWrappedLoginForm = Form.create()(LoginForm)
+        const AntWrappedLoginForm = Form.create()(injectIntl(LoginForm));
         return (
             <div className="login-container">
-                <h1 className="page-title">Login</h1>
+                <h1 className="page-title">
+                    <FormattedMessage id="login.header"/>
+                </h1>
                 <div className="login-content">
                     <AntWrappedLoginForm onLogin={this.props.onLogin}/>
                 </div>
@@ -29,7 +32,7 @@ class LoginForm extends Component {
     }
 
     componentDidMount() {
-        document.title = "Login";
+        document.title = this.props.intl.formatMessage({id: 'login.header'});
     }
 
     handleSubmit(event) {
@@ -45,12 +48,12 @@ class LoginForm extends Component {
                     if (error.status === 401) {
                         notification.error({
                             message: 'Progressio',
-                            description: 'Your Username or Password is incorrect. Please try again!'
+                            description: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
                         });
                     } else {
                         notification.error({
                             message: 'Progressio',
-                            description: error.message || 'Sorry! Something went wrong. Please try again!'
+                            description: error.message || this.props.intl.formatMessage({id: 'notification.error'})
                         });
                     }
                 });
@@ -60,35 +63,49 @@ class LoginForm extends Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        let usernameRules = {
+            rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: 'login.form.username.error.empty'})
+            }],
+        };
+        let passwordRules = {
+            rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: 'login.form.password.error.empty'})
+            }],
+        };
+        let usernamePlaceholder = this.props.intl.formatMessage({id: 'login.form.username.placeholder'});
+        let passwordPlaceholder = this.props.intl.formatMessage({id: 'login.form.password.placeholder'});
         return (
             <Form onSubmit={this.handleSubmit} className="login-form">
                 <FormItem>
-                    {getFieldDecorator('usernameOrEmail', {
-                        rules: [{required: true, message: 'Please input your username or email!'}],
-                    })(
+                    {getFieldDecorator('usernameOrEmail', usernameRules)(
                         <Input
                             autoFocus
                             prefix={<Icon type="user"/>}
                             size="large"
                             name="usernameOrEmail"
-                            placeholder="Username or Email"/>
+                            placeholder={usernamePlaceholder}/>
                     )}
                 </FormItem>
                 <FormItem>
-                    {getFieldDecorator('password', {
-                        rules: [{required: true, message: 'Please input your Password!'}],
-                    })(
+                    {getFieldDecorator('password', passwordRules)(
                         <Input
                             prefix={<Icon type="lock"/>}
                             size="large"
                             name="password"
                             type="password"
-                            placeholder="Password"/>
+                            placeholder={passwordPlaceholder}/>
                     )}
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>
-                    Or <Link to="/signup">register now!</Link>
+                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">
+                        <FormattedMessage id="login.form.submit"/>
+                    </Button>
+                    <FormattedMessage id="login.form.register.or"/> <Link to="/signup">
+                    <FormattedMessage id="login.form.register.now"/>
+                </Link>
                 </FormItem>
             </Form>
         );
@@ -96,4 +113,4 @@ class LoginForm extends Component {
 }
 
 
-export default Login;
+export default injectIntl(Login);

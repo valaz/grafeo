@@ -77,11 +77,11 @@ class EditIndicator extends Component {
                 this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
-                this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create indicator.');
+                this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.edit.notification.logout'}));
             } else {
                 notification.error({
                     message: 'Progressio',
-                    description: error.message || 'Sorry! Something went wrong. Please try again!'
+                    description: error.message || this.props.intl.formatMessage({id: 'notification.error'})
                 });
             }
         });
