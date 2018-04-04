@@ -74,7 +74,7 @@ class EditIndicator extends Component {
         editIndicator(indicatorData)
             .then(response => {
                 console.log(response);
-                this.props.history.push("/indicator/" + response.id);
+                this.props.history.push("/");
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.edit.notification.logout'}));
