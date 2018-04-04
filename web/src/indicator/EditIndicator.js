@@ -36,7 +36,6 @@ class EditIndicator extends Component {
         });
         promise
             .then(response => {
-                console.log(response);
                 this.setState({
                     indicator: response,
                     isLoading: false
@@ -70,10 +69,8 @@ class EditIndicator extends Component {
             name: this.state.indicator.name,
             indicatorLength: this.state.indicatorLength
         };
-        console.log(indicatorData);
         editIndicator(indicatorData)
             .then(response => {
-                console.log(response);
                 this.props.history.push("/");
             }).catch(error => {
             if (error.status === 401) {

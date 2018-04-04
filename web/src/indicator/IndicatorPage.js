@@ -10,9 +10,10 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
+import moment from "moment/moment";
 
 const {Meta} = Card;
-
+const dateFormat = 'YYYY-MM-DD';
 
 class IndicatorPage extends Component {
     constructor(props) {
@@ -48,7 +49,6 @@ class IndicatorPage extends Component {
     componentDidMount() {
         const id = this.props.match.params.id;
         this.loadIndicator(id);
-        console.log(this.state.indicator.name);
         document.title = "View Indicator";
     }
 
@@ -117,7 +117,7 @@ class IndicatorPage extends Component {
 
     }
 
-    handleDelete(text, record) {
+    handleDelete(record) {
         const recordRequest = {
             indicatorId: this.state.indicator.id,
             value: record.value,
@@ -138,12 +138,11 @@ class IndicatorPage extends Component {
         });
     }
 
-    handleEdit(text, record) {
+    handleEdit(record) {
         this.setState({
             editDate: record.date,
             editValue: record.value,
         })
-
     }
 
     render() {
@@ -160,11 +159,11 @@ class IndicatorPage extends Component {
             return <ServerError/>;
         }
 
-        var card = null;
-        var recordTable = null;
+        let card = null;
+        let recordTable = null;
         const columns = [{
             title: this.props.intl.formatMessage({id: 'indicator.view.table.header.date'}),
-            dataIndex: 'date',
+            dataIndex: 'tableDate',
             key: 'date',
         }, {
             title: this.props.intl.formatMessage({id: 'indicator.view.table.header.value'}),
@@ -175,17 +174,18 @@ class IndicatorPage extends Component {
             key: 'action',
             render: (text, record) => (
                 <span>
-                  <Button onClick={() => this.handleEdit(text, record)} icon="edit"
+                  <Button onClick={() => this.handleEdit(record)} icon="edit"
                           style={{fontSize: 16, color: '#08c'}}/>
                     <Divider type="vertical"/>
-                  <Button onClick={() => this.handleDelete(text, record)} icon="delete"
+                  <Button onClick={() => this.handleDelete(record)} icon="delete"
                           style={{fontSize: 16, color: '#ff0000'}}/>
                 </span>
             ),
         }];
         let indicator = this.state.indicator;
-        var tableRecords = this.state.records.slice(0);
+        var tableRecords = this.state.records.map(r => ({...r}));
         tableRecords.reverse();
+        tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
         if (indicator) {
             card =
                 <Card>
@@ -193,7 +193,7 @@ class IndicatorPage extends Component {
                         title={indicator.name}
                     />
                 </Card>;
-            recordTable = <Table rowKey="date" dataSource={tableRecords} columns={columns}/>
+            recordTable = <Table rowKey="id" dataSource={tableRecords} columns={columns}/>
         } else {
             card = <div>NOTHING</div>
         }
@@ -203,7 +203,8 @@ class IndicatorPage extends Component {
                     {card}
                 </Col>
                 <Col>
-                    <IndicatorChart showAllData={true} data={this.state.records} name={this.state.indicator.name}/>
+                    <IndicatorChart showAllData={true} data={this.state.records} name={this.state.indicator.name}
+                                    onClickHandler={this.handleEdit}/>
                 </Col>
                 <Col>
                     <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}

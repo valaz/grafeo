@@ -4,6 +4,7 @@ import moment from 'moment';
 import {FormattedMessage, injectIntl} from "react-intl";
 
 const FormItem = Form.Item;
+const dateFormat = 'YYYY-MM-DD';
 
 class AddRecordForm extends Component {
 
@@ -38,6 +39,11 @@ class AddRecordForm extends Component {
         });
     }
 
+    disabledEndDate = (endValue) => {
+        var now = moment();
+        return endValue ? endValue.isAfter(now) : false;
+    };
+
     getInputFields() {
         const {getFieldDecorator} = this.props.form;
         const children = [];
@@ -60,6 +66,7 @@ class AddRecordForm extends Component {
                 <FormItem>
                     {getFieldDecorator("dateInput", dateInputConfig)(
                         <DatePicker
+                            disabledDate={this.disabledEndDate}
                             style={{width: '100%'}}
                             ref={dateInput => (this.dateInput = dateInput)}/>
                     )}
@@ -106,7 +113,6 @@ class AddRecordForm extends Component {
 
 const WrappedAddRecordForm = Form.create({
     mapPropsToFields(props) {
-        const dateFormat = 'YYYY-MM-DD';
         return {
             dateInput: Form.createFormField({
                 value: props.editDate ? moment(props.editDate, dateFormat) : null
