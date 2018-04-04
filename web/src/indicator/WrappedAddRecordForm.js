@@ -44,7 +44,13 @@ class AddRecordForm extends Component {
         return endValue ? endValue.isAfter(now) : false;
     };
 
+    getRecordDates() {
+        let data = this.props.data.map(r => ({...r}));
+        return data.map(d => d['date']);
+    }
+
     getInputFields() {
+        let selectedDates = this.getRecordDates();
         const {getFieldDecorator} = this.props.form;
         const children = [];
         const dateInputConfig = {
@@ -66,6 +72,18 @@ class AddRecordForm extends Component {
                 <FormItem>
                     {getFieldDecorator("dateInput", dateInputConfig)(
                         <DatePicker
+                            dateRender={(current) => {
+                                const style = {};
+                                if (selectedDates.includes(current.format("YYYY-MM-DD"))) {
+                                    style.border = '1px solid #1890ff';
+                                    style.borderRadius = '50%';
+                                }
+                                return (
+                                    <div className="ant-calendar-date" style={style}>
+                                        {current.date()}
+                                    </div>
+                                );
+                            }}
                             disabledDate={this.disabledEndDate}
                             style={{width: '100%'}}
                             ref={dateInput => (this.dateInput = dateInput)}/>

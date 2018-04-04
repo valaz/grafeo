@@ -208,7 +208,7 @@ class IndicatorPage extends Component {
                 </Col>
                 <Col>
                     <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                          editValue={this.state.editValue}/>
+                                          editValue={this.state.editValue} data={this.state.records}/>
                 </Col>
                 {recordTable}
             </Row>
