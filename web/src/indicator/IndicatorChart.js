@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import {
     Area,
     AreaChart,
+    Bar,
+    BarChart,
     Brush,
     CartesianGrid,
-    Line,
-    LineChart,
+    ReferenceLine,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -26,7 +27,7 @@ class IndicatorChart extends Component {
 
     handleClick(event) {
         if (this.props.onClickHandler) {
-            this.props.onClickHandler(event.payload)
+            this.props.onClickHandler(event)
         }
     }
 
@@ -42,9 +43,14 @@ class IndicatorChart extends Component {
         let data = this.props.data.map(r => ({...r}));
         data.map(d => d['chartDate'] = moment(d['date'], dateFormat).format('DD MMM'));
         let dates = data.map(d => d['date']);
-        const start = moment(data[0]['date']);
-        const now = moment();
-
+        const first = moment(data[0]['date']);
+        const now = moment().startOf('day');
+        now.add(1, 'days');
+        let monthAgo = moment(now).subtract(brushSize, 'days');
+        let start = first;
+        if (first.isAfter(monthAgo)) {
+            start = monthAgo
+        }
         for (let m = moment(start); m.isBefore(now); m.add(1, 'days')) {
             if (!dates.includes(m.format('YYYY-MM-DD'))) {
                 data.push({
@@ -92,23 +98,21 @@ class IndicatorChart extends Component {
         }
         return (
 
-            <div className="line-chart-wrapper" style={{width: '100%', height: '200px'}}>
+            <div className="line-chart-wrapper" style={{width: '100%', height: '250px'}}>
                 <ResponsiveContainer>
-                    <LineChart
+                    <BarChart
                         width={700}
                         height={350}
                         data={chartData}
-                        margin={{top: 10, right: 30, bottom: 5, left: 20}}>
+                        margin={{top: 10, right: 0, bottom: 5, left: 0}}>
                         <CartesianGrid strokeDasharray="1 1"/>
-                        <XAxis dataKey="chartDate" padding={{left: 20, right: 20}}/>
-                        <YAxis domain={['auto', 'auto']}/>
+                        <ReferenceLine y={0} stroke='#000'/>
+                        <XAxis dataKey="chartDate"/>
+                        <YAxis orientation="left" mirror={true} scale='linear'/>
                         <Tooltip/>
-                        <Line type="monotone" dataKey="value" stroke={chartColor} strokeWidth={2}
-                              dot={{stroke: chartColor, strokeWidth: 2}}
-                              connectNulls={true}
-                              activeDot={{r: 7, onClick: this.handleClick}}/>
+                        <Bar dataKey="value" fill={chartColor} onClick={(d, i) => this.handleClick(d)}/>
                         {brush}
-                    </LineChart>
+                    </BarChart>
                 </ResponsiveContainer>
             </div>
         )

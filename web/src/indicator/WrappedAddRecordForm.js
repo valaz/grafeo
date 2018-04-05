@@ -5,6 +5,7 @@ import {FormattedMessage, injectIntl} from "react-intl";
 
 const FormItem = Form.Item;
 const dateFormat = 'YYYY-MM-DD';
+const datePickerFormat = "LL";
 
 class AddRecordForm extends Component {
 
@@ -19,10 +20,11 @@ class AddRecordForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        let date = moment(this.dateInput.picker.input.value, datePickerFormat);
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.form.resetFields();
-                this.props.handleSubmit(this.dateInput.picker.input.value, this.valueInput.inputNumberRef.state.value);
+                this.props.handleSubmit(date.format(dateFormat), this.valueInput.inputNumberRef.state.value);
             }
         });
     }
@@ -84,6 +86,7 @@ class AddRecordForm extends Component {
                                     </div>
                                 );
                             }}
+                            format={datePickerFormat}
                             disabledDate={this.disabledEndDate}
                             style={{width: '100%'}}
                             ref={dateInput => (this.dateInput = dateInput)}/>
@@ -97,6 +100,8 @@ class AddRecordForm extends Component {
                         <InputNumber prefix={<Icon type="info-circle-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
                                      ref={valueInput => (this.valueInput = valueInput)}
                                      style={{width: '100%'}}
+                                     max={Math.pow(2, 31)}
+                                     min={-Math.pow(2, 31)}
                                      placeholder={this.props.intl.formatMessage({id: 'indicator.view.form.value.placeholder'})}
                         />
                     )}
