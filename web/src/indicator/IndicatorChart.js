@@ -40,6 +40,9 @@ class IndicatorChart extends Component {
     }
 
     getChartData() {
+        if (this.props.data.length === 0) {
+            return [];
+        }
         let data = this.props.data.map(r => ({...r}));
         data.map(d => d['chartDate'] = moment(d['date'], dateFormat).format('DD MMM'));
         let dates = data.map(d => d['date']);
@@ -96,8 +99,12 @@ class IndicatorChart extends Component {
                 </AreaChart>
             </Brush>;
         }
-        return (
 
+        if (chartData.length === 0) {
+            return null;
+        }
+
+        return (
             <div className="line-chart-wrapper" style={{width: '100%', height: '250px'}}>
                 <ResponsiveContainer>
                     <BarChart
