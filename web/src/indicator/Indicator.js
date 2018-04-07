@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Card, Col, Icon} from 'antd';
 import {withRouter} from "react-router-dom";
-
-const {Meta} = Card;
+import {ContentCopy, EventNote} from '@material-ui/icons';
+import StatsCard from "../components/Cards/StatsCard";
+import {Grid} from "material-ui";
+import moment from "moment";
 
 
 class Indicator extends Component {
-
+    constructor(props) {
+        super(props);
+        this.handleView = this.handleView.bind(this);
+    }
 
     componentWillMount() {
         this.setState({
@@ -35,18 +39,26 @@ class Indicator extends Component {
         if (this.state.isDeleted) {
             return null;
         }
+
+        let {records} = this.state;
+        let lastRecord = records[records.length - 1];
+        moment(lastRecord.date, 'YYYY-MM-DD');
+        let dateDescription = moment(lastRecord.date, 'YYYY-MM-DD').fromNow();
         return (
-            <Col xs={24} md={12} xl={8}>
-                <Card className="indicator-card"
-                      actions={[<Icon type="eye-o" onClick={() => this.handleView()}/>,
-                          <Icon type="edit" onClick={() => this.handleEdit()}/>,
-                          <Icon type="delete" onClick={() => this.handleDelete()}/>]}
-                >
-                    <Meta
-                        title={this.props.indicator.name}
-                    />
-                </Card>
-            </Col>
+            <Grid item xs={12} sm={6} md={4}>
+                <span onClick={this.handleView}>
+                <StatsCard item
+                           icon={ContentCopy}
+                           iconColor="green"
+                           title={this.props.indicator.name}
+                           description={lastRecord.value}
+                           small="GB"
+                           statIcon={EventNote}
+                           statIconColor="gray"
+                           statText={dateDescription}
+                />
+                    </span>
+            </Grid>
         )
     }
 }

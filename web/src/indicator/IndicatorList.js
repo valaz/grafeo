@@ -7,6 +7,7 @@ import {Button, Icon, Row} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
+import {Grid} from "material-ui";
 
 class IndicatorList extends Component {
     constructor(props) {
@@ -126,10 +127,10 @@ class IndicatorList extends Component {
         }
 
         return (
-            <div className="indicators-container">
-                <Row>
+            <div>
+                <Grid container spacing={24}>
                     {indicatorViews}
-                </Row>
+                </Grid>
                 {
                     !this.state.isLoading && this.state.indicators.length === 0 ? (
                         <div className="no-indicators-found">
