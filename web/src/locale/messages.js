@@ -14,7 +14,8 @@ export default {
             profile: 'Profile',
             logout: 'Logout',
             login: 'Login',
-            signup: "Signup"
+            signup: "Signup",
+            addIndicator: "Add Indicator"
         },
         login: {
             header: 'Login',
@@ -164,7 +165,8 @@ export default {
             profile: 'Профиль',
             logout: 'Выйти',
             login: 'Вход',
-            signup: "Регистрация"
+            signup: "Регистрация",
+            addIndicator: "Создать индикатор"
         },
         login: {
             header: 'Вход',

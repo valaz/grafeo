@@ -3,7 +3,6 @@ import './App.css';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
 import {ACCESS_TOKEN} from '../constants';
-import AppHeader from "../common/AppHeader";
 import {Layout, notification} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
@@ -16,6 +15,7 @@ import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
 import {injectIntl} from "react-intl";
+import ButtonAppBar from "../common/ButtonAppBar";
 
 const {Content} = Layout;
 
@@ -91,9 +91,9 @@ class App extends React.Component {
         }
         return (
             <Layout className="app-container">
-                <AppHeader isAuthenticated={this.state.isAuthenticated}
-                           currentUser={this.state.currentUser}
-                           onLogout={this.handleLogout}/>
+                <ButtonAppBar isAuthenticated={this.state.isAuthenticated}
+                              currentUser={this.state.currentUser}
+                              onLogout={this.handleLogout}/>
 
                 <Content className="app-content">
                     <div className="container">
