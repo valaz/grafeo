@@ -7,7 +7,8 @@ import {
   dangerColor,
   successColor,
   defaultFont
-} from "variables/styles";
+} from "../styles";
+
 
 const customInputStyle = {
   disabled: {

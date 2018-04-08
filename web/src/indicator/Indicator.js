@@ -48,8 +48,7 @@ class Indicator extends Component {
         }
 
     }
-
-    render() {
+        render() {
         if (this.state.isDeleted) {
             return null;
         }
