@@ -24,8 +24,12 @@ class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
-            password: '',
+            username: {
+                value: ''
+            },
+            password: {
+                value: ''
+            },
             showPassword: false,
             notification: {
                 open: false,
@@ -42,11 +46,11 @@ class LoginForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state.username);
-        console.log(this.state.password);
+        console.log(this.state.username.value);
+        console.log(this.state.password.value);
         let loginRequest = {
-            usernameOrEmail: this.state.username,
-            password: this.state.password
+            usernameOrEmail: this.state.username.value,
+            password: this.state.password.value
         };
         login(loginRequest)
             .then(response => {
@@ -89,52 +93,113 @@ class LoginForm extends Component {
         });
     };
 
+    isFormInvalid() {
+        return !(this.state.username.validateStatus === 'success' &&
+            this.state.password.validateStatus === 'success'
+        );
+    }
+
+    handleInputChange(event, validationFun) {
+        const target = event.target;
+        const inputName = target.name;
+        const inputValue = target.value;
+
+
+        this.setState({
+            [inputName]: {
+                value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
+    }
+
     render() {
         let usernamePlaceholder = this.props.intl.formatMessage({id: 'login.form.username.placeholder'});
         let passwordPlaceholder = this.props.intl.formatMessage({id: 'login.form.password.placeholder'});
         let snackbar = this.getSnackBar();
-        return <div>
-            {snackbar}
-            <form onSubmit={this.handleSubmit}>
-                <Grid item xs={12}>
-                    <Grid container
-                          justify="center"
-                          direction='column'
-                          spacing={16}>
-                        <Grid container item spacing={0} justify="center">
-                            <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField fullWidth required autoFocus
-                                           id="username"
-                                           label={usernamePlaceholder}
-                                           value={this.state.username}
-                                           onChange={e => this.setState({username: e.target.value})}
-                                />
+        return (
+            <div>
+                {snackbar}
+                <form onSubmit={this.handleSubmit}>
+                    <Grid item xs={12}>
+                        <Grid container
+                              justify="center"
+                              direction='column'
+                              spacing={16}>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                    <TextField fullWidth autoFocus
+                                               error={this.state.username.hasError}
+                                               helperText={this.state.username.errorMsg}
+                                               id="username"
+                                               name="username"
+                                               label={usernamePlaceholder}
+                                               value={this.state.username.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validateUsername)}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid container item spacing={0} justify="center">
-                            <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField fullWidth required
-                                           id="password-input"
-                                           label={passwordPlaceholder}
-                                           type="password"
-                                           autoComplete="current-password"
-                                           value={this.state.password}
-                                           onChange={e => this.setState({password: e.target.value})}
-                                />
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                    <TextField fullWidth
+                                               error={this.state.password.hasError}
+                                               helperText={this.state.password.errorMsg}
+                                               id="password"
+                                               name="password"
+                                               label={passwordPlaceholder}
+                                               type="password"
+                                               autoComplete="current-password"
+                                               value={this.state.password.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid container item spacing={0} justify="center">
-                            <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <Button fullWidth type="submit" variant="raised" color="primary" size="large" >
-                                    <FormattedMessage id="login.form.submit"/>
-                                </Button>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                            disabled={this.isFormInvalid()}>
+                                        <FormattedMessage id="login.form.submit"/>
+                                    </Button>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </form>
-        </div>
+                </form>
+            </div>
+        )
     }
+
+    validateUsername = (username) => {
+        if (username.length > 0) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'login.form.username.error.empty'}),
+                hasError: true
+            }
+        }
+    };
+
+    validatePassword = (password) => {
+        if (password.length > 0) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'login.form.password.error.empty'}),
+                hasError: true
+            }
+        }
+    };
 
     getSnackBar() {
         return <Snackbar
