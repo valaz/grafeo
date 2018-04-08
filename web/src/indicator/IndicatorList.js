@@ -3,7 +3,7 @@ import './IndicatorList.css';
 import {deleteIndicator, getUserCreatedIndicators} from '../util/APIUtils';
 import Indicator from './Indicator';
 import LoadingIndicator from '../common/LoadingIndicator';
-import {Button, Icon, Row} from 'antd';
+import {Button, Icon} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
