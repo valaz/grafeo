@@ -103,7 +103,7 @@ class LoginForm extends Component {
                           spacing={16}>
                         <Grid container item spacing={0} justify="center">
                             <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField fullWidth required
+                                <TextField fullWidth required autoFocus
                                            id="username"
                                            label={usernamePlaceholder}
                                            value={this.state.username}
@@ -125,7 +125,7 @@ class LoginForm extends Component {
                         </Grid>
                         <Grid container item spacing={0} justify="center">
                             <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <Button type="submit" variant="raised" color="primary" fullWidth>
+                                <Button fullWidth type="submit" variant="raised" color="primary" size="large" >
                                     <FormattedMessage id="login.form.submit"/>
                                 </Button>
                             </Grid>
@@ -139,7 +139,7 @@ class LoginForm extends Component {
     getSnackBar() {
         return <Snackbar
             anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'left',
             }}
             open={this.state.notification.open}

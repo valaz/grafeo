@@ -3,7 +3,7 @@ import './App.css';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
 import {ACCESS_TOKEN} from '../constants';
-import {Layout, notification} from 'antd';
+import {Layout} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
@@ -16,6 +16,8 @@ import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
 import {injectIntl} from "react-intl";
 import ButtonAppBar from "../common/ButtonAppBar";
+import {IconButton, Snackbar} from "material-ui";
+import {Close} from '@material-ui/icons'
 
 const {Content} = Layout;
 
@@ -25,17 +27,15 @@ class App extends React.Component {
         this.state = {
             currentUser: null,
             isAuthenticated: false,
-            isLoading: false
+            isLoading: false,
+            notification: {
+                open: false,
+                message: ''
+            },
         };
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
-
-        notification.config({
-            placement: 'topRight',
-            top: 70,
-            duration: 2,
-        });
     }
 
     loadCurrentUser() {
@@ -70,25 +70,47 @@ class App extends React.Component {
 
         this.props.history.push(redirectTo);
 
-        notification[notificationType]({
-            message: 'Progressio',
-            description: description
+        this.setState({
+            notification: {
+                open: true,
+                message: description
+            }
         });
     }
 
     handleLogin() {
-        notification.success({
-            message: 'Progressio',
-            description: this.props.intl.formatMessage({id: 'login.notification.success'})
+        this.setState({
+            notification: {
+                open: true,
+                message: this.props.intl.formatMessage({id: 'notification.login'})
+            }
         });
         this.loadCurrentUser();
         this.props.history.push("/");
     }
 
+    handleClick = () => {
+        this.setState({open: true});
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
+    };
+
     render() {
         if (this.state.isLoading) {
             return <LoadingIndicator/>
         }
+        let snackbar = this.getSnackBar();
         return (
             <Layout className="app-container">
                 <ButtonAppBar isAuthenticated={this.state.isAuthenticated}
@@ -97,6 +119,7 @@ class App extends React.Component {
 
                 <Content className="app-content">
                     <div className="container">
+                        {snackbar}
                         <Switch>
                             <Route exact path="/"
                                    render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
@@ -126,6 +149,32 @@ class App extends React.Component {
                 </Content>
             </Layout>
         );
+    }
+
+    getSnackBar() {
+        return <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            open={this.state.notification.open}
+            autoHideDuration={3000}
+            onClose={this.handleClose}
+            SnackbarContentProps={{
+                'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.notification.message}</span>}
+            action={[
+                <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    onClick={this.handleClose}
+                >
+                    <Close/>
+                </IconButton>,
+            ]}
+        />;
     }
 }
 

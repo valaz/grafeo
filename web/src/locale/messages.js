@@ -2,7 +2,8 @@ export default {
     'en': {
         notification: {
             error: 'Sorry, some error on the server. PLease try again!',
-            logout: 'You successfully logged out!'
+            logout: 'You\'re successfully logged out!',
+            login: 'You\'re successfully logged in!'
         },
         profile: {
             title: 'Profile',
@@ -42,7 +43,7 @@ export default {
             },
             notification: {
                 incorrect: 'Your Username or Password is incorrect. Please try again!',
-                success: 'You\'re successfully logged out.'
+                success: 'You\'re successfully logged in.'
             }
         },
         signup: {
@@ -159,7 +160,8 @@ export default {
     'ru': {
         notification: {
             error: 'Извините, произошла ошибка. Пожалуйста, попробуйте снова!',
-            logout: 'Вы успешно вышли!'
+            logout: 'Вы успешно вышли!',
+            login: 'Вы успешно вошли!'
         },
         profile: {
             title: 'Профиль',
