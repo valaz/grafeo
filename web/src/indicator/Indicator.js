@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {withRouter} from "react-router-dom";
-import {ContentCopy, EventNote} from '@material-ui/icons';
+import {NavLink, withRouter} from "react-router-dom";
+import {EventNote, Timeline} from '@material-ui/icons';
 import StatsCard from "../components/Cards/StatsCard";
 import {Grid} from "material-ui";
 import moment from "moment";
+import {injectIntl} from "react-intl";
+import {getRandomColorName} from "../util/Colors";
 
 
 class Indicator extends Component {
@@ -35,32 +37,45 @@ class Indicator extends Component {
         })
     }
 
+    getDateDescription(date) {
+        let lastRecordDate = moment(date, 'YYYY-MM-DD');
+        const now = moment().startOf('day');
+        const daysDiff = lastRecordDate.diff(now, 'days');
+        if (daysDiff < 0) {
+            return lastRecordDate.from(now);
+        } else {
+            return this.props.intl.formatMessage({id: 'indicatorList.card.today'});
+        }
+
+    }
+
     render() {
         if (this.state.isDeleted) {
             return null;
         }
-
+        let {indicator} = this.props;
         let {records} = this.state;
         let lastRecord = records[records.length - 1];
-        moment(lastRecord.date, 'YYYY-MM-DD');
-        let dateDescription = moment(lastRecord.date, 'YYYY-MM-DD').fromNow();
+
+        let dateDescription = this.getDateDescription(lastRecord.date);
         return (
             <Grid item xs={12} sm={6} md={4}>
-                <span onClick={this.handleView}>
+                <NavLink to={"/indicator/" + this.props.indicator.id}
+                         style={{ textDecoration: 'none'}}>
                 <StatsCard item
-                           icon={ContentCopy}
-                           iconColor="green"
+                           icon={Timeline}
+                           iconColor={getRandomColorName(indicator.name)}
                            title={this.props.indicator.name}
                            description={lastRecord.value}
                            small="GB"
                            statIcon={EventNote}
                            statIconColor="gray"
-                           statText={dateDescription}
+                           statText={this.props.intl.formatMessage({id: 'indicatorList.card.lastChanged'}) + ': ' + dateDescription}
                 />
-                    </span>
+                </NavLink>
             </Grid>
         )
     }
 }
 
-export default withRouter(Indicator);
+export default injectIntl(withRouter(Indicator));

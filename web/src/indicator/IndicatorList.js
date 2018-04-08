@@ -7,7 +7,19 @@ import {Button, Icon} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
-import {Grid} from "material-ui";
+import {Grid, withStyles} from "material-ui";
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing.unit,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+});
+
 
 class IndicatorList extends Component {
     constructor(props) {
@@ -127,8 +139,8 @@ class IndicatorList extends Component {
         }
 
         return (
-            <div>
-                <Grid container spacing={24}>
+            <div style={{padding: 16, background: '#f1f1f1'}}>
+                <Grid container spacing={16}>
                     {indicatorViews}
                 </Grid>
                 {
@@ -157,4 +169,4 @@ class IndicatorList extends Component {
     }
 }
 
-export default withRouter(IndicatorList);
+export default withRouter(withStyles(styles)(IndicatorList));

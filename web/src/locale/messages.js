@@ -95,6 +95,12 @@ export default {
             }
 
         },
+        indicatorList: {
+            card: {
+                lastChanged: 'Last record',
+                today: 'Today'
+            }
+        },
         indicator: {
             create: {
                 header: 'Create indicator',
@@ -245,6 +251,12 @@ export default {
                 success: 'Спасибо! Вы успешно зарегистрированы. Пожалуйста войдите, чтобы продолжить!',
             }
 
+        },
+        indicatorList: {
+            card: {
+                lastChanged: 'Последняя запись',
+                today: 'Сегодня'
+            }
         },
         indicator: {
             create: {
