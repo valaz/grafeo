@@ -3,11 +3,16 @@ import './Indicator.css';
 import {NavLink, withRouter} from "react-router-dom";
 import {EventNote, Timeline} from '@material-ui/icons';
 import StatsCard from "../components/Cards/StatsCard";
-import {Grid} from "material-ui";
+import {Grid, withStyles} from "material-ui";
 import moment from "moment";
 import {injectIntl} from "react-intl";
 import {getRandomColorName} from "../util/Colors";
 
+const styles ={
+    link: {
+        textDecoration: 'none'
+    }
+};
 
 class Indicator extends Component {
     constructor(props) {
@@ -18,7 +23,7 @@ class Indicator extends Component {
     componentWillMount() {
         this.setState({
             records: this.props.indicator.records,
-            isDeleted: false
+            isDeleted: false,
         });
     }
 
@@ -37,17 +42,25 @@ class Indicator extends Component {
         })
     }
 
-    getDateDescription(date) {
+    getDateDescription(records) {
+        if (records.length === 0) {
+            return this.props.intl.formatMessage({id: 'indicatorList.card.noData'})
+        }
+
+        let lastRecord = records[records.length - 1];
+        let date = lastRecord.date;
         let lastRecordDate = moment(date, 'YYYY-MM-DD');
         const now = moment().startOf('day');
+
         const daysDiff = lastRecordDate.diff(now, 'days');
+        let prefix = this.props.intl.formatMessage({id: 'indicatorList.card.lastChanged'}) + ': ';
         if (daysDiff < 0) {
             if (daysDiff === -1) {
-                return this.props.intl.formatMessage({id: 'indicatorList.card.yesterday'});
+                return prefix + this.props.intl.formatMessage({id: 'indicatorList.card.yesterday'});
             }
-            return lastRecordDate.from(now);
+            return prefix + lastRecordDate.from(now);
         } else {
-            return this.props.intl.formatMessage({id: 'indicatorList.card.today'});
+            return prefix + this.props.intl.formatMessage({id: 'indicatorList.card.today'});
         }
 
     }
@@ -58,22 +71,31 @@ class Indicator extends Component {
         }
         let {indicator} = this.props;
         let {records} = this.state;
-        let lastRecord = records[records.length - 1];
 
-        let dateDescription = this.getDateDescription(lastRecord.date);
+        let dateDescription = this.getDateDescription(records);
+
+        let valueDescription;
+        if (records.length > 0) {
+            let lastRecord = records[records.length - 1];
+            valueDescription = lastRecord.value;
+        } else {
+            valueDescription = '';
+        }
+
+        const {classes} = this.props;
         return (
             <Grid item xs={12} sm={6} md={4}>
                 <NavLink to={"/indicator/" + this.props.indicator.id}
-                         style={{textDecoration: 'none'}}>
+                         className={classes.link}>
                     <StatsCard item
                                icon={Timeline}
                                iconColor={getRandomColorName(indicator.name)}
                                title={this.props.indicator.name}
-                               description={lastRecord.value}
+                               description={valueDescription}
                                small="GB"
                                statIcon={EventNote}
                                statIconColor="gray"
-                               statText={this.props.intl.formatMessage({id: 'indicatorList.card.lastChanged'}) + ': ' + dateDescription}
+                               statText={dateDescription}
                     />
                 </NavLink>
             </Grid>
@@ -81,4 +103,4 @@ class Indicator extends Component {
     }
 }
 
-export default injectIntl(withRouter(Indicator));
+export default injectIntl(withRouter(withStyles(styles)(Indicator)));

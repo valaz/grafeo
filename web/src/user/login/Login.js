@@ -37,7 +37,6 @@ class LoginForm extends Component {
                 open: false,
                 message: ''
             },
-            open: false,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearNotification = this.clearNotification.bind(this);

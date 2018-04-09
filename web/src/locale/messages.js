@@ -100,7 +100,8 @@ export default {
             card: {
                 lastChanged: 'Last record',
                 today: 'Today',
-                yesterday: 'Yesterday'
+                yesterday: 'Yesterday',
+                noData: 'No records'
             }
         },
         indicator: {
@@ -259,7 +260,8 @@ export default {
             card: {
                 lastChanged: 'Последняя запись',
                 today: 'Сегодня',
-                yesterday: 'Вчера'
+                yesterday: 'Вчера',
+                noData: 'Нет записей'
             }
         },
         indicator: {
