@@ -9,8 +9,7 @@ import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
 import NotFound from "../common/NotFound";
 import Profile from "../user/profile/Profile";
-import NewIndicator from "../indicator/NewIndicator";
-import EditIndicator from "../indicator/EditIndicator";
+import IndicatorConfig from "../indicator/IndicatorConfig";
 import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
@@ -143,9 +142,9 @@ class App extends React.Component {
                                                                        currentUser={this.state.currentUser} {...props}  />}>
                                     </Route>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
-                                                  component={NewIndicator} handleLogout={this.handleLogout}/>
+                                                  component={IndicatorConfig} handleLogout={this.handleLogout}/>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/edit/:id"
-                                                  component={EditIndicator} handleLogout={this.handleLogout}
+                                                  component={IndicatorConfig} handleLogout={this.handleLogout}
                                                   isAuthenticated={this.state.isAuthenticated}/>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
                                                   component={IndicatorPage} handleLogout={this.handleLogout}

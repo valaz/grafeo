@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {createIndicator} from '../util/APIUtils';
+import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
 import './NewIndicator.css';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField} from "material-ui";
 import Notification from "../common/Notification";
+import {notification} from "antd/lib/index";
 
-class NewIndicator extends Component {
+class IndicatorConfig extends Component {
     validateName = (name) => {
         if (name.length === 0) {
             return {
@@ -35,6 +36,10 @@ class NewIndicator extends Component {
             name: {
                 value: ''
             },
+            isEdit: false,
+            indicator: {
+                name: ''
+            },
             notification: {
                 open: false,
                 message: ''
@@ -42,10 +47,18 @@ class NewIndicator extends Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
+        this.loadIndicator = this.loadIndicator.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         document.title = this.props.intl.formatMessage({id: 'indicator.create.header'});
+        const id = this.props.match.params.id;
+        if (id) {
+            this.setState({
+                isEdit: true
+            });
+            this.loadIndicator(id);
+        }
     }
 
     clearNotification() {
@@ -59,6 +72,14 @@ class NewIndicator extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        if (this.state.isEdit) {
+            this.handleEditSubmit();
+        } else {
+            this.handleCreateSubmit();
+        }
+    }
+
+    handleCreateSubmit() {
         const indicatorData = {
             name: this.state.name.value,
             indicatorLength: this.state.indicatorLength
@@ -71,7 +92,29 @@ class NewIndicator extends Component {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.create.notification.logout'}));
             } else {
+                this.setState({
+                    notification: {
+                        open: true,
+                        message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
+                    }
+                });
+            }
+        });
+    }
 
+    handleEditSubmit() {
+        const indicatorData = {
+            id: this.state.indicator.id,
+            name: this.state.name.value,
+            indicatorLength: this.state.indicatorLength
+        };
+        editIndicator(indicatorData)
+            .then(response => {
+                this.props.history.push("/");
+            }).catch(error => {
+            if (error.status === 401) {
+                this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.edit.notification.logout'}));
+            } else {
                 this.setState({
                     notification: {
                         open: true,
@@ -95,8 +138,57 @@ class NewIndicator extends Component {
         });
     }
 
+    loadIndicator(id) {
+        let promise;
+        if (this.props.isAuthenticated) {
+            promise = getIndicator(id);
+        }
+
+        if (!promise) {
+            return;
+        }
+
+        this.setState({
+            isLoading: true
+        });
+        promise
+            .then(response => {
+                let indicatorName = response.name;
+                this.setState({
+                    indicator: response,
+                    name: {
+                        value: indicatorName
+                    },
+                    isLoading: false
+                });
+                this.checkInput('name', this.state.name.value, this.validateName);
+            }).catch(error => {
+            if (error.status === 404 || error.status === 403) {
+                this.setState({
+                    notFound: true,
+                    isLoading: false
+                });
+            } else {
+                this.setState({
+                    serverError: true,
+                    isLoading: false
+                });
+            }
+            console.log(error);
+        });
+    }
+
     isFormInvalid() {
         return !(this.state.name.validateStatus === 'success');
+    }
+
+    checkInput(inputName, inputValue, validationFun) {
+        this.setState({
+            [inputName]: {
+                value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
     }
 
     render() {
@@ -104,7 +196,7 @@ class NewIndicator extends Component {
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
                 <h1 className="page-title">
-                    <FormattedMessage id="indicator.create.header"/>
+                    {this.getHeader()}
                 </h1>
                 <Notification open={this.state.notification.open} message={this.state.notification.message}
                               cleanup={this.clearNotification}/>
@@ -132,7 +224,7 @@ class NewIndicator extends Component {
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <Icon type="plus"/>
-                                        <FormattedMessage id="indicator.create.button"/>
+                                        {this.getSubmitButton()}
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -142,6 +234,22 @@ class NewIndicator extends Component {
             </div>
         );
     }
+
+    getSubmitButton() {
+        if (this.state.isEdit) {
+            return <FormattedMessage id="indicator.edit.button"/>;
+        } else {
+            return <FormattedMessage id="indicator.create.button"/>;
+        }
+    }
+
+    getHeader() {
+        if (this.state.isEdit) {
+            return <FormattedMessage id="indicator.edit.header"/>;
+        } else {
+            return <FormattedMessage id="indicator.create.header"/>;
+        }
+    }
 }
 
-export default injectIntl(NewIndicator);
+export default injectIntl(IndicatorConfig);
