@@ -7,6 +7,12 @@ import Notification from "../../common/Notification";
 import '../../app/App.css';
 import {Link} from "react-router-dom";
 
+const gridSize = {
+    xs: 12,
+    sm: 8,
+    md: 6,
+    lg: 4
+};
 
 class Login extends Component {
     render() {
@@ -119,7 +125,7 @@ class LoginForm extends Component {
                               direction='column'
                               spacing={16}>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
                                                error={this.state.username.hasError}
                                                helperText={this.state.username.errorMsg}
@@ -132,7 +138,7 @@ class LoginForm extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                error={this.state.password.hasError}
                                                helperText={this.state.password.errorMsg}
@@ -147,7 +153,7 @@ class LoginForm extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <FormattedMessage id="login.form.submit"/>

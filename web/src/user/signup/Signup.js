@@ -16,6 +16,12 @@ import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField} from "material-ui";
 import Notification from "../../common/Notification";
 
+const gridSize = {
+    xs: 12,
+    sm: 8,
+    md: 6,
+    lg: 4
+};
 
 class Signup extends Component {
     constructor(props) {
@@ -121,7 +127,7 @@ class Signup extends Component {
                               direction='column'
                               spacing={16}>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
                                                autoComplete="off"
                                                error={this.state.name.hasError}
@@ -135,7 +141,7 @@ class Signup extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                autoComplete="off"
                                                error={this.state.username.hasError}
@@ -150,7 +156,7 @@ class Signup extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                autoComplete="off"
                                                error={this.state.email.hasError}
@@ -165,7 +171,7 @@ class Signup extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                autoComplete="off"
                                                error={this.state.password.hasError}
@@ -180,7 +186,7 @@ class Signup extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <FormattedMessage id="signup.form.submit"/>

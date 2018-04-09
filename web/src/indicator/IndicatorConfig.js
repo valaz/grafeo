@@ -5,7 +5,13 @@ import './NewIndicator.css';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField} from "material-ui";
 import Notification from "../common/Notification";
-import {notification} from "antd/lib/index";
+
+const gridSize = {
+    xs: 12,
+    sm: 8,
+    md: 6,
+    lg: 4
+};
 
 class IndicatorConfig extends Component {
     validateName = (name) => {
@@ -207,7 +213,7 @@ class IndicatorConfig extends Component {
                               direction='column'
                               spacing={16}>
                             <Grid container item spacing={0} justify="center">
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
                                                error={this.state.name.hasError}
                                                helperText={this.state.name.errorMsg}
@@ -220,7 +226,7 @@ class IndicatorConfig extends Component {
                                 </Grid>
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <Icon type="plus"/>
