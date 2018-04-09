@@ -1,7 +1,11 @@
 .app-content {
-  /*margin-top: 64px;   */
+    /*margin-top: 64px;   */
 }
 
-.app-container{
-  min-width: 300px;
+.app-container {
+    min-width: 300px;
+}
+
+.page-title {
+    text-align: center;
 }

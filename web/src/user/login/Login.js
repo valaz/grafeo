@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import {login} from '../../util/APIUtils';
 import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, IconButton, Snackbar, TextField} from "material-ui";
-import {Close} from '@material-ui/icons'
+import {Button, Grid, TextField} from "material-ui";
+import Notification from "../../common/Notification";
+import '../../app/App.css';
+import {Link} from "react-router-dom";
 
 
 class Login extends Component {
@@ -38,16 +40,24 @@ class LoginForm extends Component {
             open: false,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.clearNotification = this.clearNotification.bind(this);
     }
 
     componentDidMount() {
         document.title = this.props.intl.formatMessage({id: 'login.header'});
     }
 
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state.username.value);
-        console.log(this.state.password.value);
         let loginRequest = {
             usernameOrEmail: this.state.username.value,
             password: this.state.password.value
@@ -76,23 +86,6 @@ class LoginForm extends Component {
         });
     }
 
-    handleClick = () => {
-        this.setState({open: true});
-    };
-
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({
-            notification: {
-                open: false,
-                message: ''
-            }
-        });
-    };
-
     isFormInvalid() {
         return !(this.state.username.validateStatus === 'success' &&
             this.state.password.validateStatus === 'success'
@@ -116,10 +109,10 @@ class LoginForm extends Component {
     render() {
         let usernamePlaceholder = this.props.intl.formatMessage({id: 'login.form.username.placeholder'});
         let passwordPlaceholder = this.props.intl.formatMessage({id: 'login.form.password.placeholder'});
-        let snackbar = this.getSnackBar();
         return (
             <div>
-                {snackbar}
+                <Notification open={this.state.notification.open} message={this.state.notification.message}
+                              cleanup={this.clearNotification}/>
                 <form onSubmit={this.handleSubmit}>
                     <Grid item xs={12}>
                         <Grid container
@@ -154,12 +147,15 @@ class LoginForm extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item xs={12} sm={6} md={4} lg={3}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <FormattedMessage id="login.form.submit"/>
                                     </Button>
+                                    <FormattedMessage id="login.form.register.or"/> <Link to="/signup">
+                                    <FormattedMessage id="login.form.register.now"/>
+                                </Link>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -200,32 +196,6 @@ class LoginForm extends Component {
             }
         }
     };
-
-    getSnackBar() {
-        return <Snackbar
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-            }}
-            open={this.state.notification.open}
-            autoHideDuration={3000}
-            onClose={this.handleClose}
-            SnackbarContentProps={{
-                'aria-describedby': 'message-id',
-            }}
-            message={<span id="message-id">{this.state.notification.message}</span>}
-            action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    onClick={this.handleClose}
-                >
-                    <Close/>
-                </IconButton>,
-            ]}
-        />;
-    }
 }
 
 export default injectIntl(Login);
