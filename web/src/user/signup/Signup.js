@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {checkEmailAvailability, checkUsernameAvailability, signup} from '../../util/APIUtils';
-import './Signup.css';
 import '../../app/App.css';
 import {Link} from 'react-router-dom';
 import {

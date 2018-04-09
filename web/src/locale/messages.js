@@ -99,7 +99,8 @@ export default {
         indicatorList: {
             card: {
                 lastChanged: 'Last record',
-                today: 'Today'
+                today: 'Today',
+                yesterday: 'Yesterday'
             }
         },
         indicator: {
@@ -257,7 +258,8 @@ export default {
         indicatorList: {
             card: {
                 lastChanged: 'Последняя запись',
-                today: 'Сегодня'
+                today: 'Сегодня',
+                yesterday: 'Вчера'
             }
         },
         indicator: {

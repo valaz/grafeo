@@ -42,13 +42,17 @@ class Indicator extends Component {
         const now = moment().startOf('day');
         const daysDiff = lastRecordDate.diff(now, 'days');
         if (daysDiff < 0) {
+            if (daysDiff === -1) {
+                return this.props.intl.formatMessage({id: 'indicatorList.card.yesterday'});
+            }
             return lastRecordDate.from(now);
         } else {
             return this.props.intl.formatMessage({id: 'indicatorList.card.today'});
         }
 
     }
-        render() {
+
+    render() {
         if (this.state.isDeleted) {
             return null;
         }
@@ -60,17 +64,17 @@ class Indicator extends Component {
         return (
             <Grid item xs={12} sm={6} md={4}>
                 <NavLink to={"/indicator/" + this.props.indicator.id}
-                         style={{ textDecoration: 'none'}}>
-                <StatsCard item
-                           icon={Timeline}
-                           iconColor={getRandomColorName(indicator.name)}
-                           title={this.props.indicator.name}
-                           description={lastRecord.value}
-                           small="GB"
-                           statIcon={EventNote}
-                           statIconColor="gray"
-                           statText={this.props.intl.formatMessage({id: 'indicatorList.card.lastChanged'}) + ': ' + dateDescription}
-                />
+                         style={{textDecoration: 'none'}}>
+                    <StatsCard item
+                               icon={Timeline}
+                               iconColor={getRandomColorName(indicator.name)}
+                               title={this.props.indicator.name}
+                               description={lastRecord.value}
+                               small="GB"
+                               statIcon={EventNote}
+                               statIconColor="gray"
+                               statText={this.props.intl.formatMessage({id: 'indicatorList.card.lastChanged'}) + ': ' + dateDescription}
+                    />
                 </NavLink>
             </Grid>
         )
