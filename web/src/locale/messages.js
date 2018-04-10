@@ -138,6 +138,10 @@ export default {
                         }
                     },
                     date: {
+                        placeholder: 'Date',
+                        today: 'today',
+                        cancel: 'cancel',
+                        ok: 'ok',
                         error: {
                             empty: 'Please select a date'
                         }
@@ -298,6 +302,10 @@ export default {
                         }
                     },
                     date: {
+                        placeholder: 'Дата',
+                        today: 'сегодня',
+                        cancel: 'отменить',
+                        ok: 'ок',
                         error: {
                             empty: 'Пожалуйста выберите дату'
                         }

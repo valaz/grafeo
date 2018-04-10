@@ -161,11 +161,15 @@ class AddRecordForm extends Component {
                       spacing={24}>
                     <Grid item xs={12} sm={6} md={4} align="center">
                         <DatePicker fullWidth
+                                    autoOk
                                     error={this.state.date.hasError}
                                     helperText={this.state.date.errorMsg}
                                     id="date"
                                     name="date"
-                                    label="Date"
+                                    label={this.props.intl.formatMessage({id: 'indicator.view.form.date.placeholder'})}
+                                    cancelLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.cancel'})}
+                                    okLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.ok'})}
+                                    todayLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.today'})}
                                     showTodayButton
                                     disableFuture
                                     format={datePickerFormat}
@@ -182,7 +186,7 @@ class AddRecordForm extends Component {
                                    helperText={this.state.value.errorMsg}
                                    id="value"
                                    name="value"
-                                   label="Value"
+                                   label={this.props.intl.formatMessage({id: 'indicator.view.form.value.placeholder'})}
                                    value={this.state.value.value}
                                    onChange={(event) => this.handleInputChange(event, this.validateValue)}
                                    type="number"
@@ -202,7 +206,6 @@ class AddRecordForm extends Component {
     }
 
     validateValue = (value) => {
-        console.log(value);
         if (value) {
             return {
                 validateStatus: 'success',
