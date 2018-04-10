@@ -5,7 +5,7 @@ import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
 import IndicatorChart from "./IndicatorChart";
 import {withRouter} from "react-router-dom";
-import WrappedAddRecordForm from "./WrappedAddRecordForm";
+import AddRecordForm from "./AddRecordForm";
 import LoadingIndicator from "../common/LoadingIndicator";
 import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
@@ -30,7 +30,7 @@ class IndicatorPage extends Component {
             last: true,
             isLoading: false,
             editDate: null,
-            editValue: null
+            editValue: ''
         };
         this.loadIndicator = this.loadIndicator.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -101,7 +101,7 @@ class IndicatorPage extends Component {
                     indicator: response,
                     records: response.records,
                     editDate: null,
-                    editValue: null
+                    editValue: ''
                 });
             }).catch(error => {
             console.log(error);
@@ -111,7 +111,7 @@ class IndicatorPage extends Component {
             });
             this.setState({
                 editDate: null,
-                editValue: null
+                editValue: ''
             });
         });
 
@@ -183,7 +183,7 @@ class IndicatorPage extends Component {
             ),
         }];
         let indicator = this.state.indicator;
-        var tableRecords = this.state.records.map(r => ({...r}));
+        let tableRecords = this.state.records.map(r => ({...r}));
         tableRecords.reverse();
         tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
         if (indicator) {
@@ -207,8 +207,8 @@ class IndicatorPage extends Component {
                                     onClickHandler={this.handleEdit}/>
                 </Col>
                 <Col>
-                    <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                          editValue={this.state.editValue} data={this.state.records}/>
+                    <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                   editValue={this.state.editValue} data={this.state.records}/>
                 </Col>
                 {recordTable}
             </Row>

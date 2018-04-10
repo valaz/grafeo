@@ -38,7 +38,6 @@ class LoginForm extends Component {
             password: {
                 value: ''
             },
-            showPassword: false,
             notification: {
                 open: false,
                 message: ''
@@ -101,7 +100,6 @@ class LoginForm extends Component {
         const target = event.target;
         const inputName = target.name;
         const inputValue = target.value;
-
 
         this.setState({
             [inputName]: {

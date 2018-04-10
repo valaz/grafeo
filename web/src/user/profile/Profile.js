@@ -113,14 +113,14 @@ class Profile extends Component {
                                 <Grid container style={{paddingTop: 10, paddingBottom: 10}}
                                       className="user-details" align="center"
                                       spacing={24}>
-                                    <Grid item xs={12} sm={4} md={4} spacing={0} align="center">
+                                    <Grid item xs={12} sm={4} md={4} align="center">
                                         <Avatar
                                             className={classes.bigAvatar}
                                             style={{backgroundColor: getRandomColor(this.state.user.name)}}>
                                             {this.state.user.name[0].toUpperCase()}
                                         </Avatar>
                                     </Grid>
-                                    <Grid item xs={12} sm={8} md={8} spacing={0} className="user-summary">
+                                    <Grid item xs={12} sm={8} md={8} className="user-summary">
                                         <div className="full-name">{this.state.user.name}</div>
                                         <div className="username">@{this.state.user.username}</div>
                                         <div className="user-joined">
@@ -149,7 +149,6 @@ class Profile extends Component {
                                                    type="USER_CREATED_INDICATORS"/>
                                 </TabContainer>}
                                 {tab === 1 && <TabContainer>
-                                    <div></div>
                                 </TabContainer>}
                             </div>
                         </div>
