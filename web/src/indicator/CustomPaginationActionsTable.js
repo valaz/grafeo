@@ -86,8 +86,6 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, {withTheme: true
     TablePaginationActions,
 );
 
-let counter = 0;
-
 
 const styles = theme => ({
     root: {
@@ -155,7 +153,6 @@ class CustomPaginationActionsTable extends React.Component {
     }
 
     createRowData(data) {
-        counter += 1;
         const {classes} = this.props;
         let editAction = <div>
             <Edit className={classes.action} onClick={() => this.handleEdit(data)}/>
