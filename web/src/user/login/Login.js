@@ -1,22 +1,34 @@
 import React, {Component} from 'react';
 import {login} from '../../util/APIUtils';
-import './Login.css';
-import {Link} from 'react-router-dom';
 import {ACCESS_TOKEN} from '../../constants';
+import {FormattedMessage, injectIntl} from "react-intl";
+import {Button, Grid, TextField, withStyles} from "material-ui";
+import Notification from "../../common/Notification";
+import {Link} from "react-router-dom";
 
-import {Button, Form, Icon, Input, notification} from 'antd';
+const gridSize = {
+    xs: 12,
+    sm: 8,
+    md: 6,
+    lg: 4
+};
 
-const FormItem = Form.Item;
+const styles = theme => ({
+    header: {
+        textAlign: 'center'
+    }
+});
 
 class Login extends Component {
     render() {
-        const AntWrappedLoginForm = Form.create()(LoginForm)
+        const AntWrappedLoginForm = injectIntl(LoginForm);
+        const {classes} = this.props;
         return (
-            <div className="login-container">
-                <h1 className="page-title">Login</h1>
-                <div className="login-content">
-                    <AntWrappedLoginForm onLogin={this.props.onLogin}/>
-                </div>
+            <div style={{padding: 24, background: '#f1f1f1'}}>
+                <h1 className={classes.header}>
+                    <FormattedMessage id="login.header"/>
+                </h1>
+                <AntWrappedLoginForm onLogin={this.props.onLogin}/>
             </div>
         );
     }
@@ -25,75 +37,174 @@ class Login extends Component {
 class LoginForm extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            username: {
+                value: ''
+            },
+            password: {
+                value: ''
+            },
+            notification: {
+                open: false,
+                message: ''
+            },
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.clearNotification = this.clearNotification.bind(this);
     }
 
     componentDidMount() {
-        document.title = "Login";
+        document.title = this.props.intl.formatMessage({id: 'login.header'});
+    }
+
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                const loginRequest = Object.assign({}, values);
-                login(loginRequest)
-                    .then(response => {
-                        localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                        this.props.onLogin();
-                    }).catch(error => {
-                    if (error.status === 401) {
-                        notification.error({
-                            message: 'Polling App',
-                            description: 'Your Username or Password is incorrect. Please try again!'
-                        });
-                    } else {
-                        notification.error({
-                            message: 'Polling App',
-                            description: error.message || 'Sorry! Something went wrong. Please try again!'
-                        });
+        let loginRequest = {
+            usernameOrEmail: this.state.username.value,
+            password: this.state.password.value
+        };
+        login(loginRequest)
+            .then(response => {
+                localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+                this.props.onLogin();
+            }).catch(error => {
+            console.log(error);
+            if (error.status === 401) {
+                this.setState({
+                    notification: {
+                        open: true,
+                        message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
+                    }
+                });
+            } else {
+                this.setState({
+                    notification: {
+                        open: true,
+                        message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
                     }
                 });
             }
         });
     }
 
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        return (
-            <Form onSubmit={this.handleSubmit} className="login-form">
-                <FormItem>
-                    {getFieldDecorator('usernameOrEmail', {
-                        rules: [{required: true, message: 'Please input your username or email!'}],
-                    })(
-                        <Input
-                            autoFocus
-                            prefix={<Icon type="user"/>}
-                            size="large"
-                            name="usernameOrEmail"
-                            placeholder="Username or Email"/>
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('password', {
-                        rules: [{required: true, message: 'Please input your Password!'}],
-                    })(
-                        <Input
-                            prefix={<Icon type="lock"/>}
-                            size="large"
-                            name="password"
-                            type="password"
-                            placeholder="Password"/>
-                    )}
-                </FormItem>
-                <FormItem>
-                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>
-                    Or <Link to="/signup">register now!</Link>
-                </FormItem>
-            </Form>
+    isFormInvalid() {
+        return !(this.state.username.validateStatus === 'success' &&
+            this.state.password.validateStatus === 'success'
         );
     }
+
+    handleInputChange(event, validationFun) {
+        const target = event.target;
+        const inputName = target.name;
+        const inputValue = target.value;
+
+        this.setState({
+            [inputName]: {
+                value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
+    }
+
+    render() {
+        let usernamePlaceholder = this.props.intl.formatMessage({id: 'login.form.username.placeholder'});
+        let passwordPlaceholder = this.props.intl.formatMessage({id: 'login.form.password.placeholder'});
+        return (
+            <div>
+                <Notification open={this.state.notification.open} message={this.state.notification.message}
+                              cleanup={this.clearNotification}/>
+                <form onSubmit={this.handleSubmit}>
+                    <Grid item xs={12}>
+                        <Grid container
+                              justify="center"
+                              direction='column'
+                              spacing={16}>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth autoFocus
+                                               error={this.state.username.hasError}
+                                               helperText={this.state.username.errorMsg}
+                                               id="username"
+                                               name="username"
+                                               label={usernamePlaceholder}
+                                               value={this.state.username.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validateUsername)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               error={this.state.password.hasError}
+                                               helperText={this.state.password.errorMsg}
+                                               id="password"
+                                               name="password"
+                                               label={passwordPlaceholder}
+                                               type="password"
+                                               autoComplete="current-password"
+                                               value={this.state.password.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center" margin='dense'>
+                                <Grid item {...gridSize}>
+                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                            disabled={this.isFormInvalid()}>
+                                        <FormattedMessage id="login.form.submit"/>
+                                    </Button>
+                                    <FormattedMessage id="login.form.register.or"/> <Link to="/signup">
+                                    <FormattedMessage id="login.form.register.now"/>
+                                </Link>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>
+        )
+    }
+
+    validateUsername = (username) => {
+        if (username.length > 0) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'login.form.username.error.empty'}),
+                hasError: true
+            }
+        }
+    };
+
+    validatePassword = (password) => {
+        if (password.length > 0) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'login.form.password.error.empty'}),
+                hasError: true
+            }
+        }
+    };
 }
 
-
-export default Login;
+export default injectIntl(withStyles(styles)(Login));

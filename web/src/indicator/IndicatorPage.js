@@ -1,17 +1,41 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Button, Card, Col, Divider, Row, Table} from 'antd';
-import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
-import {notification} from "antd/lib/index";
-import IndicatorChart from "./IndicatorChart";
+import {addRecord, deleteIndicator, getIndicator, removeRecord} from "../util/APIUtils";
 import {withRouter} from "react-router-dom";
-import WrappedAddRecordForm from "./AddRecordForm";
+import AddRecordForm from "./AddRecordForm";
 import LoadingIndicator from "../common/LoadingIndicator";
 import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
+import {injectIntl} from "react-intl";
+import moment from "moment/moment";
+import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
+import {Grid, withStyles} from "material-ui";
+import IndicatorChart from "./IndicatorChart";
+import IndicatorCard from "./IndicatorCard";
+import Notification from "../common/Notification";
 
-const {Meta} = Card;
+const dateFormat = 'YYYY-MM-DD';
 
+const gridSize = {
+    xs: 12,
+    sm: 10,
+    md: 8,
+    lg: 8
+};
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 3,
+        paddingRight: 16,
+        paddingLeft: 16,
+    },
+    header: theme.mixins.gutters({
+        paddingTop: 16,
+        paddingBottom: 16,
+    }),
+});
 
 class IndicatorPage extends Component {
     constructor(props) {
@@ -21,6 +45,7 @@ class IndicatorPage extends Component {
                 name: ''
             },
             records: [],
+            tableRecords: [],
             page: 0,
             size: 10,
             totalElements: 0,
@@ -28,12 +53,26 @@ class IndicatorPage extends Component {
             last: true,
             isLoading: false,
             editDate: null,
-            editValue: null
+            editValue: '',
+            notification: {
+                open: false,
+                message: ''
+            },
         };
         this.loadIndicator = this.loadIndicator.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
+        this.handleRecordDelete = this.handleRecordDelete.bind(this);
+        this.handleIndicatorDelete = this.handleIndicatorDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
     }
 
     componentWillMount() {
@@ -47,7 +86,6 @@ class IndicatorPage extends Component {
     componentDidMount() {
         const id = this.props.match.params.id;
         this.loadIndicator(id);
-        console.log(this.state.indicator.name);
         document.title = "View Indicator";
     }
 
@@ -69,6 +107,7 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                     isLoading: false
                 });
                 document.title = this.state.indicator.name;
@@ -99,24 +138,53 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                     editDate: null,
-                    editValue: null
+                    editValue: ''
                 });
             }).catch(error => {
             console.log(error);
-            notification.error({
-                message: 'Polling App',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            this.setState({
+                notification: {
+                    open: true,
+                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                }
             });
             this.setState({
                 editDate: null,
-                editValue: null
+                editValue: ''
             });
         });
 
     }
 
-    handleDelete(text, record) {
+    getTableRecords(records) {
+        let tableRecords = records.map(r => ({...r}));
+        tableRecords.reverse();
+        tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
+        return tableRecords;
+    }
+
+    handleIndicatorDelete(id) {
+        let promise;
+        if (this.props.isAuthenticated) {
+            promise = deleteIndicator(id);
+        }
+
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(response => {
+                this.props.history.push("/");
+            }).catch(error => {
+            console.log(error);
+            this.props.history.push("/");
+        });
+    }
+
+    handleRecordDelete(record) {
         const recordRequest = {
             indicatorId: this.state.indicator.id,
             value: record.value,
@@ -126,26 +194,29 @@ class IndicatorPage extends Component {
             .then(response => {
                 this.setState({
                     indicator: response,
-                    records: response.records
+                    records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                 });
             }).catch(error => {
             console.log(error);
-            notification.error({
-                message: 'Polling App',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            this.setState({
+                notification: {
+                    open: true,
+                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                }
             });
         });
     }
 
-    handleEdit(text, record) {
+    handleEdit(record) {
         this.setState({
             editDate: record.date,
             editValue: record.value,
         })
-
     }
 
     render() {
+        let {notification} = this.state;
 
         if (this.state.isLoading) {
             return <LoadingIndicator/>;
@@ -159,57 +230,43 @@ class IndicatorPage extends Component {
             return <ServerError/>;
         }
 
-        var card = null;
-        var recordTable = null;
-        const columns = [{
-            title: 'Date',
-            dataIndex: 'date',
-            key: 'date',
-        }, {
-            title: 'Value',
-            dataIndex: 'value',
-            key: 'value',
-        }, {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-                <span>
-                  <Button onClick={() => this.handleEdit(text, record)} icon="edit"
-                          style={{fontSize: 16, color: '#08c'}}/>
-                    <Divider type="vertical"/>
-                  <Button onClick={() => this.handleDelete(text, record)} icon="delete"
-                          style={{fontSize: 16, color: '#ff0000'}}/>
-                </span>
-            ),
-        }];
-        let indicator = this.state.indicator;
-        var tableRecords = this.state.records.slice(0);
-        tableRecords = tableRecords.reverse();
-        if (indicator) {
-            card =
-                <Card>
-                    <Meta
-                        title={indicator.name}
-                    />
-                </Card>;
-            recordTable = <Table rowKey="date" dataSource={tableRecords} columns={columns}/>
-        } else {
-            card = <div>NOTHING</div>
-        }
+        const {classes} = this.props;
+
         return (
-            <Row>
-                <Col>
-                    {card}
-                </Col>
-                <Col>
-                    <IndicatorChart showAllData={true} data={this.state.records} name={this.state.indicator.name}/>
-                </Col>
-                <Col>
-                    <WrappedAddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                          editValue={this.state.editValue}/>
-                </Col>
-                {recordTable}
-            </Row>
+            <div>
+                <Notification open={notification.open} message={notification.message}
+                              cleanup={this.clearNotification}/>
+                <Grid container
+                      justify="center"
+                      direction='column'
+                      className={classes.root}>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                           editValue={this.state.editValue} data={this.state.records}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <IndicatorChart showAllData={true} data={this.state.records}
+                                            name={this.state.indicator.name}
+                                            onClickHandler={this.handleEdit}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <CustomPaginationActionsTable dataSource={this.state.tableRecords}
+                                                          editHadler={this.handleEdit}
+                                                          deleteHandler={this.handleRecordDelete}/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </div>
         )
     }
 
@@ -219,4 +276,4 @@ class IndicatorPage extends Component {
 
 }
 
-export default withRouter(IndicatorPage);
+export default injectIntl(withRouter(withStyles(styles)(IndicatorPage)));

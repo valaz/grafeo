@@ -1,22 +1,37 @@
 import React from 'react';
-import './App.css';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
 import {ACCESS_TOKEN} from '../constants';
-import AppHeader from "../common/AppHeader";
-import {Layout, notification} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
 import NotFound from "../common/NotFound";
 import Profile from "../user/profile/Profile";
-import NewIndicator from "../indicator/NewIndicator";
-import EditIndicator from "../indicator/EditIndicator";
+import IndicatorConfig from "../indicator/IndicatorConfig";
 import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
+import {injectIntl} from "react-intl";
+import ButtonAppBar from "../common/ButtonAppBar";
+import Notification from "../common/Notification";
+import {withStyles} from "material-ui";
 
-const {Content} = Layout;
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        minWidth: 300
+    },
+    content: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 3,
+        backgroundColor: '#f1f1f1',
+    },
+    bigAvatar: {
+        width: 120,
+        height: 120,
+        fontSize: 50
+    },
+});
 
 class App extends React.Component {
     constructor(props) {
@@ -24,17 +39,17 @@ class App extends React.Component {
         this.state = {
             currentUser: null,
             isAuthenticated: false,
-            isLoading: false
+            isLoading: false,
+            notification: {
+                open: false,
+                message: ''
+            },
         };
         this.handleLogout = this.handleLogout.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
-
-        notification.config({
-            placement: 'topRight',
-            top: 70,
-            duration: 3,
-        });
+        this.handleSignup = this.handleSignup.bind(this);
+        this.clearNotification = this.clearNotification.bind(this);
     }
 
     loadCurrentUser() {
@@ -59,7 +74,7 @@ class App extends React.Component {
         this.loadCurrentUser();
     }
 
-    handleLogout(redirectTo = "/", notificationType = "success", description = "You're successfully logged out.") {
+    handleLogout(redirectTo = "/", notificationType = "success", description = this.props.intl.formatMessage({id: 'notification.logout'})) {
         localStorage.removeItem(ACCESS_TOKEN);
 
         this.setState({
@@ -69,63 +84,93 @@ class App extends React.Component {
 
         this.props.history.push(redirectTo);
 
-        notification[notificationType]({
-            message: 'Progressio App',
-            description: description,
+        this.setState({
+            notification: {
+                open: true,
+                message: description
+            }
         });
     }
 
     handleLogin() {
-        notification.success({
-            message: 'Progressio App',
-            description: "You're successfully logged in.",
+        this.setState({
+            notification: {
+                open: true,
+                message: this.props.intl.formatMessage({id: 'notification.login'})
+            }
         });
         this.loadCurrentUser();
         this.props.history.push("/");
     }
 
-    render() {
-        if (this.state.isLoading) {
-            return <LoadingIndicator/>
-        }
-        return (
-            <Layout className="app-container">
-                <AppHeader isAuthenticated={this.state.isAuthenticated}
-                           currentUser={this.state.currentUser}
-                           onLogout={this.handleLogout}/>
+    handleSignup() {
+        this.setState({
+            notification: {
+                open: true,
+                message: this.props.intl.formatMessage({id: 'signup.notification.success'})
+            }
+        });
+        this.props.history.push("/login");
+    }
 
-                <Content className="app-content">
-                    <div className="container">
-                        <Switch>
-                            <Route exact path="/"
-                                   render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
-                                                            currentUser={this.state.currentUser}
-                                                            handleLogout={this.handleLogout} {...props} />}>
-                            </Route>
-                            <Route path="/login"
-                                   render={(props) => <Login onLogin={this.handleLogin}
-                                                             isAuthenticated={this.state.isAuthenticated}
-                                                             currentUser={this.state.currentUser}/>}/>
-                            <Route path="/signup" component={Signup}/>
-                            <Route path="/users/:username"
-                                   render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
-                                                               currentUser={this.state.currentUser} {...props}  />}>
-                            </Route>
-                            <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
-                                          component={NewIndicator} handleLogout={this.handleLogout}/>
-                            <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/edit/:id"
-                                          component={EditIndicator} handleLogout={this.handleLogout}
-                                          isAuthenticated={this.state.isAuthenticated}/>
-                            <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
-                                          component={IndicatorPage} handleLogout={this.handleLogout}
-                                          isAuthenticated={this.state.isAuthenticated}/>
-                            <Route component={NotFound}/>
-                        </Switch>
-                    </div>
-                </Content>
-            </Layout>
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
+    }
+
+    render() {
+        let {notification} = this.state;
+        const {classes} = this.props;
+        return (
+            <div>
+                <Notification open={notification.open} message={notification.message}
+                              cleanup={this.clearNotification}/>
+                {this.state.isLoading ?
+                    (<div>
+                        <LoadingIndicator/>
+                    </div>) :
+
+                    (<div className={classes.root}>
+                        <ButtonAppBar isAuthenticated={this.state.isAuthenticated}
+                                      currentUser={this.state.currentUser}
+                                      onLogout={this.handleLogout}/>
+                        <div className={classes.content}>
+                                <Switch>
+                                    <Route exact path="/"
+                                           render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
+                                                                    currentUser={this.state.currentUser}
+                                                                    handleLogout={this.handleLogout} {...props} />}>
+                                    </Route>
+                                    <Route path="/login"
+                                           render={(props) => <Login onLogin={this.handleLogin}
+                                                                     isAuthenticated={this.state.isAuthenticated}
+                                                                     currentUser={this.state.currentUser}/>}/>
+                                    <Route path="/signup"
+                                           render={(props) => <Signup onSignup={this.handleSignup}/>}/>
+                                    <Route path="/users/:username"
+                                           render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
+                                                                       currentUser={this.state.currentUser} {...props}  />}>
+                                    </Route>
+                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
+                                                  component={IndicatorConfig} handleLogout={this.handleLogout}/>
+                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"
+                                                  component={IndicatorConfig} handleLogout={this.handleLogout}
+                                                  isAuthenticated={this.state.isAuthenticated}/>
+                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
+                                                  component={IndicatorPage} handleLogout={this.handleLogout}
+                                                  isAuthenticated={this.state.isAuthenticated}/>
+                                    <Route component={NotFound}/>
+                                </Switch>
+                            </div>
+                    </div>)
+                }
+            </div>
         );
     }
 }
 
-export default withRouter(App);
+export default injectIntl(withRouter(withStyles(styles)(App)));

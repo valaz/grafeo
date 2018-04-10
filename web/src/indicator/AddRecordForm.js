@@ -1,29 +1,84 @@
 import React, {Component} from 'react';
-import {Button, Col, DatePicker, Form, Icon, InputNumber, Row} from "antd";
-import moment from 'moment';
+import {FormattedMessage, injectIntl} from "react-intl";
+import {Button, Grid, TextField, withStyles} from "material-ui";
+import {DatePicker} from "material-ui-pickers";
+import moment from "moment";
 
-const FormItem = Form.Item;
+const dateFormat = 'YYYY-MM-DD';
+const datePickerFormat = "LL";
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 3
+    },
+    textField: {},
+    picker: {
+        day: {
+            color: '#fff',
+        },
+        selected: {
+            backgroundColor: '#fff',
+        },
+        current: {
+            color: '#fff',
+        },
+    },
+    button: {
+        marginTop: '10px'
+    }
+});
 
 class AddRecordForm extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
+            date: {
+                value: null
+            },
+            value: {
+                value: ''
+            },
+            notification: {
+                open: false,
+                message: ''
+            },
             editDate: null,
-            editValue: null
+            editValue: null,
+            selectedDate: null,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                this.props.form.resetFields();
-                this.props.handleSubmit(this.dateInput.picker.input.value, this.valueInput.inputNumberRef.state.value);
-            }
-        });
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.editValue && nextProps.editValue > 0) {
+            let valueValue = nextProps.editValue;
+            this.setState({
+                value: {
+                    value: valueValue,
+                    ...this.validateValue(valueValue)
+                }
+            });
+        }
+        if (nextProps.editDate) {
+            let dateValue = moment(nextProps.editDate, dateFormat);
+            this.setState({
+                date: {
+                    value: dateValue,
+                    ...this.validateDate(dateValue)
+                }
+            });
+        }
     }
+
+    handleChange = name => event => {
+        this.setState({
+            [name]: {
+                value: event.target.value
+            },
+        });
+    };
 
     editDateValue(date, value) {
         const {resetFields} = this.props.form;
@@ -37,75 +92,147 @@ class AddRecordForm extends Component {
         });
     }
 
-    getInputFields() {
-        const {getFieldDecorator} = this.props.form;
-        const children = [];
-        const dateInputConfig = {
-            rules: [{type: 'object', required: true, message: 'Please select date!'}],
-        };
-        const valueInputConfig = {
-            rules: [{type: 'number', required: true, message: 'Please input value!'}],
-        };
-        children.push(
-            <Col xs={{span: 22, offset: 1}} sm={{span: 10, offset: 1}} md={{span: 6, offset: 1}} key={"dateInput"}>
-                <FormItem>
-                    {getFieldDecorator("dateInput", dateInputConfig)(
-                        <DatePicker
-                            style={{width: '100%'}}
-                            ref={dateInput => (this.dateInput = dateInput)}/>
-                    )}
-                </FormItem>
-            </Col>);
-        children.push(
-            <Col xs={{span: 22, offset: 1}} sm={{span: 10, offset: 2}} md={{span: 6, offset: 2}} key={"valueInput"}>
-                <FormItem>
-                    {getFieldDecorator("valueInput", valueInputConfig)(
-                        <InputNumber prefix={<Icon type="info-circle-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                                     ref={valueInput => (this.valueInput = valueInput)}
-                                     style={{width: '100%'}}
-                                     placeholder="Value"/>
-                    )}
-                </FormItem>
-            </Col>
+    handleSubmit(event) {
+        event.preventDefault();
+        let date = this.state.date.value.format(dateFormat);
+        let value = this.state.value.value;
+        this.resetFields();
+        this.props.handleSubmit(date, value);
+    }
+
+    resetFields() {
+        this.setState({
+            date: {
+                value: null,
+                validateStatus: null,
+                errorMsg: null,
+                hasError: false
+
+            },
+            value: {
+                value: '',
+                validateStatus: null,
+                errorMsg: null,
+                hasError: false
+
+            },
+        })
+    }
+
+    isFormInvalid() {
+        return !(this.state.date.validateStatus === 'success' &&
+            this.state.value.validateStatus === 'success'
         );
-        return children;
+    }
+
+    handleDateChange(value, validationFun) {
+        this.setState({
+            date: {
+                value: value,
+                ...validationFun(value)
+            },
+            editDate: value.format(dateFormat)
+        });
+    }
+
+    handleInputChange(event, validationFun) {
+        const target = event.target;
+        const inputName = target.name;
+        const inputValue = target.value;
+
+
+        this.setState({
+            [inputName]: {
+                value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
     }
 
     render() {
-
+        const selectedDate = this.state.date.value;
+        const {classes} = this.props;
         return (
-            <Form onSubmit={this.handleSubmit} style={{textAlign: 'center'}}>
-                <Row>
-                    {this.getInputFields()}
-                    <Col xs={{span: 22, offset: 1}} sm={{span: 22, offset: 1}} md={{span: 6, offset: 2}}>
-                        <FormItem>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                style={{width: '100%'}}
-                            >
-                                Submit
-                            </Button>
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>
+            <form onSubmit={this.handleSubmit} style={{textAlign: 'center'}} className={classes.root}>
+                <Grid container
+                      spacing={16} justify="center">
+                    <Grid item xs={12} sm={6} md={4} align="center">
+                        <DatePicker fullWidth
+                                    autoOk
+                                    error={this.state.date.hasError}
+                                    helperText={this.state.date.errorMsg}
+                                    id="date"
+                                    name="date"
+                                    label={this.props.intl.formatMessage({id: 'indicator.view.form.date.placeholder'})}
+                                    cancelLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.cancel'})}
+                                    okLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.ok'})}
+                                    todayLabel={this.props.intl.formatMessage({id: 'indicator.view.form.date.today'})}
+                                    showTodayButton
+                                    disableFuture
+                                    format={datePickerFormat}
+                                    maxDateMessage="Date must be less than today"
+                                    value={selectedDate}
+                                    onChange={(event) => this.handleDateChange(event, this.validateDate)}
+                                    animateYearScrolling={false}
+                                    className={classes.picker}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}  align="center">
+                        <TextField fullWidth
+                                   error={this.state.value.hasError}
+                                   helperText={this.state.value.errorMsg}
+                                   id="value"
+                                   name="value"
+                                   label={this.props.intl.formatMessage({id: 'indicator.view.form.value.placeholder'})}
+                                   value={this.state.value.value}
+                                   onChange={(event) => this.handleInputChange(event, this.validateValue)}
+                                   type="number"
+                                   className={classes.textField}
+
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={4} align="center">
+                        <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                disabled={this.isFormInvalid()} className={classes.button}>
+                            <FormattedMessage id="indicator.view.form.submit"/>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </form>
         )
     }
+
+    validateValue = (value) => {
+        if (value) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.view.form.value.error.empty'}),
+                hasError: true
+            }
+        }
+    };
+
+    validateDate = (date) => {
+        if (date !== null) {
+            return {
+                validateStatus: 'success',
+                errorMsg: '',
+                hasError: false
+            }
+        } else {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.view.form.date.error.empty'}),
+                hasError: true
+            }
+        }
+    };
 }
 
-const WrappedAddRecordForm = Form.create({
-    mapPropsToFields(props) {
-        const dateFormat = 'YYYY-MM-DD';
-        return {
-            dateInput: Form.createFormField({
-                value: props.editDate ? moment(props.editDate, dateFormat) : null
-            }),
-            valueInput: Form.createFormField({
-                value: props.editValue
-            })
-        }
-    }
-})(AddRecordForm);
-
-export default WrappedAddRecordForm
+export default injectIntl(withStyles(styles)(AddRecordForm));

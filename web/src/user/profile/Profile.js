@@ -1,24 +1,46 @@
 import React, {Component} from 'react';
 import {getUserProfile} from '../../util/APIUtils';
-import {Avatar, Col, Row, Tabs} from 'antd';
-import {getRandomColor} from '../../util/Colors';
-import {formatDate} from '../../util/Helpers';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import './Profile.css';
 import NotFound from '../../common/NotFound';
 import ServerError from '../../common/ServerError';
+import {FormattedDate, FormattedMessage, injectIntl} from 'react-intl';
+import {AppBar, Avatar, Grid, Tab, Tabs, Typography, withStyles} from "material-ui";
+import {getRandomColor} from "../../util/Colors";
 import IndicatorList from "../../indicator/IndicatorList";
 
-const TabPane = Tabs.TabPane;
+function TabContainer(props) {
+    return (
+        <Typography component="div">
+            {props.children}
+        </Typography>
+    );
+}
+
+const styles = theme => ({
+    root: {
+        backgroundColor: '#f1f1f1',
+        paddingRight: 24,
+        paddingLeft: 24,
+        marginBottom: theme.spacing.unit * 3,
+    },
+    bigAvatar: {
+        width: 120,
+        height: 120,
+        fontSize: 50
+    },
+});
 
 class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
             user: null,
-            isLoading: false
+            isLoading: false,
+            tab: 0
         };
         this.loadUserProfile = this.loadUserProfile.bind(this);
+        this.handleTabChange = this.handleTabChange.bind(this);
     }
 
     loadUserProfile(username) {
@@ -32,6 +54,7 @@ class Profile extends Component {
                     user: response,
                     isLoading: false
                 });
+                document.title = this.state.user.name;
             }).catch(error => {
             if (error.status === 404) {
                 this.setState({
@@ -50,7 +73,7 @@ class Profile extends Component {
     componentDidMount() {
         const username = this.props.match.params.username;
         this.loadUserProfile(username);
-        document.title = "Profile";
+        document.title = this.props.intl.formatMessage({id: 'profile.title'});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -58,6 +81,13 @@ class Profile extends Component {
             this.loadUserProfile(nextProps.match.params.username);
         }
     }
+
+
+    handleTabChange = (event, tab) => {
+        this.setState({
+            tab: tab
+        });
+    };
 
     render() {
         if (this.state.isLoading) {
@@ -72,45 +102,57 @@ class Profile extends Component {
             return <ServerError/>;
         }
 
-        const tabBarStyle = {
-            textAlign: 'center'
-        };
+        const {classes} = this.props;
+        const {tab} = this.state;
 
         return (
             <div>
                 {
                     this.state.user ? (
-                        <Row className="user-details">
-                            <Col xs={24} sm={8} md={9} className="user-avatar">
-                                <Avatar className="user-avatar-circle"
-                                        style={{backgroundColor: getRandomColor(this.state.user.name)}}>
-                                    {this.state.user.name[0].toUpperCase()}
-                                </Avatar>
-                            </Col>
-                            <Col xs={24} sm={16} md={15} className="user-summary">
-                                <div className="full-name">{this.state.user.name}</div>
-                                <div className="username">@{this.state.user.username}</div>
-                                <div className="user-joined">
-                                    Joined {formatDate(this.state.user.joinedAt)}
-                                </div>
-                            </Col>
-                            <Col xs={24}>
-                                <Tabs defaultActiveKey="1"
-                                      animated={false}
-                                      tabBarStyle={tabBarStyle}
-                                      size="large"
-                                      className="profile-tabs">
-                                    <TabPane tab={`${this.state.user.indicatorCount} Indicators`} key="1">
-                                        <IndicatorList isAuthenticated={this.props.isAuthenticated}
-                                                       currentUser={this.props.currentUser}
-                                                       type="USER_CREATED_INDICATORS"/>
-                                    </TabPane>
-                                    <TabPane tab={`${this.state.user.recordCount} Records`} key="2">
-
-                                    </TabPane>
-                                </Tabs>
-                            </Col>
-                        </Row>
+                        <div>
+                            <div className={classes.root}>
+                                <Grid container style={{paddingTop: 10, paddingBottom: 10}}
+                                      className="user-details" align="center"
+                                      spacing={24}>
+                                    <Grid item xs={12} sm={4} md={4} align="center">
+                                        <Avatar
+                                            className={classes.bigAvatar}
+                                            style={{backgroundColor: getRandomColor(this.state.user.name)}}>
+                                            {this.state.user.name[0].toUpperCase()}
+                                        </Avatar>
+                                    </Grid>
+                                    <Grid item xs={12} sm={8} md={8} className="user-summary">
+                                        <div className="full-name">{this.state.user.name}</div>
+                                        <div className="username">@{this.state.user.username}</div>
+                                        <div className="user-joined">
+                                            <FormattedMessage id="profile.joined" values={{
+                                                date: <FormattedDate
+                                                    value={new Date(this.state.user.joinedAt)}
+                                                    year='numeric'
+                                                    month='long'
+                                                    day='2-digit'
+                                                />
+                                            }}/>
+                                        </div>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                            <div>
+                                <AppBar position="static" color='inherit' style={{backgroundColor: '#F1F1F1'}}>
+                                    <Tabs value={tab} onChange={this.handleTabChange} centered>
+                                        <Tab label={this.props.intl.formatMessage({id: 'profile.indicators'})}/>
+                                        <Tab label={this.props.intl.formatMessage({id: 'profile.records'})}/>
+                                    </Tabs>
+                                </AppBar>
+                                {tab === 0 && <TabContainer>
+                                    <IndicatorList isAuthenticated={this.props.isAuthenticated}
+                                                   currentUser={this.props.currentUser}
+                                                   type="USER_CREATED_INDICATORS"/>
+                                </TabContainer>}
+                                {tab === 1 && <TabContainer>
+                                </TabContainer>}
+                            </div>
+                        </div>
                     ) : null
                 }
             </div>
@@ -118,4 +160,4 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+export default injectIntl(withStyles(styles)(Profile));
