@@ -3,7 +3,7 @@ import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
 import './NewIndicator.css';
 import {FormattedMessage, injectIntl} from 'react-intl';
-import {Button, Grid, Icon, TextField} from "material-ui";
+import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
 import Notification from "../common/Notification";
 
 const gridSize = {
@@ -12,6 +12,12 @@ const gridSize = {
     md: 6,
     lg: 4
 };
+
+const styles = theme => ({
+    header: {
+        textAlign: 'center'
+    }
+});
 
 class IndicatorConfig extends Component {
     validateName = (name) => {
@@ -199,9 +205,10 @@ class IndicatorConfig extends Component {
 
     render() {
         let namePlaceholder = this.props.intl.formatMessage({id: 'indicator.create.placeholder'});
+        const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
-                <h1 className="page-title">
+                <h1 className={classes.header}>
                     {this.getHeader()}
                 </h1>
                 <Notification open={this.state.notification.open} message={this.state.notification.message}
@@ -258,4 +265,4 @@ class IndicatorConfig extends Component {
     }
 }
 
-export default injectIntl(IndicatorConfig);
+export default injectIntl(withStyles(styles)(IndicatorConfig));

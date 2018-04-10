@@ -19,9 +19,10 @@ function TabContainer(props) {
 
 const styles = theme => ({
     root: {
-        flexGrow: 1,
-        marginTop: theme.spacing.unit * 3,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#f1f1f1',
+        paddingRight: 24,
+        paddingLeft: 24,
+        marginBottom: theme.spacing.unit * 3,
     },
     bigAvatar: {
         width: 120,
@@ -109,7 +110,7 @@ class Profile extends Component {
                 {
                     this.state.user ? (
                         <div>
-                            <div style={{padding: 24, background: '#f1f1f1'}}>
+                            <div className={classes.root}>
                                 <Grid container style={{paddingTop: 10, paddingBottom: 10}}
                                       className="user-details" align="center"
                                       spacing={24}>

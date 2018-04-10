@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {login} from '../../util/APIUtils';
 import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField} from "material-ui";
+import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
-import '../../app/App.css';
 import {Link} from "react-router-dom";
 
 const gridSize = {
@@ -14,12 +13,19 @@ const gridSize = {
     lg: 4
 };
 
+const styles = theme => ({
+    header: {
+        textAlign: 'center'
+    }
+});
+
 class Login extends Component {
     render() {
         const AntWrappedLoginForm = injectIntl(LoginForm);
+        const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
-                <h1 className="page-title">
+                <h1 className={classes.header}>
                     <FormattedMessage id="login.header"/>
                 </h1>
                 <AntWrappedLoginForm onLogin={this.props.onLogin}/>
@@ -201,4 +207,4 @@ class LoginForm extends Component {
     };
 }
 
-export default injectIntl(Login);
+export default injectIntl(withStyles(styles)(Login));

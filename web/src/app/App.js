@@ -1,9 +1,7 @@
 import React from 'react';
-import './App.css';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
 import {ACCESS_TOKEN} from '../constants';
-import {Layout} from 'antd';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
@@ -16,8 +14,24 @@ import Home from "./Home";
 import {injectIntl} from "react-intl";
 import ButtonAppBar from "../common/ButtonAppBar";
 import Notification from "../common/Notification";
+import {withStyles} from "material-ui";
 
-const {Content} = Layout;
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        minWidth: 300
+    },
+    content: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 3,
+        backgroundColor: '#f1f1f1',
+    },
+    bigAvatar: {
+        width: 120,
+        height: 120,
+        fontSize: 50
+    },
+});
 
 class App extends React.Component {
     constructor(props) {
@@ -110,6 +124,7 @@ class App extends React.Component {
 
     render() {
         let {notification} = this.state;
+        const {classes} = this.props;
         return (
             <div>
                 <Notification open={notification.open} message={notification.message}
@@ -119,12 +134,11 @@ class App extends React.Component {
                         <LoadingIndicator/>
                     </div>) :
 
-                    (<Layout className="app-container">
+                    (<div className={classes.root}>
                         <ButtonAppBar isAuthenticated={this.state.isAuthenticated}
                                       currentUser={this.state.currentUser}
                                       onLogout={this.handleLogout}/>
-                        <Content className="app-content">
-                            <div className="container">
+                        <div className={classes.content}>
                                 <Switch>
                                     <Route exact path="/"
                                            render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
@@ -152,12 +166,11 @@ class App extends React.Component {
                                     <Route component={NotFound}/>
                                 </Switch>
                             </div>
-                        </Content>
-                    </Layout>)
+                    </div>)
                 }
             </div>
         );
     }
 }
 
-export default injectIntl(withRouter(App));
+export default injectIntl(withRouter(withStyles(styles)(App)));

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {checkEmailAvailability, checkUsernameAvailability, signup} from '../../util/APIUtils';
-import '../../app/App.css';
 import {Link} from 'react-router-dom';
 import {
     EMAIL_MAX_LENGTH,
@@ -13,7 +12,7 @@ import {
 } from '../../constants';
 
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField} from "material-ui";
+import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
 
 const gridSize = {
@@ -22,6 +21,12 @@ const gridSize = {
     md: 6,
     lg: 4
 };
+
+const styles = theme => ({
+    header: {
+        textAlign: 'center'
+    }
+});
 
 class Signup extends Component {
     constructor(props) {
@@ -113,9 +118,10 @@ class Signup extends Component {
         let usernamePlaceholder = this.props.intl.formatMessage({id: 'signup.form.username.placeholder'});
         let emailPlaceholder = this.props.intl.formatMessage({id: 'signup.form.email.placeholder'});
         let passwordPlaceholder = this.props.intl.formatMessage({id: 'signup.form.password.placeholder'});
+        const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
-                <h1 className="page-title">
+                <h1 className={classes.header}>
                     <FormattedMessage id="signup.header"/>
                 </h1>
                 <Notification open={this.state.notification.open} message={this.state.notification.message}
@@ -419,4 +425,4 @@ class Signup extends Component {
 
 }
 
-export default injectIntl(Signup);
+export default injectIntl(withStyles(styles)(Signup));
