@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
-import './NewIndicator.css';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
 import Notification from "../common/Notification";
@@ -122,7 +121,7 @@ class IndicatorConfig extends Component {
         };
         editIndicator(indicatorData)
             .then(response => {
-                this.props.history.push("/");
+                this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.edit.notification.logout'}));

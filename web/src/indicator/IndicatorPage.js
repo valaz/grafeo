@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Button, Col, Divider, Row} from 'antd';
-import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
+import {Col, Row} from 'antd';
+import {addRecord, deleteIndicator, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
 import {withRouter} from "react-router-dom";
 import AddRecordForm from "./AddRecordForm";
@@ -11,8 +11,9 @@ import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
 import moment from "moment/moment";
 import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
-import {Paper, Typography, withStyles} from "material-ui";
+import {Paper, withStyles} from "material-ui";
 import IndicatorChart from "./IndicatorChart";
+import IndicatorCard from "./IndicatorCard";
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -50,7 +51,8 @@ class IndicatorPage extends Component {
         };
         this.loadIndicator = this.loadIndicator.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
+        this.handleRecordDelete = this.handleRecordDelete.bind(this);
+        this.handleIndicatorDelete = this.handleIndicatorDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
     }
 
@@ -142,7 +144,30 @@ class IndicatorPage extends Component {
         return tableRecords;
     }
 
-    handleDelete(record) {
+    handleIndicatorDelete(id) {
+        let promise;
+        if (this.props.isAuthenticated) {
+            promise = deleteIndicator(id);
+        }
+
+        if (!promise) {
+            return;
+        }
+
+        this.setState({
+            isLoading: true
+        });
+        promise
+            .then(response => {
+            }).catch(error => {
+            console.log(error);
+        });
+        this.setState({
+            isLoading: false
+        });
+    }
+
+    handleRecordDelete(record) {
         const recordRequest = {
             indicatorId: this.state.indicator.id,
             value: record.value,
@@ -185,30 +210,12 @@ class IndicatorPage extends Component {
             return <ServerError/>;
         }
 
-        let indicator = this.state.indicator;
         const {classes} = this.props;
-
-        let header = null;
-        if (indicator) {
-            header =
-                <Paper className={classes.header} elevation={4}>
-                    <Typography variant="headline" component="h3">
-                        {indicator.name}
-                    </Typography>
-                </Paper>
-        } else {
-            header =
-                <Paper className={classes.header} elevation={4}>
-                    <Typography variant="headline" component="h3">
-                        NOTHING
-                    </Typography>
-                </Paper>
-        }
 
         return (
             <Row className={classes.header}>
                 <Col>
-                    {header}
+                    <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
                 </Col>
                 <Col>
                     <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
@@ -223,7 +230,7 @@ class IndicatorPage extends Component {
                 </Col>
                 <div>
                     <CustomPaginationActionsTable dataSource={this.state.tableRecords} editHadler={this.handleEdit}
-                                                  deleteHandler={this.handleDelete}/>
+                                                  deleteHandler={this.handleRecordDelete}/>
                 </div>
             </Row>
         )

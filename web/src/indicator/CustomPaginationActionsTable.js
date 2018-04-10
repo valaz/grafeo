@@ -105,6 +105,9 @@ const styles = theme => ({
         paddingLeft: 0,
         width: '10%'
     },
+    action: {
+        cursor: 'pointer'
+    },
     tableWrapper: {
         overflowX: 'auto',
     },
@@ -123,29 +126,34 @@ class CustomPaginationActionsTable extends React.Component {
     }
 
     componentWillMount() {
-        let {dataSource, editHandler, deleteHandler} = this.props;
-        this.updateData(dataSource, editHandler, deleteHandler);
+        let {dataSource} = this.props;
+        this.updateData(dataSource);
     }
 
     componentWillReceiveProps(nextProps) {
-        let {dataSource, editHandler, deleteHandler} = nextProps;
-        this.updateData(dataSource, editHandler, deleteHandler);
+        let {dataSource} = nextProps;
+        this.updateData(dataSource);
     }
 
-    updateData(dataSource, editHandler, deleteHandler) {
+    updateData(dataSource) {
         let tableData = [];
         for (let dataSourceElement of dataSource) {
-            tableData.push(this.createRowData(dataSourceElement, editHandler, deleteHandler));
+            tableData.push(this.createRowData(dataSourceElement));
         }
         this.setState({
             data: tableData
         })
     }
 
-    createRowData(data, editHandler, deleteHandler) {
+    createRowData(data) {
         counter += 1;
-        let editAction = <div><Edit onClick={() => this.handleEdit(data)}/></div>;
-        let deleteAction = <div><Delete onClick={() => this.handleDelete(data)}/></div>;
+        const {classes} = this.props;
+        let editAction = <div>
+            <Edit className={classes.action} onClick={() => this.handleEdit(data)}/>
+        </div>;
+        let deleteAction = <div>
+            <Delete className={classes.action} onClick={() => this.handleDelete(data)}/>
+        </div>;
         return {
             id: data.id,
             date: data.tableDate,

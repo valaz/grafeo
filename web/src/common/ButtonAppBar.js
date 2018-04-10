@@ -135,11 +135,10 @@ class ButtonAppBar extends React.Component {
 
     getProfileMenu() {
         const {isAuthenticated} = this.props;
-        if (!isAuthenticated) {
-            return this.getUnAuthMenu();
-        } else {
+        if (isAuthenticated) {
             return this.getAuthMenu();
-
+        } else {
+            return this.getUnAuthMenu();
         }
     }
 }

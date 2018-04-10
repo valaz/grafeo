@@ -148,6 +148,20 @@ export default {
                     },
                     submit: 'Submit'
                 },
+                card: {
+                    edit: {
+                        menu: 'Edit'
+                    },
+                    delete: {
+                        menu: 'Delete',
+                        dialog: {
+                            title: 'Do you really want to delete indicator?',
+                            description: 'This action can not be undone',
+                            cancel: 'Cancel',
+                            delete: 'Delete'
+                        }
+                    }
+                },
                 table: {
                     header: {
                         date: 'Date',
@@ -313,18 +327,31 @@ export default {
                     },
                     submit: 'Отправить'
                 },
+                card: {
+                    edit: {
+                        menu: 'Изменить'
+                    },
+                    delete: {
+                        menu: 'Удалить',
+                        dialog: {
+                            title: 'Вы действительно хотите удалить индикатор?',
+                            description: 'Это дейсвтие будет невозможно отменить',
+                            cancel: 'Отмена',
+                            delete: 'Удалить'
+                        }
+                    }
+                },
                 table: {
                     header: {
                         date: 'Дата',
                         value: 'Значение',
                         action: 'Действие'
                     },
-                    rowsPerPage: 'Количесвто строк на странице:'
+                    rowsPerPage: 'Строк на странице:'
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
                 }
-
             }
         }
     }

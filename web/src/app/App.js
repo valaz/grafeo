@@ -157,7 +157,7 @@ class App extends React.Component {
                                     </Route>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
                                                   component={IndicatorConfig} handleLogout={this.handleLogout}/>
-                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/edit/:id"
+                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"
                                                   component={IndicatorConfig} handleLogout={this.handleLogout}
                                                   isAuthenticated={this.state.isAuthenticated}/>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
