@@ -1,7 +1,17 @@
 import React, {Component} from 'react';
 import './NotFound.css';
 import {Link} from 'react-router-dom';
-import {Button} from 'antd';
+import {Button, withStyles} from "material-ui";
+import {injectIntl} from "react-intl";
+
+const styles = theme => ({
+    button: {
+        margin: theme.spacing.unit,
+    },
+    link: {
+        textDecoration: 'none'
+    }
+});
 
 class NotFound extends Component {
 
@@ -10,18 +20,23 @@ class NotFound extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         return (
             <div className="page-not-found">
                 <h1 className="title">
                     404
                 </h1>
                 <div className="desc">
-                    The Page you're looking for was not found.
+                    {this.props.intl.formatMessage({id: 'error.notFound'})}
                 </div>
-                <Link to="/"><Button className="go-back-btn" type="primary" size="large">Go Back</Button></Link>
+                <Link to="/" className={classes.link}>
+                    <Button variant="raised" className={classes.button}>
+                        {this.props.intl.formatMessage({id: 'error.goBack'})}
+                    </Button>
+                </Link>
             </div>
         );
     }
 }
 
-export default NotFound;
+export default injectIntl(withStyles(styles)(NotFound));

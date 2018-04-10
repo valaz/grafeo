@@ -3,7 +3,6 @@ import './IndicatorList.css';
 import {deleteIndicator, getUserCreatedIndicators} from '../util/APIUtils';
 import Indicator from './Indicator';
 import LoadingIndicator from '../common/LoadingIndicator';
-import {Button, Icon} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
@@ -151,14 +150,6 @@ class IndicatorList extends Component {
                             </span>
                         </div>
                     ) : null
-                }
-                {
-                    !this.state.isLoading && !this.state.last ? (
-                        <div className="load-more-indicators">
-                            <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
-                                <Icon type="plus"/> Load more
-                            </Button>
-                        </div>) : null
                 }
                 {
                     this.state.isLoading ?

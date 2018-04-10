@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Indicator.css';
 import {addRecord, deleteIndicator, getIndicator, removeRecord} from "../util/APIUtils";
-import {notification} from "antd/lib/index";
 import {withRouter} from "react-router-dom";
 import AddRecordForm from "./AddRecordForm";
 import LoadingIndicator from "../common/LoadingIndicator";
@@ -13,6 +12,7 @@ import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
 import {Grid, withStyles} from "material-ui";
 import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
+import Notification from "../common/Notification";
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -53,13 +53,26 @@ class IndicatorPage extends Component {
             last: true,
             isLoading: false,
             editDate: null,
-            editValue: ''
+            editValue: '',
+            notification: {
+                open: false,
+                message: ''
+            },
         };
         this.loadIndicator = this.loadIndicator.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRecordDelete = this.handleRecordDelete.bind(this);
         this.handleIndicatorDelete = this.handleIndicatorDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
     }
 
     componentWillMount() {
@@ -131,9 +144,11 @@ class IndicatorPage extends Component {
                 });
             }).catch(error => {
             console.log(error);
-            notification.error({
-                message: 'Progressio',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            this.setState({
+                notification: {
+                    open: true,
+                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                }
             });
             this.setState({
                 editDate: null,
@@ -188,9 +203,11 @@ class IndicatorPage extends Component {
                 });
             }).catch(error => {
             console.log(error);
-            notification.error({
-                message: 'Progressio',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
+            this.setState({
+                notification: {
+                    open: true,
+                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                }
             });
         });
     }
@@ -203,6 +220,7 @@ class IndicatorPage extends Component {
     }
 
     render() {
+        let {notification} = this.state;
 
         if (this.state.isLoading) {
             return <LoadingIndicator/>;
@@ -219,35 +237,40 @@ class IndicatorPage extends Component {
         const {classes} = this.props;
 
         return (
-            <Grid container
-                  justify="center"
-                  direction='column'
-                  className={classes.root}>
-                <Grid container item spacing={0} justify="center">
-                    <Grid item {...gridSize}>
-                        <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
+            <div>
+                <Notification open={notification.open} message={notification.message}
+                              cleanup={this.clearNotification}/>
+                <Grid container
+                      justify="center"
+                      direction='column'
+                      className={classes.root}>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                           editValue={this.state.editValue} data={this.state.records}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <IndicatorChart showAllData={true} data={this.state.records}
+                                            name={this.state.indicator.name}
+                                            onClickHandler={this.handleEdit}/>
+                        </Grid>
+                    </Grid>
+                    <Grid container item spacing={0} justify="center">
+                        <Grid item {...gridSize}>
+                            <CustomPaginationActionsTable dataSource={this.state.tableRecords}
+                                                          editHadler={this.handleEdit}
+                                                          deleteHandler={this.handleRecordDelete}/>
+                        </Grid>
                     </Grid>
                 </Grid>
-                <Grid container item spacing={0} justify="center">
-                    <Grid item {...gridSize}>
-                        <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                       editValue={this.state.editValue} data={this.state.records}/>
-                    </Grid>
-                </Grid>
-                <Grid container item spacing={0} justify="center">
-                    <Grid item {...gridSize}>
-                        <IndicatorChart showAllData={true} data={this.state.records}
-                                        name={this.state.indicator.name}
-                                        onClickHandler={this.handleEdit}/>
-                    </Grid>
-                </Grid>
-                <Grid container item spacing={0} justify="center">
-                    <Grid item {...gridSize}>
-                        <CustomPaginationActionsTable dataSource={this.state.tableRecords} editHadler={this.handleEdit}
-                                                      deleteHandler={this.handleRecordDelete}/>
-                    </Grid>
-                </Grid>
-            </Grid>
+            </div>
         )
     }
 

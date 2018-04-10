@@ -1,5 +1,10 @@
 export default {
     'en': {
+        error: {
+            notFound: 'The Page you\'re looking for was not found.',
+            serverError: 'Oops! Something went wrong at our Server. Why don\'t you go back?',
+            goBack: 'Go back'
+        },
         notification: {
             error: 'Sorry, some error on the server. PLease try again!',
             logout: 'You\'re successfully logged out!',
@@ -179,6 +184,11 @@ export default {
 
     },
     'ru': {
+        error: {
+            notFound: 'Страница, которую Вы ищете не существует',
+            serverError: 'Извините, произошла ошибка на сервере. Почему бы Вам не вернуться назад?',
+            goBack: 'Назад'
+        },
         notification: {
             error: 'Извините, произошла ошибка. Пожалуйста, попробуйте снова!',
             logout: 'Вы успешно вышли!',
