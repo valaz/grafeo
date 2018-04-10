@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Button, Card, Col, Divider, Row, Table} from 'antd';
+import {Button, Col, Divider, Row} from 'antd';
 import {addRecord, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
-import IndicatorChart from "./IndicatorChart";
 import {withRouter} from "react-router-dom";
 import AddRecordForm from "./AddRecordForm";
 import LoadingIndicator from "../common/LoadingIndicator";
@@ -11,9 +10,25 @@ import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
 import moment from "moment/moment";
+import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
+import {Paper, Typography, withStyles} from "material-ui";
+import IndicatorChart from "./IndicatorChart";
 
-const {Meta} = Card;
 const dateFormat = 'YYYY-MM-DD';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        marginTop: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 3,
+        paddingRight: 16,
+        paddingLeft: 16,
+    },
+    header: theme.mixins.gutters({
+        paddingTop: 16,
+        paddingBottom: 16,
+    }),
+});
 
 class IndicatorPage extends Component {
     constructor(props) {
@@ -23,6 +38,7 @@ class IndicatorPage extends Component {
                 name: ''
             },
             records: [],
+            tableRecords: [],
             page: 0,
             size: 10,
             totalElements: 0,
@@ -70,6 +86,7 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                     isLoading: false
                 });
                 document.title = this.state.indicator.name;
@@ -100,6 +117,7 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                     editDate: null,
                     editValue: ''
                 });
@@ -117,6 +135,13 @@ class IndicatorPage extends Component {
 
     }
 
+    getTableRecords(records) {
+        let tableRecords = records.map(r => ({...r}));
+        tableRecords.reverse();
+        tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
+        return tableRecords;
+    }
+
     handleDelete(record) {
         const recordRequest = {
             indicatorId: this.state.indicator.id,
@@ -127,7 +152,8 @@ class IndicatorPage extends Component {
             .then(response => {
                 this.setState({
                     indicator: response,
-                    records: response.records
+                    records: response.records,
+                    tableRecords: this.getTableRecords(response.records),
                 });
             }).catch(error => {
             console.log(error);
@@ -159,58 +185,46 @@ class IndicatorPage extends Component {
             return <ServerError/>;
         }
 
-        let card = null;
-        let recordTable = null;
-        const columns = [{
-            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.date'}),
-            dataIndex: 'tableDate',
-            key: 'date',
-        }, {
-            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.value'}),
-            dataIndex: 'value',
-            key: 'value',
-        }, {
-            title: this.props.intl.formatMessage({id: 'indicator.view.table.header.action'}),
-            key: 'action',
-            render: (text, record) => (
-                <span>
-                  <Button onClick={() => this.handleEdit(record)} icon="edit"
-                          style={{fontSize: 16, color: '#08c'}}/>
-                    <Divider type="vertical"/>
-                  <Button onClick={() => this.handleDelete(record)} icon="delete"
-                          style={{fontSize: 16, color: '#ff0000'}}/>
-                </span>
-            ),
-        }];
         let indicator = this.state.indicator;
-        let tableRecords = this.state.records.map(r => ({...r}));
-        tableRecords.reverse();
-        tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
+        const {classes} = this.props;
+
+        let header = null;
         if (indicator) {
-            card =
-                <Card>
-                    <Meta
-                        title={indicator.name}
-                    />
-                </Card>;
-            recordTable = <Table rowKey="id" dataSource={tableRecords} columns={columns}/>
+            header =
+                <Paper className={classes.header} elevation={4}>
+                    <Typography variant="headline" component="h3">
+                        {indicator.name}
+                    </Typography>
+                </Paper>
         } else {
-            card = <div>NOTHING</div>
+            header =
+                <Paper className={classes.header} elevation={4}>
+                    <Typography variant="headline" component="h3">
+                        NOTHING
+                    </Typography>
+                </Paper>
         }
+
         return (
-            <Row>
+            <Row className={classes.header}>
                 <Col>
-                    {card}
-                </Col>
-                <Col>
-                    <IndicatorChart showAllData={true} data={this.state.records} name={this.state.indicator.name}
-                                    onClickHandler={this.handleEdit}/>
+                    {header}
                 </Col>
                 <Col>
                     <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
                                    editValue={this.state.editValue} data={this.state.records}/>
                 </Col>
-                {recordTable}
+                <Col>
+                    <Paper>
+                        <IndicatorChart showAllData={true} data={this.state.records}
+                                        name={this.state.indicator.name}
+                                        onClickHandler={this.handleEdit}/>
+                    </Paper>
+                </Col>
+                <div>
+                    <CustomPaginationActionsTable dataSource={this.state.tableRecords} editHadler={this.handleEdit}
+                                                  deleteHandler={this.handleDelete}/>
+                </div>
             </Row>
         )
     }
@@ -221,4 +235,4 @@ class IndicatorPage extends Component {
 
 }
 
-export default injectIntl(withRouter(IndicatorPage));
+export default injectIntl(withRouter(withStyles(styles)(IndicatorPage)));

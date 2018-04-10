@@ -12,8 +12,6 @@ const styles = theme => ({
         flexGrow: 1,
         marginTop: theme.spacing.unit * 3,
         marginBottom: theme.spacing.unit * 3,
-        paddingRight: 24,
-        paddingLeft: 24,
     },
     textField: {},
     picker: {
@@ -158,8 +156,8 @@ class AddRecordForm extends Component {
         return (
             <form onSubmit={this.handleSubmit} style={{textAlign: 'center'}} className={classes.root}>
                 <Grid container
-                      spacing={24}>
-                    <Grid item xs={12} sm={6} md={4} align="center">
+                      spacing={16} justify="center">
+                    <Grid item xs={12} sm={6} md={4} lg={2} align="center">
                         <DatePicker fullWidth
                                     autoOk
                                     error={this.state.date.hasError}
@@ -180,7 +178,7 @@ class AddRecordForm extends Component {
                                     className={classes.picker}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} align="center">
+                    <Grid item xs={12} sm={6} md={4} lg={2} align="center">
                         <TextField fullWidth
                                    error={this.state.value.hasError}
                                    helperText={this.state.value.errorMsg}
@@ -194,7 +192,7 @@ class AddRecordForm extends Component {
 
                         />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={4} align="center">
+                    <Grid item xs={12} sm={12} md={4} lg={2} align="center">
                         <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                 disabled={this.isFormInvalid()} className={classes.button}>
                             <FormattedMessage id="indicator.view.form.submit"/>

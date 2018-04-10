@@ -153,7 +153,8 @@ export default {
                         date: 'Date',
                         value: 'Value',
                         action: 'Action'
-                    }
+                    },
+                    rowsPerPage: 'Rows per page:'
                 },
                 data: {
                     empty: 'No Indicators found'
@@ -317,7 +318,8 @@ export default {
                         date: 'Дата',
                         value: 'Значение',
                         action: 'Действие'
-                    }
+                    },
+                    rowsPerPage: 'Количесвто строк на странице:'
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
