@@ -142,7 +142,16 @@ class CustomPaginationActionsTable extends React.Component {
         }
         this.setState({
             data: tableData
-        })
+        });
+        let length = tableData.length;
+        let rowsPerPage = 10;
+        if (length < 5) {
+            rowsPerPage = 5
+        }
+        this.setState({
+            rowsPerPage: rowsPerPage
+        });
+
     }
 
     createRowData(data) {
@@ -162,7 +171,6 @@ class CustomPaginationActionsTable extends React.Component {
             deleteAction: deleteAction
         };
     }
-
 
     handleEdit(record) {
         console.log('edit');
@@ -187,6 +195,9 @@ class CustomPaginationActionsTable extends React.Component {
     render() {
         const {classes} = this.props;
         const {data, rowsPerPage, page} = this.state;
+        if (data.length === 0) {
+            return null;
+        }
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (

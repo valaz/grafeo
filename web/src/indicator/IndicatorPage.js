@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './Indicator.css';
-import {Col, Row} from 'antd';
 import {addRecord, deleteIndicator, getIndicator, removeRecord} from "../util/APIUtils";
 import {notification} from "antd/lib/index";
 import {withRouter} from "react-router-dom";
@@ -11,11 +10,18 @@ import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
 import moment from "moment/moment";
 import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
-import {Paper, withStyles} from "material-ui";
+import {Grid, withStyles} from "material-ui";
 import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
 
 const dateFormat = 'YYYY-MM-DD';
+
+const gridSize = {
+    xs: 12,
+    sm: 10,
+    md: 8,
+    lg: 8
+};
 
 const styles = theme => ({
     root: {
@@ -213,26 +219,35 @@ class IndicatorPage extends Component {
         const {classes} = this.props;
 
         return (
-            <Row className={classes.header}>
-                <Col>
-                    <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
-                </Col>
-                <Col>
-                    <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                   editValue={this.state.editValue} data={this.state.records}/>
-                </Col>
-                <Col>
-                    <Paper>
+            <Grid container
+                  justify="center"
+                  direction='column'
+                  className={classes.root}>
+                <Grid container item spacing={0} justify="center">
+                    <Grid item {...gridSize}>
+                        <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
+                    </Grid>
+                </Grid>
+                <Grid container item spacing={0} justify="center">
+                    <Grid item {...gridSize}>
+                        <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                       editValue={this.state.editValue} data={this.state.records}/>
+                    </Grid>
+                </Grid>
+                <Grid container item spacing={0} justify="center">
+                    <Grid item {...gridSize}>
                         <IndicatorChart showAllData={true} data={this.state.records}
                                         name={this.state.indicator.name}
                                         onClickHandler={this.handleEdit}/>
-                    </Paper>
-                </Col>
-                <div>
-                    <CustomPaginationActionsTable dataSource={this.state.tableRecords} editHadler={this.handleEdit}
-                                                  deleteHandler={this.handleRecordDelete}/>
-                </div>
-            </Row>
+                    </Grid>
+                </Grid>
+                <Grid container item spacing={0} justify="center">
+                    <Grid item {...gridSize}>
+                        <CustomPaginationActionsTable dataSource={this.state.tableRecords} editHadler={this.handleEdit}
+                                                      deleteHandler={this.handleRecordDelete}/>
+                    </Grid>
+                </Grid>
+            </Grid>
         )
     }
 
