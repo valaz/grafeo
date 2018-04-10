@@ -175,16 +175,12 @@ class IndicatorPage extends Component {
             return;
         }
 
-        this.setState({
-            isLoading: true
-        });
         promise
             .then(response => {
+                this.props.history.push("/");
             }).catch(error => {
             console.log(error);
-        });
-        this.setState({
-            isLoading: false
+            this.props.history.push("/");
         });
     }
 

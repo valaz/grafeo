@@ -78,8 +78,6 @@ class IndicatorCard extends React.Component {
             open: false
         });
         this.props.handleDelete(this.props.indicator.id);
-        this.props.history.push("/");
-
     };
 
     render() {
