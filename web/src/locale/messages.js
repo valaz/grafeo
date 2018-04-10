@@ -1,8 +1,14 @@
 export default {
     'en': {
+        error: {
+            notFound: 'The Page you\'re looking for was not found.',
+            serverError: 'Oops! Something went wrong at our Server. Why don\'t you go back?',
+            goBack: 'Go back'
+        },
         notification: {
             error: 'Sorry, some error on the server. PLease try again!',
-            logout: 'You successfully logged out!'
+            logout: 'You\'re successfully logged out!',
+            login: 'You\'re successfully logged in!'
         },
         profile: {
             title: 'Profile',
@@ -14,7 +20,8 @@ export default {
             profile: 'Profile',
             logout: 'Logout',
             login: 'Login',
-            signup: "Signup"
+            signup: "Signup",
+            addIndicator: "Add Indicator"
         },
         login: {
             header: 'Login',
@@ -41,7 +48,7 @@ export default {
             },
             notification: {
                 incorrect: 'Your Username or Password is incorrect. Please try again!',
-                success: 'You\'re successfully logged out.'
+                success: 'You\'re successfully logged in.'
             }
         },
         signup: {
@@ -94,6 +101,14 @@ export default {
             }
 
         },
+        indicatorList: {
+            card: {
+                lastChanged: 'Last record',
+                today: 'Today',
+                yesterday: 'Yesterday',
+                noData: 'No records'
+            }
+        },
         indicator: {
             create: {
                 header: 'Create indicator',
@@ -128,18 +143,37 @@ export default {
                         }
                     },
                     date: {
+                        placeholder: 'Date',
+                        today: 'today',
+                        cancel: 'cancel',
+                        ok: 'ok',
                         error: {
                             empty: 'Please select a date'
                         }
                     },
                     submit: 'Submit'
                 },
+                card: {
+                    edit: {
+                        menu: 'Edit'
+                    },
+                    delete: {
+                        menu: 'Delete',
+                        dialog: {
+                            title: 'Do you really want to delete indicator?',
+                            description: 'This action can not be undone',
+                            cancel: 'Cancel',
+                            delete: 'Delete'
+                        }
+                    }
+                },
                 table: {
                     header: {
                         date: 'Date',
                         value: 'Value',
                         action: 'Action'
-                    }
+                    },
+                    rowsPerPage: 'Rows per page:'
                 },
                 data: {
                     empty: 'No Indicators found'
@@ -150,9 +184,15 @@ export default {
 
     },
     'ru': {
+        error: {
+            notFound: 'Страница, которую Вы ищете не существует',
+            serverError: 'Извините, произошла ошибка на сервере. Почему бы Вам не вернуться назад?',
+            goBack: 'Назад'
+        },
         notification: {
             error: 'Извините, произошла ошибка. Пожалуйста, попробуйте снова!',
-            logout: 'Вы успешно вышли!'
+            logout: 'Вы успешно вышли!',
+            login: 'Вы успешно вошли!'
         },
         profile: {
             title: 'Профиль',
@@ -164,7 +204,8 @@ export default {
             profile: 'Профиль',
             logout: 'Выйти',
             login: 'Вход',
-            signup: "Регистрация"
+            signup: "Регистрация",
+            addIndicator: "Создать индикатор"
         },
         login: {
             header: 'Вход',
@@ -244,6 +285,14 @@ export default {
             }
 
         },
+        indicatorList: {
+            card: {
+                lastChanged: 'Последняя запись',
+                today: 'Сегодня',
+                yesterday: 'Вчера',
+                noData: 'Нет записей'
+            }
+        },
         indicator: {
             create: {
                 header: 'Создать Индикатор',
@@ -260,7 +309,7 @@ export default {
             edit: {
                 header: 'Обновить Индикатор',
                 placeholder: 'Введите название',
-                button: 'Обновать Индикатор',
+                button: 'Обновить Индикатор',
                 error: {
                     empty: 'Пожалуйста введите название',
                     long: 'Название слишком длинное (Допустимо {maxLength} символов)'
@@ -278,23 +327,41 @@ export default {
                         }
                     },
                     date: {
+                        placeholder: 'Дата',
+                        today: 'сегодня',
+                        cancel: 'отменить',
+                        ok: 'ок',
                         error: {
                             empty: 'Пожалуйста выберите дату'
                         }
                     },
                     submit: 'Отправить'
                 },
+                card: {
+                    edit: {
+                        menu: 'Изменить'
+                    },
+                    delete: {
+                        menu: 'Удалить',
+                        dialog: {
+                            title: 'Вы действительно хотите удалить индикатор?',
+                            description: 'Это действие будет невозможно отменить',
+                            cancel: 'Отмена',
+                            delete: 'Удалить'
+                        }
+                    }
+                },
                 table: {
                     header: {
                         date: 'Дата',
                         value: 'Значение',
                         action: 'Действие'
-                    }
+                    },
+                    rowsPerPage: 'Строк на странице:'
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
                 }
-
             }
         }
     }

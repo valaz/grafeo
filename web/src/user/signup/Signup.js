@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {checkEmailAvailability, checkUsernameAvailability, signup} from '../../util/APIUtils';
-import './Signup.css';
 import {Link} from 'react-router-dom';
 import {
     EMAIL_MAX_LENGTH,
@@ -12,10 +11,22 @@ import {
     USERNAME_MIN_LENGTH
 } from '../../constants';
 
-import {Button, Form, Input, notification} from 'antd';
 import {FormattedMessage, injectIntl} from "react-intl";
+import {Button, Grid, TextField, withStyles} from "material-ui";
+import Notification from "../../common/Notification";
 
-const FormItem = Form.Item;
+const gridSize = {
+    xs: 12,
+    sm: 8,
+    md: 6,
+    lg: 4
+};
+
+const styles = theme => ({
+    header: {
+        textAlign: 'center'
+    }
+});
 
 class Signup extends Component {
     constructor(props) {
@@ -32,13 +43,18 @@ class Signup extends Component {
             },
             password: {
                 value: ''
-            }
+            },
+            notification: {
+                open: false,
+                message: ''
+            },
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateUsernameAvailability = this.validateUsernameAvailability.bind(this);
         this.validateEmailAvailability = this.validateEmailAvailability.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
+        this.clearNotification = this.clearNotification.bind(this);
     }
 
     componentDidMount() {
@@ -58,6 +74,15 @@ class Signup extends Component {
         });
     }
 
+    clearNotification() {
+        this.setState({
+            notification: {
+                open: false,
+                message: ''
+            }
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
@@ -69,15 +94,13 @@ class Signup extends Component {
         };
         signup(signupRequest)
             .then(response => {
-                notification.success({
-                    message: 'Progressio',
-                    description: this.props.intl.formatMessage({id: 'signup.notification.success'})
-                });
-                this.props.history.push("/login");
+                this.props.onSignup();
             }).catch(error => {
-            notification.error({
-                message: 'Progressio',
-                description: error.message || this.props.intl.formatMessage({id: 'notification.error'})
+            this.setState({
+                notification: {
+                    open: true,
+                    message: this.props.intl.formatMessage({id: 'notification.error'})
+                }
             });
         });
     }
@@ -91,135 +114,122 @@ class Signup extends Component {
     }
 
     render() {
+        let namePlaceholder = this.props.intl.formatMessage({id: 'signup.form.name.placeholder'});
+        let usernamePlaceholder = this.props.intl.formatMessage({id: 'signup.form.username.placeholder'});
+        let emailPlaceholder = this.props.intl.formatMessage({id: 'signup.form.email.placeholder'});
+        let passwordPlaceholder = this.props.intl.formatMessage({id: 'signup.form.password.placeholder'});
+        const {classes} = this.props;
         return (
-            <div className="signup-container">
-                <h1 className="page-title">
+            <div style={{padding: 24, background: '#f1f1f1'}}>
+                <h1 className={classes.header}>
                     <FormattedMessage id="signup.header"/>
                 </h1>
-                <div className="signup-content">
-                    <Form onSubmit={this.handleSubmit} className="signup-form">
-                        <FormItem
-                            label={this.props.intl.formatMessage({id: 'signup.form.name.label'})}
-                            hasFeedback
-                            validateStatus={this.state.name.validateStatus}
-                            help={this.state.name.errorMsg}>
-                            <Input
-                                autoFocus
-                                size="large"
-                                name="name"
-                                autoComplete="off"
-                                placeholder={this.props.intl.formatMessage({id: 'signup.form.name.placeholder'})}
-                                value={this.state.name.value}
-                                onChange={(event) => this.handleInputChange(event, this.validateName)}/>
-                        </FormItem>
-                        <FormItem
-                            label={this.props.intl.formatMessage({id: 'signup.form.username.label'})}
-                            hasFeedback
-                            validateStatus={this.state.username.validateStatus}
-                            help={this.state.username.errorMsg}>
-                            <Input
-                                size="large"
-                                name="username"
-                                autoComplete="off"
-                                placeholder={this.props.intl.formatMessage({id: 'signup.form.username.placeholder'})}
-                                value={this.state.username.value}
-                                onBlur={this.validateUsernameAvailability}
-                                onChange={(event) => this.handleInputChange(event, this.validateUsername)}/>
-                        </FormItem>
-                        <FormItem
-                            label={this.props.intl.formatMessage({id: 'signup.form.email.label'})}
-                            hasFeedback
-                            validateStatus={this.state.email.validateStatus}
-                            help={this.state.email.errorMsg}>
-                            <Input
-                                size="large"
-                                name="email"
-                                type="email"
-                                autoComplete="off"
-                                placeholder={this.props.intl.formatMessage({id: 'signup.form.email.placeholder'})}
-                                value={this.state.email.value}
-                                onBlur={this.validateEmailAvailability}
-                                onChange={(event) => this.handleInputChange(event, this.validateEmail)}/>
-                        </FormItem>
-                        <FormItem
-                            label={this.props.intl.formatMessage({id: 'signup.form.password.label'})}
-                            hasFeedback
-                            validateStatus={this.state.password.validateStatus}
-                            help={this.state.password.errorMsg}>
-                            <Input
-                                size="large"
-                                name="password"
-                                type="password"
-                                autoComplete="off"
-                                placeholder={this.props.intl.formatMessage({id: 'signup.form.password.placeholder'})}
-                                value={this.state.password.value}
-                                onChange={(event) => this.handleInputChange(event, this.validatePassword)}/>
-                        </FormItem>
-                        <FormItem>
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="signup-form-button"
-                                    disabled={this.isFormInvalid()}>
-                                <FormattedMessage id="signup.form.submit"/>
-                            </Button>
-                            <FormattedMessage id="signup.form.login.registered"/> <Link to="/login">
-                            <FormattedMessage id="signup.form.login.now"/>
-                        </Link>
-                        </FormItem>
-                    </Form>
-                </div>
+                <Notification open={this.state.notification.open} message={this.state.notification.message}
+                              cleanup={this.clearNotification}/>
+                <form onSubmit={this.handleSubmit}>
+                    <Grid item xs={12}>
+                        <Grid container
+                              justify="center"
+                              direction='column'
+                              spacing={16}>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth autoFocus
+                                               autoComplete="off"
+                                               error={this.state.name.hasError}
+                                               helperText={this.state.name.errorMsg}
+                                               id="name"
+                                               name="name"
+                                               label={namePlaceholder}
+                                               value={this.state.name.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validateName)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               autoComplete="off"
+                                               error={this.state.username.hasError}
+                                               helperText={this.state.username.errorMsg}
+                                               id="username"
+                                               name="username"
+                                               label={usernamePlaceholder}
+                                               value={this.state.username.value}
+                                               onBlur={this.validateUsernameAvailability}
+                                               onChange={(event) => this.handleInputChange(event, this.validateUsername)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               autoComplete="off"
+                                               error={this.state.email.hasError}
+                                               helperText={this.state.email.errorMsg}
+                                               id="email"
+                                               name="email"
+                                               label={emailPlaceholder}
+                                               value={this.state.email.value}
+                                               onBlur={this.validateEmailAvailability}
+                                               onChange={(event) => this.handleInputChange(event, this.validateEmail)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               autoComplete="off"
+                                               error={this.state.password.hasError}
+                                               helperText={this.state.password.errorMsg}
+                                               id="password"
+                                               name="password"
+                                               label={passwordPlaceholder}
+                                               type="password"
+                                               value={this.state.password.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                            disabled={this.isFormInvalid()}>
+                                        <FormattedMessage id="signup.form.submit"/>
+                                    </Button>
+
+                                    <FormattedMessage id="signup.form.login.registered"/> <Link to="/login">
+                                    <FormattedMessage id="signup.form.login.now"/>
+                                </Link>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
             </div>
         );
     }
 
     // Validation Functions
-
     validateName = (name) => {
         if (name.length < NAME_MIN_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.short'}, {minLength: NAME_MIN_LENGTH})
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.short'}, {minLength: NAME_MIN_LENGTH}),
+                hasError: true
             }
         } else if (name.length > NAME_MAX_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.long'}, {maxLength: NAME_MAX_LENGTH})
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.name.error.long'}, {maxLength: NAME_MAX_LENGTH}),
+                hasError: true
             }
         } else {
             return {
                 validateStatus: 'success',
                 errorMsg: null,
+                hasError: false
             };
-        }
-    };
-
-    validateEmail = (email) => {
-        if (!email) {
-            return {
-                validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.empty'})
-            }
-        }
-
-        const EMAIL_REGEX = RegExp('[^@ ]+@[^@ ]+\\.[^@ ]+');
-        if (!EMAIL_REGEX.test(email)) {
-            return {
-                validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.invalid'})
-            }
-        }
-
-        if (email.length > EMAIL_MAX_LENGTH) {
-            return {
-                validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.long'}, {maxLength: EMAIL_MAX_LENGTH})
-            }
-        }
-
-        return {
-            validateStatus: null,
-            errorMsg: null
         }
     };
 
@@ -227,18 +237,76 @@ class Signup extends Component {
         if (username.length < USERNAME_MIN_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.short'}, {minLength: USERNAME_MIN_LENGTH})
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.short'}, {minLength: USERNAME_MIN_LENGTH}),
+                hasError: true
             }
         } else if (username.length > USERNAME_MAX_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.long'}, {maxLength: USERNAME_MAX_LENGTH})
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.long'}, {maxLength: USERNAME_MAX_LENGTH}),
+                hasError: true
             }
         } else {
             return {
                 validateStatus: null,
-                errorMsg: null
+                errorMsg: null,
+                hasError: false
             }
+        }
+    };
+
+    validateEmail = (email) => {
+        if (!email) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.empty'}),
+                hasError: true
+            }
+        }
+
+        const EMAIL_REGEX = RegExp('[^@ ]+@[^@ ]+\\.[^@ ]+');
+        if (!EMAIL_REGEX.test(email)) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.invalid'}),
+                hasError: true
+            }
+        }
+
+        if (email.length > EMAIL_MAX_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.long'}, {maxLength: EMAIL_MAX_LENGTH}),
+                hasError: true
+            }
+        }
+
+        return {
+            validateStatus: null,
+            errorMsg: null,
+            hasError: false
+        }
+    };
+
+    validatePassword = (password) => {
+        if (password.length < PASSWORD_MIN_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.short'}, {minLength: PASSWORD_MIN_LENGTH}),
+                hasError: true
+            }
+        } else if (password.length > PASSWORD_MAX_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.long'}, {maxLength: PASSWORD_MAX_LENGTH}),
+                hasError: true
+            }
+        } else {
+            return {
+                validateStatus: 'success',
+                errorMsg: null,
+                hasError: false
+            };
         }
     };
 
@@ -261,7 +329,8 @@ class Signup extends Component {
             username: {
                 value: usernameValue,
                 validateStatus: 'validating',
-                errorMsg: null
+                errorMsg: null,
+                hasError: false
             }
         });
 
@@ -272,7 +341,8 @@ class Signup extends Component {
                         username: {
                             value: usernameValue,
                             validateStatus: 'success',
-                            errorMsg: null
+                            errorMsg: null,
+                            hasError: false
                         }
                     });
                 } else {
@@ -280,7 +350,8 @@ class Signup extends Component {
                         username: {
                             value: usernameValue,
                             validateStatus: 'error',
-                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.taken'})
+                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.username.error.taken'}),
+                            hasError: true
                         }
                     });
                 }
@@ -290,7 +361,8 @@ class Signup extends Component {
                 username: {
                     value: usernameValue,
                     validateStatus: 'success',
-                    errorMsg: null
+                    errorMsg: null,
+                    hasError: false
                 }
             });
         });
@@ -334,12 +406,13 @@ class Signup extends Component {
                         email: {
                             value: emailValue,
                             validateStatus: 'error',
-                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.taken'})
+                            errorMsg: this.props.intl.formatMessage({id: 'signup.form.email.error.taken'}),
+                            hasError: true
                         }
                     });
                 }
             }).catch(error => {
-            // Marking validateStatus as success, Form will be recchecked at server
+            // Marking validateStatus as success, Form will be rechecked at server
             this.setState({
                 email: {
                     value: emailValue,
@@ -350,25 +423,6 @@ class Signup extends Component {
         });
     }
 
-    validatePassword = (password) => {
-        if (password.length < PASSWORD_MIN_LENGTH) {
-            return {
-                validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.short'}, {minLength: PASSWORD_MIN_LENGTH})
-            }
-        } else if (password.length > PASSWORD_MAX_LENGTH) {
-            return {
-                validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.long'}, {maxLength: PASSWORD_MAX_LENGTH})
-            }
-        } else {
-            return {
-                validateStatus: 'success',
-                errorMsg: null,
-            };
-        }
-    }
-
 }
 
-export default injectIntl(Signup);
+export default injectIntl(withStyles(styles)(Signup));

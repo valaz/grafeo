@@ -3,10 +3,22 @@ import './IndicatorList.css';
 import {deleteIndicator, getUserCreatedIndicators} from '../util/APIUtils';
 import Indicator from './Indicator';
 import LoadingIndicator from '../common/LoadingIndicator';
-import {Button, Icon, Row} from 'antd';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
+import {Grid, withStyles} from "material-ui";
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing.unit,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+});
+
 
 class IndicatorList extends Component {
     constructor(props) {
@@ -126,10 +138,10 @@ class IndicatorList extends Component {
         }
 
         return (
-            <div className="indicators-container">
-                <Row>
+            <div style={{padding: 16, background: '#f1f1f1'}}>
+                <Grid container spacing={16}>
                     {indicatorViews}
-                </Row>
+                </Grid>
                 {
                     !this.state.isLoading && this.state.indicators.length === 0 ? (
                         <div className="no-indicators-found">
@@ -140,14 +152,6 @@ class IndicatorList extends Component {
                     ) : null
                 }
                 {
-                    !this.state.isLoading && !this.state.last ? (
-                        <div className="load-more-indicators">
-                            <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
-                                <Icon type="plus"/> Load more
-                            </Button>
-                        </div>) : null
-                }
-                {
                     this.state.isLoading ?
                         <LoadingIndicator/> : null
                 }
@@ -156,4 +160,4 @@ class IndicatorList extends Component {
     }
 }
 
-export default withRouter(IndicatorList);
+export default withRouter(withStyles(styles)(IndicatorList));
