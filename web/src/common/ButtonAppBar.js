@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import {NavLink, withRouter} from "react-router-dom";
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import {AccountCircle} from "@material-ui/icons";
 import {Menu, MenuItem} from "material-ui";
 import {FormattedMessage} from "react-intl";
 

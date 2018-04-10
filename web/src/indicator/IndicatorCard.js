@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Card, {CardHeader} from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import {Delete, Edit, MoreVert} from "@material-ui/icons";
 import {Button, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
 import {withRouter} from "react-router-dom";
-import Edit from "@material-ui/icons/es/Edit";
-import Delete from "@material-ui/icons/es/Delete";
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -98,7 +96,7 @@ class IndicatorCard extends React.Component {
                                 aria-owns={anchorEl ? 'simple-menu' : null}
                                 aria-haspopup="true"
                                 onClick={this.handleMenuClick}>
-                                <MoreVertIcon/>
+                                <MoreVert/>
                             </IconButton>
 
                         }
