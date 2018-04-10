@@ -3,18 +3,18 @@
 ## Backend:
 * Maven
 * Spring-boot
-* Hibernate
+* Spring Data (Hibernate)
+* Spring Security
 * Postgresql
-* Spring security
 
 ## Frontend:
-* Npm
-* React
-* Ant Design
-* Recharts
-* React-intl
-* Moment.js
-* React-router
+* npm
+* react
+* react-router
+* react-intl
+* material-ui
+* recharts
+* moment.js
 
 ## CI/CD
 * Travis-ci
