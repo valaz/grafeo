@@ -26,6 +26,9 @@ const styles = theme => ({
         current: {
             color: '#fff',
         },
+    },
+    button: {
+        marginTop: '10px'
     }
 });
 
@@ -189,7 +192,7 @@ class AddRecordForm extends Component {
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} align="center">
                         <Button fullWidth type="submit" variant="raised" color="primary" size="large"
-                                disabled={this.isFormInvalid()}>
+                                disabled={this.isFormInvalid()} className={classes.button}>
                             <FormattedMessage id="indicator.view.form.submit"/>
                         </Button>
                     </Grid>
