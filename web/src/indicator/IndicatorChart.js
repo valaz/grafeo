@@ -14,7 +14,6 @@ import {
 } from "recharts";
 import {getRandomColor} from "../util/Colors";
 import moment from "moment";
-import {Paper} from "material-ui";
 import {withStyles} from "material-ui/styles/index";
 
 const dateFormat = 'YYYY-MM-DD';
@@ -113,28 +112,24 @@ class IndicatorChart extends Component {
             return null;
         }
 
-        const {classes} = this.props;
-
         return (
-            <Paper  className={classes.root}>
-                <div className="line-chart-wrapper" style={{width: '100%', height: '250px'}}>
-                    <ResponsiveContainer>
-                        <BarChart
-                            width={700}
-                            height={350}
-                            data={chartData}
-                            margin={{top: 10, right: 0, bottom: 5, left: 0}}>
-                            <CartesianGrid strokeDasharray="1 1"/>
-                            <ReferenceLine y={0} stroke='#000'/>
-                            <XAxis dataKey="chartDate"/>
-                            <YAxis orientation="left" mirror={true} scale='linear'/>
-                            <Tooltip/>
-                            <Bar dataKey="value" fill={chartColor} onClick={(d, i) => this.handleClick(d)}/>
-                            {brush}
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            </Paper>
+            <div className="line-chart-wrapper" style={{width: '100%', height: '250px'}}>
+                <ResponsiveContainer>
+                    <BarChart
+                        width={700}
+                        height={350}
+                        data={chartData}
+                        margin={{top: 10, right: 0, bottom: 5, left: 0}}>
+                        <CartesianGrid strokeDasharray="1 1"/>
+                        <ReferenceLine y={0} stroke='#000'/>
+                        <XAxis dataKey="chartDate"/>
+                        <YAxis orientation="left" mirror={true} scale='linear'/>
+                        <Tooltip/>
+                        <Bar dataKey="value" fill={chartColor} onClick={(d, i) => this.handleClick(d)}/>
+                        {brush}
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         )
     }
 }

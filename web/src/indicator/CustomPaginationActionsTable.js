@@ -14,7 +14,7 @@ const actionsStyles = theme => ({
     root: {
         flexShrink: 0,
         color: theme.palette.text.secondary,
-        marginLeft: theme.spacing.unit * 2.5,
+        marginLeft: theme.spacing.unit,
     },
 });
 
@@ -111,6 +111,11 @@ const styles = theme => ({
     },
     tableWrapper: {
         overflowX: 'auto',
+    },
+    selectRoot: {
+        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing.unit,
+        color: theme.palette.text.secondary,
     },
 });
 
@@ -225,6 +230,7 @@ class CustomPaginationActionsTable extends React.Component {
                         <TableFooter>
                             <TableRow>
                                 <TablePagination
+                                    classes={{selectRoot: classes.selectRoot}}
                                     colSpan={3}
                                     count={data.length}
                                     rowsPerPage={rowsPerPage}
