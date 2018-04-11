@@ -229,8 +229,6 @@ class IndicatorPage extends Component {
     }
 
     render() {
-        let {notification} = this.state;
-
         if (this.state.isLoading) {
             return <LoadingIndicator/>;
         }
