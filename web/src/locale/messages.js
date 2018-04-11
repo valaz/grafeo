@@ -90,6 +90,14 @@ export default {
                     }
 
                 },
+                passwordConfirm: {
+                    label: 'Password confirm',
+                    placeholder: 'A password between 6 to 20 characters',
+                    error: {
+                        short: 'Password is too short (Minimum {minLength} characters needed)',
+                        long: 'Password is too long (Maximum {maxLength} characters allowed)',
+                    }
+                },
                 submit: 'Signup',
                 login: {
                     registered: 'Already registered?',
@@ -276,7 +284,14 @@ export default {
                         short: 'Пароль слишком короткий (Минимальная длина {minLength})',
                         long: 'Пароль слишком длинный (Максимальная длина {maxLength})',
                     }
-
+                },
+                passwordConfirm: {
+                    label: 'Подтверждение пароля',
+                    placeholder: 'Пароль от 6 до 20 символов',
+                    error: {
+                        short: 'Пароль слишком короткий (Минимальная длина {minLength})',
+                        long: 'Пароль слишком длинный (Максимальная длина {maxLength})',
+                    }
                 },
                 submit: 'Зарегистрироваться',
                 login: {

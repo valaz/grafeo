@@ -44,6 +44,9 @@ class Signup extends Component {
             password: {
                 value: ''
             },
+            passwordConfirm: {
+                value: ''
+            },
             notification: {
                 open: false,
                 message: ''
@@ -51,8 +54,10 @@ class Signup extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.validateAll = this.validateAll.bind(this);
         this.validateUsernameAvailability = this.validateUsernameAvailability.bind(this);
         this.validateEmailAvailability = this.validateEmailAvailability.bind(this);
+        this.validatePasswords = this.validatePasswords.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
     }
@@ -106,18 +111,26 @@ class Signup extends Component {
     }
 
     isFormInvalid() {
-        return !(this.state.name.validateStatus === 'success' &&
+        let isValid = this.state.name.validateStatus === 'success' &&
             this.state.username.validateStatus === 'success' &&
             this.state.email.validateStatus === 'success' &&
-            this.state.password.validateStatus === 'success'
-        );
+            this.state.password.validateStatus === 'success' &&
+            this.state.passwordConfirm.validateStatus === 'success';
+        return !isValid;
+    }
+
+    validateAll() {
+        this.validateUsernameAvailability();
+        this.validateEmailAvailability();
+        this.validatePasswords()
     }
 
     render() {
-        let namePlaceholder = this.props.intl.formatMessage({id: 'signup.form.name.placeholder'});
-        let usernamePlaceholder = this.props.intl.formatMessage({id: 'signup.form.username.placeholder'});
-        let emailPlaceholder = this.props.intl.formatMessage({id: 'signup.form.email.placeholder'});
-        let passwordPlaceholder = this.props.intl.formatMessage({id: 'signup.form.password.placeholder'});
+        let nameLabel = this.props.intl.formatMessage({id: 'signup.form.name.label'});
+        let usernameLabel = this.props.intl.formatMessage({id: 'signup.form.username.label'});
+        let emailLabel = this.props.intl.formatMessage({id: 'signup.form.email.label'});
+        let passwordLabel = this.props.intl.formatMessage({id: 'signup.form.password.label'});
+        let passwordConfirmLabel = this.props.intl.formatMessage({id: 'signup.form.passwordConfirm.label'});
         const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
@@ -140,7 +153,7 @@ class Signup extends Component {
                                                helperText={this.state.name.errorMsg}
                                                id="name"
                                                name="name"
-                                               label={namePlaceholder}
+                                               label={nameLabel}
                                                value={this.state.name.value}
                                                onChange={(event) => this.handleInputChange(event, this.validateName)}
                                     />
@@ -154,7 +167,7 @@ class Signup extends Component {
                                                helperText={this.state.username.errorMsg}
                                                id="username"
                                                name="username"
-                                               label={usernamePlaceholder}
+                                               label={usernameLabel}
                                                value={this.state.username.value}
                                                onBlur={this.validateUsernameAvailability}
                                                onChange={(event) => this.handleInputChange(event, this.validateUsername)}
@@ -169,7 +182,7 @@ class Signup extends Component {
                                                helperText={this.state.email.errorMsg}
                                                id="email"
                                                name="email"
-                                               label={emailPlaceholder}
+                                               label={emailLabel}
                                                value={this.state.email.value}
                                                onBlur={this.validateEmailAvailability}
                                                onChange={(event) => this.handleInputChange(event, this.validateEmail)}
@@ -184,10 +197,27 @@ class Signup extends Component {
                                                helperText={this.state.password.errorMsg}
                                                id="password"
                                                name="password"
-                                               label={passwordPlaceholder}
+                                               label={passwordLabel}
                                                type="password"
                                                value={this.state.password.value}
+                                               onBlur={this.validatePasswords}
                                                onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               autoComplete="off"
+                                               error={this.state.passwordConfirm.hasError}
+                                               helperText={this.state.passwordConfirm.errorMsg}
+                                               id="passwordConfirm"
+                                               name="passwordConfirm"
+                                               label={passwordConfirmLabel}
+                                               type="password"
+                                               value={this.state.passwordConfirm.value}
+                                               onBlur={this.validatePasswords}
+                                               onChange={(event) => this.handleInputChange(event, this.validatePasswordConfirm)}
                                     />
                                 </Grid>
                             </Grid>
@@ -303,7 +333,29 @@ class Signup extends Component {
             }
         } else {
             return {
-                validateStatus: 'success',
+                validateStatus: null,
+                errorMsg: null,
+                hasError: false
+            };
+        }
+    };
+
+    validatePasswordConfirm = (password) => {
+        if (password.length < PASSWORD_MIN_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.passwordConfirm.error.short'}, {minLength: PASSWORD_MIN_LENGTH}),
+                hasError: true
+            }
+        } else if (password.length > PASSWORD_MAX_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'signup.form.passwordConfirm.error.long'}, {maxLength: PASSWORD_MAX_LENGTH}),
+                hasError: true
+            }
+        } else {
+            return {
+                validateStatus: null,
                 errorMsg: null,
                 hasError: false
             };
@@ -387,7 +439,8 @@ class Signup extends Component {
             email: {
                 value: emailValue,
                 validateStatus: 'validating',
-                errorMsg: null
+                errorMsg: null,
+                hasError: false
             }
         });
 
@@ -398,7 +451,8 @@ class Signup extends Component {
                         email: {
                             value: emailValue,
                             validateStatus: 'success',
-                            errorMsg: null
+                            errorMsg: null,
+                            hasError: false
                         }
                     });
                 } else {
@@ -417,10 +471,50 @@ class Signup extends Component {
                 email: {
                     value: emailValue,
                     validateStatus: 'success',
-                    errorMsg: null
+                    errorMsg: null,
+                    hasError: false
                 }
             });
         });
+    }
+
+    validatePasswords() {
+        let password = this.state.password.value;
+        let passwordConfirm = this.state.passwordConfirm.value;
+        if (!password || !passwordConfirm) {
+            return;
+        }
+        if (password === passwordConfirm) {
+            this.setState({
+                password: {
+                    value: password,
+                    validateStatus: 'success',
+                    errorMsg: null,
+                    hasError: false
+                },
+                passwordConfirm: {
+                    value: passwordConfirm,
+                    validateStatus: 'success',
+                    errorMsg: null,
+                    hasError: false
+                }
+            });
+        } else {
+            this.setState({
+                password: {
+                    value: password,
+                    validateStatus: 'error',
+                    errorMsg: "Passwords are not matching",
+                    hasError: true
+                },
+                passwordConfirm: {
+                    value: passwordConfirm,
+                    validateStatus: 'error',
+                    errorMsg: "Passwords are not matching",
+                    hasError: true
+                }
+            });
+        }
     }
 
 }
