@@ -139,7 +139,8 @@ export default {
                     value: {
                         placeholder: 'Value',
                         error: {
-                            empty: 'Please enter a value'
+                            empty: 'Please enter a value',
+                            long: 'Value is too long',
                         }
                     },
                     date: {
@@ -326,7 +327,8 @@ export default {
                     value: {
                         placeholder: 'Значение',
                         error: {
-                            empty: 'Пожалуйста введите значение'
+                            empty: 'Пожалуйста введите значение',
+                            long: 'Слишком большое значение',
                         }
                     },
                     date: {

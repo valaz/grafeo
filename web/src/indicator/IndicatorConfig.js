@@ -221,6 +221,7 @@ class IndicatorConfig extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
+                                               autoComplete="off"
                                                error={this.state.name.hasError}
                                                helperText={this.state.name.errorMsg}
                                                id="name"

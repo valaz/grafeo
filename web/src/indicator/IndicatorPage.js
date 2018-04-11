@@ -7,14 +7,11 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
-import moment from "moment/moment";
 import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
 import {Grid, withStyles} from "material-ui";
 import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
 import Notification from "../common/Notification";
-
-const dateFormat = 'YYYY-MM-DD';
 
 const gridSize = {
     xs: 12,
@@ -108,7 +105,6 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
-                    tableRecords: this.getTableRecords(response.records),
                     isLoading: false
                 });
                 document.title = this.state.indicator.name;
@@ -139,7 +135,6 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
-                    tableRecords: this.getTableRecords(response.records),
                     editDate: null,
                     editValue: ''
                 });
@@ -148,7 +143,7 @@ class IndicatorPage extends Component {
             this.setState({
                 notification: {
                     open: true,
-                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                    message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
                 }
             });
             this.setState({
@@ -157,13 +152,6 @@ class IndicatorPage extends Component {
             });
         });
 
-    }
-
-    getTableRecords(records) {
-        let tableRecords = records.map(r => ({...r}));
-        tableRecords.reverse();
-        tableRecords.map(d => d['tableDate'] = moment(d['date'], dateFormat).format('DD MMMM'));
-        return tableRecords;
     }
 
     handleIndicatorDelete(id) {
@@ -196,18 +184,19 @@ class IndicatorPage extends Component {
                 this.setState({
                     indicator: response,
                     records: response.records,
-                    tableRecords: this.getTableRecords(response.records),
                     notification: {
-                    open: true,
+                        open: true,
                         message: this.props.intl.formatMessage({id: 'indicator.view.record.deleted'})
-                    }
+                    },
+                    editDate: null,
+                    editValue: ''
                 });
             }).catch(error => {
             console.log(error);
             this.setState({
                 notification: {
                     open: true,
-                    message: error.message || 'Sorry! Something went wrong. Please try again!'
+                    message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
                 }
             });
         });
@@ -270,7 +259,7 @@ class IndicatorPage extends Component {
                     </Grid>
                     <Grid container item spacing={0} justify="center">
                         <Grid item {...gridSize}>
-                            <CustomPaginationActionsTable dataSource={this.state.tableRecords}
+                            <CustomPaginationActionsTable dataSource={this.state.records}
                                                           editHadler={this.handleEdit}
                                                           deleteHandler={this.handleRecordDelete}/>
                         </Grid>
