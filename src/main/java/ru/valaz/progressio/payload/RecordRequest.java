@@ -1,8 +1,11 @@
 package ru.valaz.progressio.payload;
 
+import lombok.Data;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@Data
 public class RecordRequest {
 
     @NotNull
@@ -13,28 +16,4 @@ public class RecordRequest {
 
     @NotNull
     private LocalDate date;
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Long getIndicatorId() {
-        return indicatorId;
-    }
-
-    public void setIndicatorId(Long indicatorId) {
-        this.indicatorId = indicatorId;
-    }
 }
