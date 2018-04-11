@@ -3,6 +3,8 @@ import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField, withStyles} from "material-ui";
 import {DatePicker} from "material-ui-pickers";
 import moment from "moment";
+import PropTypes from "prop-types";
+import NumberFormat from 'react-number-format';
 
 const dateFormat = 'YYYY-MM-DD';
 const datePickerFormat = "LL";
@@ -29,6 +31,30 @@ const styles = theme => ({
     }
 });
 
+function NumberFormatCustom(props) {
+    const {inputRef, onChange, ...other} = props;
+    return (
+        <NumberFormat
+            {...other}
+            ref={inputRef}
+            onValueChange={values => {
+                onChange({
+                    target: {
+                        value: values.value,
+                    },
+                });
+            }}
+            decimalScale={3}
+            thousandSeparator
+        />
+    );
+}
+
+NumberFormatCustom.propTypes = {
+    inputRef: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
 class AddRecordForm extends Component {
     constructor(props) {
         super(props);
@@ -52,23 +78,38 @@ class AddRecordForm extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.editValue && nextProps.editValue > 0) {
-            let valueValue = nextProps.editValue;
+        let valueValue = nextProps.editValue;
+        if (valueValue) {
             this.setState({
                 value: {
                     value: valueValue,
                     ...this.validateValue(valueValue)
                 }
             });
+        } else {
+            this.setState({
+                value: {
+                    value: ''
+                }
+            });
+
         }
-        if (nextProps.editDate) {
-            let dateValue = moment(nextProps.editDate, dateFormat);
+        let dateValue = moment(nextProps.editDate, dateFormat);
+        console.log(dateValue);
+        if (dateValue.isValid()) {
             this.setState({
                 date: {
                     value: dateValue,
                     ...this.validateDate(dateValue)
                 }
             });
+        } else {
+            this.setState({
+                date: {
+                    value: null
+                }
+            });
+
         }
     }
 
@@ -135,11 +176,23 @@ class AddRecordForm extends Component {
         });
     }
 
+    handleNumberChange(name, event, validationFun) {
+        const target = event.target;
+        const inputName = name;
+        const inputValue = target.value;
+
+        this.setState({
+            [inputName]: {
+                value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
+    }
+
     handleInputChange(event, validationFun) {
         const target = event.target;
         const inputName = target.name;
         const inputValue = target.value;
-
 
         this.setState({
             [inputName]: {
@@ -177,17 +230,20 @@ class AddRecordForm extends Component {
                                     className={classes.picker}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}  align="center">
+                    <Grid item xs={12} sm={6} md={4} align="center">
                         <TextField fullWidth
+                                   autoComplete="off"
                                    error={this.state.value.hasError}
                                    helperText={this.state.value.errorMsg}
                                    id="value"
                                    name="value"
                                    label={this.props.intl.formatMessage({id: 'indicator.view.form.value.placeholder'})}
                                    value={this.state.value.value}
-                                   onChange={(event) => this.handleInputChange(event, this.validateValue)}
-                                   type="number"
+                                   onChange={(event) => this.handleNumberChange("value", event, this.validateValue)}
                                    className={classes.textField}
+                                   InputProps={{
+                                       inputComponent: NumberFormatCustom,
+                                   }}
 
                         />
                     </Grid>
@@ -204,6 +260,20 @@ class AddRecordForm extends Component {
 
     validateValue = (value) => {
         if (value) {
+            if (value > Math.pow(2, 63)) {
+                return {
+                    validateStatus: 'error',
+                    errorMsg: this.props.intl.formatMessage({id: 'indicator.view.form.value.error.long'}),
+                    hasError: true
+                }
+            }
+            if (value < -Math.pow(2, 63)) {
+                return {
+                    validateStatus: 'error',
+                    errorMsg: this.props.intl.formatMessage({id: 'indicator.view.form.value.error.long'}),
+                    hasError: true
+                }
+            }
             return {
                 validateStatus: 'success',
                 errorMsg: '',

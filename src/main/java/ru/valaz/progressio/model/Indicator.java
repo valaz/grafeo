@@ -1,5 +1,9 @@
 package ru.valaz.progressio.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -16,6 +20,9 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "indicarors")
+@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Indicator extends UserDateAudit {
 
     @Id
@@ -24,6 +31,7 @@ public class Indicator extends UserDateAudit {
 
     @NotBlank
     @Size(max = 140)
+    @NonNull
     private String name;
 
     @OneToMany(
@@ -35,37 +43,6 @@ public class Indicator extends UserDateAudit {
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 30)
     private List<Record> records = new ArrayList<>();
-
-    public Indicator() {
-    }
-
-    public Indicator(String name) {
-        this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> choices) {
-        this.records = choices;
-    }
 
     public void addRecord(Record newRecord) {
         Optional<Record> currentRecord = records.stream()

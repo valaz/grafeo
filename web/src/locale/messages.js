@@ -139,7 +139,8 @@ export default {
                     value: {
                         placeholder: 'Value',
                         error: {
-                            empty: 'Please enter a value'
+                            empty: 'Please enter a value',
+                            long: 'Value is too long',
                         }
                     },
                     date: {
@@ -176,7 +177,10 @@ export default {
                     rowsPerPage: 'Rows per page:'
                 },
                 data: {
-                    empty: 'No Indicators found'
+                    empty: 'No Indicators found',
+                },
+                record: {
+                    deleted: 'Record deleted successfully'
                 }
 
             }
@@ -323,7 +327,8 @@ export default {
                     value: {
                         placeholder: 'Значение',
                         error: {
-                            empty: 'Пожалуйста введите значение'
+                            empty: 'Пожалуйста введите значение',
+                            long: 'Слишком большое значение',
                         }
                     },
                     date: {
@@ -361,6 +366,9 @@ export default {
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
+                },
+                record: {
+                    deleted: 'Запись успешно удалена'
                 }
             }
         }

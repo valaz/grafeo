@@ -5,7 +5,10 @@ import Table, {TableBody, TableCell, TableFooter, TablePagination, TableRow,} fr
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import {Delete, Edit, KeyboardArrowLeft, KeyboardArrowRight} from "@material-ui/icons";
-import {injectIntl} from "react-intl";
+import {FormattedNumber, injectIntl} from "react-intl";
+import moment from "moment/moment";
+
+const dateFormat = 'YYYY-MM-DD';
 
 const actionsStyles = theme => ({
     root: {
@@ -134,22 +137,18 @@ class CustomPaginationActionsTable extends React.Component {
     }
 
     updateData(dataSource) {
-        let tableData = [];
-        for (let dataSourceElement of dataSource) {
-            tableData.push(this.createRowData(dataSourceElement));
-        }
+        let tableData = dataSource.slice(0);
+        tableData = tableData.map(d => this.createRowData(d)).reverse();
+
         this.setState({
             data: tableData
         });
-        let length = tableData.length;
-        let rowsPerPage = 10;
-        if (length < 5) {
-            rowsPerPage = 5
-        }
-        this.setState({
-            rowsPerPage: rowsPerPage
-        });
 
+        if (tableData.length <= 5) {
+            this.setState({
+                rowsPerPage: 5
+            });
+        }
     }
 
     createRowData(data) {
@@ -162,22 +161,27 @@ class CustomPaginationActionsTable extends React.Component {
         </div>;
         return {
             id: data.id,
-            date: data.tableDate,
-            value: data.value,
+            date: this.formatDate(data.date),
+            value: this.formatNumber(data.value),
             editAction: editAction,
             deleteAction: deleteAction
         };
     }
 
+    formatDate(date) {
+        return moment(date, dateFormat).format('DD MMMM');
+    }
+
+
+    formatNumber(n) {
+        return <FormattedNumber value={n}/>;
+    }
+
     handleEdit(record) {
-        console.log('edit');
-        console.log(record);
         this.props.editHadler(record)
     }
 
     handleDelete(record) {
-        console.log('delete');
-        console.log(record);
         this.props.deleteHandler(record)
     }
 

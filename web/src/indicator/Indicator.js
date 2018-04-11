@@ -77,14 +77,14 @@ class Indicator extends Component {
         let valueDescription;
         if (records.length > 0) {
             let lastRecord = records[records.length - 1];
-            valueDescription = lastRecord.value;
+            valueDescription = this.props.intl.formatNumber(lastRecord.value);
         } else {
             valueDescription = '';
         }
 
         const {classes} = this.props;
         return (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} lg={4}>
                 <NavLink to={"/indicator/" + this.props.indicator.id}
                          className={classes.link}>
                     <StatsCard item
