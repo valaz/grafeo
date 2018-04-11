@@ -176,7 +176,10 @@ export default {
                     rowsPerPage: 'Rows per page:'
                 },
                 data: {
-                    empty: 'No Indicators found'
+                    empty: 'No Indicators found',
+                },
+                record: {
+                    deleted: 'Record deleted successfully'
                 }
 
             }
@@ -361,6 +364,9 @@ export default {
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
+                },
+                record: {
+                    deleted: 'Запись успешно удалена'
                 }
             }
         }

@@ -64,6 +64,7 @@ class IndicatorPage extends Component {
         this.handleRecordDelete = this.handleRecordDelete.bind(this);
         this.handleIndicatorDelete = this.handleIndicatorDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.clearNotification = this.clearNotification.bind(this);
     }
 
     clearNotification() {
@@ -196,6 +197,10 @@ class IndicatorPage extends Component {
                     indicator: response,
                     records: response.records,
                     tableRecords: this.getTableRecords(response.records),
+                    notification: {
+                    open: true,
+                        message: this.props.intl.formatMessage({id: 'indicator.view.record.deleted'})
+                    }
                 });
             }).catch(error => {
             console.log(error);
@@ -213,6 +218,14 @@ class IndicatorPage extends Component {
             editDate: record.date,
             editValue: record.value,
         })
+    }
+
+    notification() {
+        let {notification} = this.state;
+        return (
+            <Notification open={notification.open} message={notification.message}
+                          cleanup={this.clearNotification}/>
+        )
     }
 
     render() {
@@ -234,8 +247,7 @@ class IndicatorPage extends Component {
 
         return (
             <div>
-                <Notification open={notification.open} message={notification.message}
-                              cleanup={this.clearNotification}/>
+                {this.notification()}
                 <Grid container
                       justify="center"
                       direction='column'
