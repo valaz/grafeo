@@ -179,8 +179,6 @@ class IndicatorChart extends Component {
                 <div className={classes.chart}>
                     <ResponsiveContainer>
                         <AreaChart
-                            width={700}
-                            height={350}
                             data={chartData}
                             margin={{top: 10, right: 0, bottom: 5, left: 0}}>
                             <CartesianGrid strokeDasharray="1" vertical={false}/>
@@ -190,8 +188,6 @@ class IndicatorChart extends Component {
                                    tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
                             />
                             <Tooltip/>
-                            {/*<ReferenceLine y={minY} stroke="red" strokeDasharray="3 3"/>*/}
-                            {/*<ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3"/>*/}
                             <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                                   dot={{stroke: chartColor, strokeWidth: 1}}
                                   connectNulls={true}

@@ -18,6 +18,7 @@ public class ModelMapper {
         IndicatorResponse indicatorResponse = new IndicatorResponse();
         indicatorResponse.setId(indicator.getId());
         indicatorResponse.setName(indicator.getName());
+        indicatorResponse.setUnit(indicator.getUnit());
         indicatorResponse.setCreationDateTime(indicator.getCreatedAt());
 
         List<RecordResponse> recordResponses = indicator.getRecords().stream().map(record -> {

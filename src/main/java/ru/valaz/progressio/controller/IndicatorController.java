@@ -57,6 +57,7 @@ public class IndicatorController {
     public IndicatorResponse createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
         Indicator indicator = new Indicator();
         indicator.setName(indicatorRequest.getName());
+        indicator.setUnit(indicatorRequest.getUnit());
 
         Indicator result = indicatorRepository.save(indicator);
 

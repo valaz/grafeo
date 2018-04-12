@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
-import {INDICATOR_NAME_MAX_LENGTH} from '../constants';
+import {INDICATOR_NAME_MAX_LENGTH, UNIT_NAME_MAX_LENGTH} from '../constants';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
 import Notification from "../common/Notification";
@@ -23,13 +23,35 @@ class IndicatorConfig extends Component {
         if (name.length === 0) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'indicator.create.error.empty'}),
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.config.form.name.error.empty'}),
                 hasError: true
             }
         } else if (name.length > INDICATOR_NAME_MAX_LENGTH) {
             return {
                 validateStatus: 'error',
-                errorMsg: this.props.intl.formatMessage({id: 'indicator.create.error.long'}, {maxLength: INDICATOR_NAME_MAX_LENGTH}),
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.config.form.name.error.long'}, {maxLength: INDICATOR_NAME_MAX_LENGTH}),
+                hasError: true
+            }
+        } else {
+            return {
+                validateStatus: 'success',
+                errorMsg: null,
+                hasError: false
+            };
+        }
+    };
+
+    validateUnit = (name) => {
+        if (name.length === 0) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.config.form.unit.error.empty'}),
+                hasError: true
+            }
+        } else if (name.length > UNIT_NAME_MAX_LENGTH) {
+            return {
+                validateStatus: 'error',
+                errorMsg: this.props.intl.formatMessage({id: 'indicator.config.form.unit.error.long'}, {maxLength: UNIT_NAME_MAX_LENGTH}),
                 hasError: true
             }
         } else {
@@ -47,6 +69,9 @@ class IndicatorConfig extends Component {
             name: {
                 value: ''
             },
+            unit: {
+                value: ''
+            },
             isEdit: false,
             indicator: {
                 name: ''
@@ -62,13 +87,15 @@ class IndicatorConfig extends Component {
     }
 
     componentWillMount() {
-        document.title = this.props.intl.formatMessage({id: 'indicator.create.header'});
         const id = this.props.match.params.id;
         if (id) {
+            document.title = this.props.intl.formatMessage({id: 'indicator.config.header.edit'});
             this.setState({
                 isEdit: true
             });
             this.loadIndicator(id);
+        } else {
+            document.title = this.props.intl.formatMessage({id: 'indicator.config.header.create'});
         }
     }
 
@@ -93,6 +120,7 @@ class IndicatorConfig extends Component {
     handleCreateSubmit() {
         const indicatorData = {
             name: this.state.name.value,
+            unit: this.state.unit.value,
             indicatorLength: this.state.indicatorLength
         };
 
@@ -101,7 +129,7 @@ class IndicatorConfig extends Component {
                 this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
-                this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.create.notification.logout'}));
+                this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.config.notification.logout'}));
             } else {
                 this.setState({
                     notification: {
@@ -117,6 +145,7 @@ class IndicatorConfig extends Component {
         const indicatorData = {
             id: this.state.indicator.id,
             name: this.state.name.value,
+            unit: this.state.unit.value,
             indicatorLength: this.state.indicatorLength
         };
         editIndicator(indicatorData)
@@ -165,10 +194,14 @@ class IndicatorConfig extends Component {
         promise
             .then(response => {
                 let indicatorName = response.name;
+                let indicatorUnit = response.unit;
                 this.setState({
                     indicator: response,
                     name: {
                         value: indicatorName
+                    },
+                    unit: {
+                        value: indicatorUnit
                     },
                     isLoading: false
                 });
@@ -190,7 +223,7 @@ class IndicatorConfig extends Component {
     }
 
     isFormInvalid() {
-        return !(this.state.name.validateStatus === 'success');
+        return !(this.state.name.validateStatus === 'success' && this.state.unit.validateStatus === 'success');
     }
 
     checkInput(inputName, inputValue, validationFun) {
@@ -203,7 +236,8 @@ class IndicatorConfig extends Component {
     }
 
     render() {
-        let namePlaceholder = this.props.intl.formatMessage({id: 'indicator.create.placeholder'});
+        let nameLabel = this.props.intl.formatMessage({id: 'indicator.config.form.name.label'});
+        let unitLabel = this.props.intl.formatMessage({id: 'indicator.config.form.unit.label'});
         const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
@@ -226,9 +260,22 @@ class IndicatorConfig extends Component {
                                                helperText={this.state.name.errorMsg}
                                                id="name"
                                                name="name"
-                                               label={namePlaceholder}
+                                               label={nameLabel}
                                                value={this.state.name.value}
                                                onChange={(event) => this.handleInputChange(event, this.validateName)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container item spacing={0} justify="center">
+                                <Grid item {...gridSize}>
+                                    <TextField fullWidth
+                                               error={this.state.unit.hasError}
+                                               helperText={this.state.unit.errorMsg}
+                                               id="unit"
+                                               name="unit"
+                                               label={unitLabel}
+                                               value={this.state.unit.value}
+                                               onChange={(event) => this.handleInputChange(event, this.validateUnit)}
                                     />
                                 </Grid>
                             </Grid>
@@ -250,17 +297,17 @@ class IndicatorConfig extends Component {
 
     getSubmitButton() {
         if (this.state.isEdit) {
-            return <FormattedMessage id="indicator.edit.button"/>;
+            return <FormattedMessage id="indicator.config.form.button.edit"/>;
         } else {
-            return <FormattedMessage id="indicator.create.button"/>;
+            return <FormattedMessage id="indicator.config.form.button.create"/>;
         }
     }
 
     getHeader() {
         if (this.state.isEdit) {
-            return <FormattedMessage id="indicator.edit.header"/>;
+            return <FormattedMessage id="indicator.config.header.edit"/>;
         } else {
-            return <FormattedMessage id="indicator.create.header"/>;
+            return <FormattedMessage id="indicator.config.header.create"/>;
         }
     }
 }

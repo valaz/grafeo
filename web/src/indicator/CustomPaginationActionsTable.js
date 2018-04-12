@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Table, {TableBody, TableCell, TableFooter, TablePagination, TableRow,} from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import {Delete, Edit, KeyboardArrowLeft, KeyboardArrowRight} from "@material-ui/icons";
 import {FormattedNumber, injectIntl} from "react-intl";
@@ -204,47 +203,39 @@ class CustomPaginationActionsTable extends React.Component {
         if (data.length === 0) {
             return null;
         }
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
-            <Paper className={classes.root}>
-                <div className={classes.tableWrapper}>
-                    <Table className={classes.table}>
-                        <TableBody>
-                            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
-                                return (
-                                    <TableRow key={n.id}>
-                                        <TableCell className={classes.tableCol}>{n.date}</TableCell>
-                                        <TableCell className={classes.tableCol}>{n.value}</TableCell>
-                                        <TableCell className={classes.tableActionCol}>{n.editAction}</TableCell>
-                                        <TableCell className={classes.tableActionCol}>{n.deleteAction}</TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{height: 48 * emptyRows}}>
-                                    <TableCell colSpan={6}/>
+            <div className={classes.tableWrapper}>
+                <Table className={classes.table}>
+                    <TableBody>
+                        {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+                            return (
+                                <TableRow key={n.id}>
+                                    <TableCell className={classes.tableCol}>{n.date}</TableCell>
+                                    <TableCell className={classes.tableCol}>{n.value}</TableCell>
+                                    <TableCell className={classes.tableActionCol}>{n.editAction}</TableCell>
+                                    <TableCell className={classes.tableActionCol}>{n.deleteAction}</TableCell>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TablePagination
-                                    classes={{selectRoot: classes.selectRoot}}
-                                    colSpan={3}
-                                    count={data.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    labelRowsPerPage={this.props.intl.formatMessage({id: 'indicator.view.table.rowsPerPage'})}
-                                    onChangePage={this.handleChangePage}
-                                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                                    Actions={TablePaginationActionsWrapped}
-                                />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-            </Paper>
+                            );
+                        })}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TablePagination
+                                classes={{selectRoot: classes.selectRoot}}
+                                colSpan={3}
+                                count={data.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                labelRowsPerPage={this.props.intl.formatMessage({id: 'indicator.view.table.rowsPerPage'})}
+                                onChangePage={this.handleChangePage}
+                                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                                Actions={TablePaginationActionsWrapped}
+                            />
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </div>
         );
     }
 }

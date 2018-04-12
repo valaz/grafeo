@@ -14,4 +14,8 @@ public class IndicatorRequest {
     @Size(max = 140)
     private String name;
 
+    @NotBlank
+    @Size(max = 4)
+    private String unit;
+
 }

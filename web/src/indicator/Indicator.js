@@ -8,7 +8,7 @@ import moment from "moment";
 import {injectIntl} from "react-intl";
 import {getRandomColorName} from "../util/Colors";
 
-const styles ={
+const styles = {
     link: {
         textDecoration: 'none'
     }
@@ -79,7 +79,12 @@ class Indicator extends Component {
             let lastRecord = records[records.length - 1];
             valueDescription = this.props.intl.formatNumber(lastRecord.value);
         } else {
-            valueDescription = '';
+            valueDescription = '-';
+        }
+
+        let unit = '';
+        if (indicator.unit) {
+            unit = indicator.unit;
         }
 
         const {classes} = this.props;
@@ -92,7 +97,7 @@ class Indicator extends Component {
                                iconColor={getRandomColorName(indicator.name)}
                                title={this.props.indicator.name}
                                description={valueDescription}
-                               small="GB"
+                               small={unit}
                                statIcon={EventNote}
                                statIconColor="gray"
                                statText={dateDescription}
