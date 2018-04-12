@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField, withStyles} from "material-ui";
+import {Button, Grid, InputAdornment, TextField, withStyles} from "material-ui";
 import {DatePicker} from "material-ui-pickers";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -203,7 +203,7 @@ class AddRecordForm extends Component {
 
     render() {
         const selectedDate = this.state.date.value;
-        const {classes} = this.props;
+        const {classes, unit} = this.props;
         return (
             <form onSubmit={this.handleSubmit} style={{textAlign: 'center'}} className={classes.root}>
                 <Grid container
@@ -242,6 +242,7 @@ class AddRecordForm extends Component {
                                    className={classes.textField}
                                    InputProps={{
                                        inputComponent: NumberFormatCustom,
+                                       startAdornment: <InputAdornment position="start">{unit}</InputAdornment>,
                                    }}
 
                         />
