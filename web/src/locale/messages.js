@@ -129,8 +129,8 @@ export default {
                         },
                     },
                     unit: {
-                        label: 'Единица измерения',
-                        placeholder: 'Введите единицу измерения',
+                        label: 'Unit name',
+                        placeholder: 'Enter the unit name',
                         error: {
                             empty: 'PLease enter unit name',
                             long: 'Unit name is too long (Maximum {maxLength} characters allowed)'
