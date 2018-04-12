@@ -120,7 +120,7 @@ class IndicatorConfig extends Component {
     handleCreateSubmit() {
         const indicatorData = {
             name: this.state.name.value,
-            unit: this.state.unit.value,
+            unit: this.state.unit.value.toUpperCase(),
             indicatorLength: this.state.indicatorLength
         };
 
@@ -145,7 +145,7 @@ class IndicatorConfig extends Component {
         const indicatorData = {
             id: this.state.indicator.id,
             name: this.state.name.value,
-            unit: this.state.unit.value,
+            unit: this.state.unit.value.toUpperCase(),
             indicatorLength: this.state.indicatorLength
         };
         editIndicator(indicatorData)

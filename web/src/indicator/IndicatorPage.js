@@ -239,7 +239,9 @@ class IndicatorPage extends Component {
                                     onClickHandler={this.handleEdit}/>;
         let table = <CustomPaginationActionsTable dataSource={this.state.records}
                                                   editHadler={this.handleEdit}
-                                                  deleteHandler={this.handleRecordDelete}/>;
+                                                  deleteHandler={this.handleRecordDelete}
+                                                  unit={this.state.indicator.unit}
+        />;
         return (
             <div>
                 {this.notification()}
