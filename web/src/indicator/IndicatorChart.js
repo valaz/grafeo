@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {getRandomColor} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
@@ -12,7 +12,6 @@ const styles = theme => ({
         width: '100%',
         height: '250px',
         marginTop: theme.spacing.unit * 3,
-        background: '#E8EAF6'
     }
 });
 
@@ -113,9 +112,20 @@ class IndicatorChart extends Component {
         }
         let {classes} = this.props;
         let xTicks = [];
+        let yTicks = [];
+        let minY = Number.MAX_VALUE;
+        let maxY = Number.MIN_VALUE;
         for (let rec of chartData) {
-            if (rec.value) {
+            let value = rec.value;
+            if (value) {
                 xTicks.push(rec.date);
+                yTicks.push(value);
+                if(value < minY){
+                    minY = value;
+                }
+                if(value > maxY){
+                    maxY = value;
+                }
             }
         }
         return (
@@ -125,14 +135,16 @@ class IndicatorChart extends Component {
                         width={700}
                         height={350}
                         data={chartData}
-                        margin={{top: 10, right: -30, bottom: 5, left: 0}}>
+                        margin={{top: 10, right: 0, bottom: 5, left: 0}}>
                         <CartesianGrid strokeDasharray="3" vertical={false}/>
-                        <XAxis dataKey="date" padding={{left: 30}} tick={{stroke: '#BDBDBD'}}
+                        <XAxis dataKey="date" padding={{left: 30, right: 10}} tick={{stroke: '#BDBDBD'}}
                                tickFormatter={this.formatXAxis} ticks={xTicks}/>
-                        <YAxis orientation="right" mirror={false} axisLine={false}
+                        <YAxis orientation="left" mirror={true} axisLine={false}  domain={['auto', 'auto']}
                                tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
-                               domain={['auto', 'auto']}/>
+                               />
                         <Tooltip/>
+                        <ReferenceLine y={minY} stroke="red" strokeDasharray="3 3" />
+                        <ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3" />
                         <Line type="monotone" dataKey="value" stroke={chartColor} strokeWidth={2}
                               dot={{stroke: chartColor, strokeWidth: 3}}
                               connectNulls={true}
