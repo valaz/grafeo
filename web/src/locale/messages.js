@@ -184,6 +184,20 @@ export default {
                     },
                     rowsPerPage: 'Rows per page:'
                 },
+                chart: {
+                    form: {
+                        select: {
+                            all: 'All',
+                            year: 'Year',
+                            month: 'Month',
+                            week: 'Week',
+                        },
+                        control: {
+                            left: 'From period start',
+                            right: 'Until today',
+                        }
+                    }
+                },
                 data: {
                     empty: 'No Indicators found',
                 },
@@ -378,6 +392,20 @@ export default {
                         action: 'Действие'
                     },
                     rowsPerPage: 'Строк на странице:'
+                },
+                chart: {
+                    form: {
+                        select: {
+                            all: 'Все',
+                            year: 'Год',
+                            month: 'Месяц',
+                            week: 'Неделя',
+                        },
+                        control: {
+                            left: 'От начала периода',
+                            right: 'До сегодняшнего дня',
+                        }
+                    }
                 },
                 data: {
                     empty: 'Не найдено индикаторов'
