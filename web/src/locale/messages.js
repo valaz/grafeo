@@ -118,28 +118,36 @@ export default {
             }
         },
         indicator: {
-            create: {
-                header: 'Create indicator',
-                placeholder: 'Enter the name',
-                button: 'Create indicator',
-                error: {
-                    empty: 'PLease enter a name',
-                    long: 'Name is too long (Maximum {maxLength} characters allowed)'
+            config: {
+                form: {
+                    name: {
+                        label: 'Name',
+                        placeholder: 'Enter the name',
+                        error: {
+                            empty: 'PLease enter a name',
+                            long: 'Name is too long (Maximum {maxLength} characters allowed)'
+                        },
+                    },
+                    unit: {
+                        label: 'Единица измерения',
+                        placeholder: 'Введите единицу измерения',
+                        error: {
+                            empty: 'PLease enter unit name',
+                            long: 'Unit name is too long (Maximum {maxLength} characters allowed)'
+                        },
+                    },
+                    button: {
+                        create: 'Create indicator',
+                        edit: 'Edit Indicator',
+                    },
+
+                },
+                header: {
+                    create: 'Create indicator',
+                    edit: 'Edit Indicator',
                 },
                 notification: {
-                    logout: 'Please Login to create indicator'
-                }
-            },
-            edit: {
-                header: 'Edit Indicator',
-                placeholder: 'Enter the name',
-                button: 'Edit Indicator',
-                error: {
-                    empty: 'PLease enter the name',
-                    long: 'Name is too long (Maximum {maxLength} characters allowed)'
-                },
-                notification: {
-                    logout: 'Please Login to edit indicator'
+                    logout: 'Please Login to continue'
                 }
             },
             view: {
@@ -327,28 +335,36 @@ export default {
             }
         },
         indicator: {
-            create: {
-                header: 'Создать Индикатор',
-                placeholder: 'Введите название',
-                button: 'Создать Индикатор',
-                error: {
-                    empty: 'Пожалуйста введите название',
-                    long: 'Название слишком длинное (Допустимо {maxLength} символов)'
+            config: {
+                form: {
+                    name: {
+                        label: 'Название',
+                        placeholder: 'Введите название',
+                        error: {
+                            empty: 'Пожалуйста введите название',
+                            long: 'Название слишком длинное (Максимальная длина {maxLength})'
+                        },
+                    },
+                    unit: {
+                        label: 'Единица измерения',
+                        placeholder: 'Введите единицу измерения',
+                        error: {
+                            empty: 'Пожалуйста единицу измерения',
+                            long: 'Значение слишком длинное (Максимальная длина {maxLength})'
+                        },
+                    },
+                    button: {
+                        create: 'Создать Индикатор',
+                        edit: 'Обновить Индикатор',
+                    },
+
+                },
+                header: {
+                    create: 'Создать Индикатор',
+                    edit: 'Обновить Индикатор',
                 },
                 notification: {
-                    logout: 'Пожалуйста войдите, чтобы создать индикатор'
-                }
-            },
-            edit: {
-                header: 'Обновить Индикатор',
-                placeholder: 'Введите название',
-                button: 'Обновить Индикатор',
-                error: {
-                    empty: 'Пожалуйста введите название',
-                    long: 'Название слишком длинное (Допустимо {maxLength} символов)'
-                },
-                notification: {
-                    logout: 'Пожалуйста войдите, чтобы обновить индикатор'
+                    logout: 'Пожалуйста войдите, чтобы продолжить'
                 }
             },
             view: {

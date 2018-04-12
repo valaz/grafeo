@@ -34,6 +34,10 @@ public class Indicator extends UserDateAudit {
     @NonNull
     private String name;
 
+    @NotBlank
+    @Size(max = 4)
+    private String unit;
+
     @OneToMany(
             mappedBy = "indicator",
             cascade = CascadeType.ALL,

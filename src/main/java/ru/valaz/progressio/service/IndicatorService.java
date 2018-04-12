@@ -109,6 +109,7 @@ public class IndicatorService {
 
     public Indicator updateIndicator(Indicator indicator, @Valid IndicatorRequest indicatorRequest) {
         indicator.setName(indicatorRequest.getName());
+        indicator.setUnit(indicatorRequest.getUnit());
         return indicatorRepository.save(indicator);
 
     }
