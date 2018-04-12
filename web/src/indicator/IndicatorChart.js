@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import {
     Area,
     AreaChart,
-    Bar,
-    BarChart,
     Brush,
     CartesianGrid,
-    ReferenceLine,
+    Line,
+    LineChart,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -22,32 +21,38 @@ const brushSize = 30;
 const styles = theme => ({
     root: {
         width: '100%',
+        height: '250px',
         marginTop: theme.spacing.unit * 3,
+        background: '#E8EAF6'
     }
 });
 
 class IndicatorChart extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            startFromFirst: true
+        };
         this.handleClick = this.handleClick.bind(this);
         this.getChartData = this.getChartData.bind(this);
     }
 
     handleClick(event) {
         if (this.props.onClickHandler) {
-            this.props.onClickHandler(event)
+            this.props.onClickHandler(event.payload)
         }
     }
 
     componentDidMount() {
         this.setState(
             {
-                data: this.props.data
+                data: this.props.data,
             }
         )
     }
 
     getChartData() {
+        let {startFromFirst} = this.state;
         if (this.props.data.length === 0) {
             return [];
         }
@@ -59,7 +64,7 @@ class IndicatorChart extends Component {
         now.add(1, 'days');
         let monthAgo = moment(now).subtract(brushSize, 'days');
         let start = first;
-        if (first.isAfter(monthAgo)) {
+        if (!startFromFirst && first.isAfter(monthAgo)) {
             start = monthAgo
         }
         for (let m = moment(start); m.isBefore(now); m.add(1, 'days')) {
@@ -82,6 +87,14 @@ class IndicatorChart extends Component {
         if (a.date > b.date)
             return 1;
         return 0;
+    }
+
+    formatYAxis(tickItem) {
+        return tickItem;
+    }
+
+    formatXAxis(tickItem) {
+        return moment(tickItem, dateFormat).format('DD MMM');
     }
 
     render() {
@@ -111,23 +124,34 @@ class IndicatorChart extends Component {
         if (chartData.length === 0) {
             return null;
         }
-
+        let {classes} = this.props;
+        let xTicks = [];
+        for (let rec of chartData) {
+            if (rec.value) {
+                xTicks.push(rec.date);
+            }
+        }
         return (
-            <div className="line-chart-wrapper" style={{width: '100%', height: '250px'}}>
+            <div className={classes.root}>
                 <ResponsiveContainer>
-                    <BarChart
+                    <LineChart
                         width={700}
                         height={350}
                         data={chartData}
-                        margin={{top: 10, right: 0, bottom: 5, left: 0}}>
-                        <CartesianGrid strokeDasharray="1 1"/>
-                        <ReferenceLine y={0} stroke='#000'/>
-                        <XAxis dataKey="chartDate"/>
-                        <YAxis orientation="left" mirror={true} scale='linear'/>
+                        margin={{top: 10, right: -30, bottom: 5, left: 0}}>
+                        <CartesianGrid strokeDasharray="3" vertical={false}/>
+                        <XAxis dataKey="date" padding={{left: 30}} tick={{stroke: '#BDBDBD'}}
+                               tickFormatter={this.formatXAxis} ticks={xTicks}/>
+                        <YAxis orientation="right" mirror={false} axisLine={false}
+                               tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
+                               domain={['auto', 'auto']}/>
                         <Tooltip/>
-                        <Bar dataKey="value" fill={chartColor} onClick={(d, i) => this.handleClick(d)}/>
-                        {brush}
-                    </BarChart>
+                        <Line type="monotone" dataKey="value" stroke={chartColor} strokeWidth={2}
+                              dot={{stroke: chartColor, strokeWidth: 3}}
+                              connectNulls={true}
+                              activeDot={{r: 7, onClick: this.handleClick}}/>
+                        {/*{brush}*/}
+                    </LineChart>
                 </ResponsiveContainer>
             </div>
         )
