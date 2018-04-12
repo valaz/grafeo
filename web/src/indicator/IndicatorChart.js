@@ -1,16 +1,5 @@
 import React, {Component} from 'react';
-import {
-    Area,
-    AreaChart,
-    Brush,
-    CartesianGrid,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
-} from "recharts";
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {getRandomColor} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
@@ -57,7 +46,6 @@ class IndicatorChart extends Component {
             return [];
         }
         let data = this.props.data.map(r => ({...r}));
-        data.map(d => d['chartDate'] = moment(d['date'], dateFormat).format('DD MMM'));
         let dates = data.map(d => d['date']);
         const first = moment(data[0]['date']);
         const now = moment().startOf('day');
@@ -70,7 +58,6 @@ class IndicatorChart extends Component {
         for (let m = moment(start); m.isBefore(now); m.add(1, 'days')) {
             if (!dates.includes(m.format('YYYY-MM-DD'))) {
                 data.push({
-                    chartDate: m.format('DD MMM'),
                     date: m.format('YYYY-MM-DD'),
                     value: null
                 })
@@ -106,20 +93,20 @@ class IndicatorChart extends Component {
         } else {
             chartData = data.slice(Math.max(0, data.length - brushSize), data.length);
         }
-        let brush;
+        // let brush;
 
         let chartColor = getRandomColor(this.props.name);
-        if (this.props.showAllData && data.length > brushSize) {
-            brush = <Brush dataKey="date" startIndex={chartData.length - brushSize}>
-                <AreaChart>
-                    <CartesianGrid/>
-                    <YAxis hide domain={['auto', 'auto']}/>
-                    <Area dataKey="value" type='monotone' stroke={chartColor}
-                          connectNulls={true}
-                          fill={chartColor} dot={false}/>
-                </AreaChart>
-            </Brush>;
-        }
+        // if (this.props.showAllData && data.length > brushSize) {
+        //     brush = <Brush dataKey="date" startIndex={chartData.length - brushSize}>
+        //         <AreaChart>
+        //             <CartesianGrid/>
+        //             <YAxis hide domain={['auto', 'auto']}/>
+        //             <Area dataKey="value" type='monotone' stroke={chartColor}
+        //                   connectNulls={true}
+        //                   fill={chartColor} dot={false}/>
+        //         </AreaChart>
+        //     </Brush>;
+        // }
 
         if (chartData.length === 0) {
             return null;
