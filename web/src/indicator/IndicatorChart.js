@@ -6,12 +6,12 @@ import {withStyles} from "material-ui/styles/index";
 import {injectIntl} from "react-intl";
 
 const dateFormat = 'YYYY-MM-DD';
-const brushSize = 30;
+const chartDateFormat = 'DD MMM';
 
 const styles = theme => ({
     root: {
         width: '100%',
-        height: '250px',
+        height: '300px',
         marginTop: theme.spacing.unit * 3,
     }
 });
@@ -20,7 +20,9 @@ class IndicatorChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            startFromFirst: true
+            startFromFirst: true,
+            endInLast: true,
+            duration: 'all'
         };
         this.handleClick = this.handleClick.bind(this);
         this.getChartData = this.getChartData.bind(this);
@@ -42,31 +44,59 @@ class IndicatorChart extends Component {
     }
 
     getChartData() {
-        let {startFromFirst} = this.state;
+        let {startFromFirst, endInLast, duration} = this.state;
+        let periodLength;
+        if (duration === 'all') {
+            periodLength = 365
+        } else if (duration === 'week') {
+            periodLength = 7;
+        } else if (duration === 'month') {
+            periodLength = 30;
+        } else if (duration === 'year') {
+            periodLength = 365;
+        }
         if (this.props.data.length === 0) {
             return [];
         }
         let data = this.props.data.map(r => ({...r}));
         let dates = data.map(d => d['date']);
         const first = moment(data[0]['date']);
+        let finish = moment(data[data.length - 1]['date']);
         const now = moment().startOf('day');
         now.add(1, 'days');
-        let monthAgo = moment(now).subtract(brushSize, 'days');
-        let start = first;
-        if (!startFromFirst && first.isAfter(monthAgo)) {
-            start = monthAgo
+        if (!endInLast) {
+            finish = now;
         }
-        for (let m = moment(start); m.isBefore(now); m.add(1, 'days')) {
-            if (!dates.includes(m.format('YYYY-MM-DD'))) {
+        let periodAgo = moment(finish).subtract(periodLength, 'days');
+        let start = first;
+        if (!startFromFirst && first.isAfter(periodAgo)) {
+            start = periodAgo
+        }
+        for (let m = moment(start); m.isBefore(finish); m.add(1, 'days')) {
+            if (!dates.includes(m.format(dateFormat))) {
                 data.push({
-                    date: m.format('YYYY-MM-DD'),
+                    date: m.format(dateFormat),
                     value: null
                 })
             }
         }
 
         data.sort(IndicatorChart.compare);
-        return data
+
+        if (duration === 'all') {
+            return data
+        } else {
+            let periodData = data.slice(Math.max(0, data.length - periodLength));
+            let i = 0;
+            for (let item of periodData) {
+                if (item.value) {
+                    break;
+                } else {
+                    i++;
+                }
+            }
+            return periodData.slice(i);
+        }
     }
 
     static compare(a, b) {
@@ -82,18 +112,11 @@ class IndicatorChart extends Component {
     }
 
     formatXAxis(tickItem) {
-        return moment(tickItem, dateFormat).format('DD MMM');
+        return moment(tickItem, dateFormat).format(chartDateFormat);
     }
 
     render() {
-        let data = this.getChartData();
-        let chartData = [];
-
-        if (this.props.showAllData) {
-            chartData = data;
-        } else {
-            chartData = data.slice(Math.max(0, data.length - brushSize), data.length);
-        }
+        let chartData = this.getChartData();
 
         let chartColor = getRandomColorName(this.props.name);
 
@@ -126,7 +149,7 @@ class IndicatorChart extends Component {
                         height={350}
                         data={chartData}
                         margin={{top: 10, right: 0, bottom: 5, left: 0}}>
-                        <CartesianGrid strokeDasharray="3" vertical={false}/>
+                        <CartesianGrid strokeDasharray="1" vertical={false}/>
                         <XAxis dataKey="date" padding={{left: 30, right: 5}} tick={{stroke: '#BDBDBD'}}
                                tickFormatter={this.formatXAxis} ticks={xTicks}/>
                         <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']}
@@ -136,9 +159,9 @@ class IndicatorChart extends Component {
                         <ReferenceLine y={minY} stroke="red" strokeDasharray="3 3"/>
                         <ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3"/>
                         <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
-                              dot={{stroke: chartColor, strokeWidth: 3}}
+                              dot={{stroke: chartColor, strokeWidth: 1}}
                               connectNulls={true}
-                              activeDot={{r: 7, onClick: this.handleClick}}/>
+                              activeDot={{r: 5, onClick: this.handleClick}}/>
                     </AreaChart>
                 </ResponsiveContainer>
             </div>
