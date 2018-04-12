@@ -122,13 +122,19 @@ class App extends React.Component {
         });
     }
 
-    render() {
+    notification() {
         let {notification} = this.state;
+        return (
+            <Notification open={notification.open} message={notification.message}
+                          cleanup={this.clearNotification}/>
+        )
+    }
+
+    render() {
         const {classes} = this.props;
         return (
             <div>
-                <Notification open={notification.open} message={notification.message}
-                              cleanup={this.clearNotification}/>
+                {this.notification()}
                 {this.state.isLoading ?
                     (<div>
                         <LoadingIndicator/>

@@ -4,7 +4,7 @@ import {withStyles} from 'material-ui/styles';
 import Card, {CardHeader} from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import {Delete, Edit, MoreVert} from "@material-ui/icons";
-import {Button, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
+import {Button, CardContent, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
 import {withRouter} from "react-router-dom";
 import Dialog, {
     DialogActions,
@@ -100,6 +100,11 @@ class IndicatorCard extends React.Component {
                         }
                         title={this.props.indicator.name}
                     />
+                    <CardContent>
+                        {this.props.form}
+                        {this.props.chart}
+                        {this.props.table}
+                    </CardContent>
                     <Menu
                         id="simple-menu"
                         anchorEl={anchorEl}

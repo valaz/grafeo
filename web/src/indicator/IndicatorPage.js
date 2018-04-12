@@ -232,6 +232,14 @@ class IndicatorPage extends Component {
 
         const {classes} = this.props;
 
+        let form = <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
+                                  editValue={this.state.editValue} data={this.state.records}/>;
+        let chart = <IndicatorChart showAllData={true} data={this.state.records}
+                                    name={this.state.indicator.name}
+                                    onClickHandler={this.handleEdit}/>;
+        let table = <CustomPaginationActionsTable dataSource={this.state.records}
+                                                  editHadler={this.handleEdit}
+                                                  deleteHandler={this.handleRecordDelete}/>;
         return (
             <div>
                 {this.notification()}
@@ -241,27 +249,11 @@ class IndicatorPage extends Component {
                       className={classes.root}>
                     <Grid container item spacing={0} justify="center">
                         <Grid item {...gridSize}>
-                            <IndicatorCard indicator={this.state.indicator} handleDelete={this.handleIndicatorDelete}/>
-                        </Grid>
-                    </Grid>
-                    <Grid container item spacing={0} justify="center">
-                        <Grid item {...gridSize}>
-                            <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                           editValue={this.state.editValue} data={this.state.records}/>
-                        </Grid>
-                    </Grid>
-                    <Grid container item spacing={0} justify="center">
-                        <Grid item {...gridSize}>
-                            <IndicatorChart showAllData={true} data={this.state.records}
-                                            name={this.state.indicator.name}
-                                            onClickHandler={this.handleEdit}/>
-                        </Grid>
-                    </Grid>
-                    <Grid container item spacing={0} justify="center">
-                        <Grid item {...gridSize}>
-                            <CustomPaginationActionsTable dataSource={this.state.records}
-                                                          editHadler={this.handleEdit}
-                                                          deleteHandler={this.handleRecordDelete}/>
+                            <IndicatorCard indicator={this.state.indicator}
+                                           handleDelete={this.handleIndicatorDelete}
+                                           form={form}
+                                           chart={chart}
+                                           table={table}/>
                         </Grid>
                     </Grid>
                 </Grid>

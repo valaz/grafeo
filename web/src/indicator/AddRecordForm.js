@@ -12,7 +12,7 @@ const datePickerFormat = "LL";
 const styles = theme => ({
     root: {
         flexGrow: 1,
-        marginTop: theme.spacing.unit * 3
+        marginTop: theme.spacing.unit
     },
     textField: {},
     picker: {
@@ -95,7 +95,6 @@ class AddRecordForm extends Component {
 
         }
         let dateValue = moment(nextProps.editDate, dateFormat);
-        console.log(dateValue);
         if (dateValue.isValid()) {
             this.setState({
                 date: {
