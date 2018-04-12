@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Area, AreaChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {getRandomColor} from "../util/Colors";
+import {getRandomColorName} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
+import {injectIntl} from "react-intl";
 
 const dateFormat = 'YYYY-MM-DD';
 const brushSize = 30;
@@ -23,6 +24,7 @@ class IndicatorChart extends Component {
         };
         this.handleClick = this.handleClick.bind(this);
         this.getChartData = this.getChartData.bind(this);
+        this.formatYAxis = this.formatYAxis.bind(this);
     }
 
     handleClick(event) {
@@ -76,7 +78,7 @@ class IndicatorChart extends Component {
     }
 
     formatYAxis(tickItem) {
-        return tickItem;
+        return this.props.intl.formatNumber(tickItem);
     }
 
     formatXAxis(tickItem) {
@@ -92,20 +94,8 @@ class IndicatorChart extends Component {
         } else {
             chartData = data.slice(Math.max(0, data.length - brushSize), data.length);
         }
-        // let brush;
 
-        let chartColor = getRandomColor(this.props.name);
-        // if (this.props.showAllData && data.length > brushSize) {
-        //     brush = <Brush dataKey="date" startIndex={chartData.length - brushSize}>
-        //         <AreaChart>
-        //             <CartesianGrid/>
-        //             <YAxis hide domain={['auto', 'auto']}/>
-        //             <Area dataKey="value" type='monotone' stroke={chartColor}
-        //                   connectNulls={true}
-        //                   fill={chartColor} dot={false}/>
-        //         </AreaChart>
-        //     </Brush>;
-        // }
+        let chartColor = getRandomColorName(this.props.name);
 
         if (chartData.length === 0) {
             return null;
@@ -137,7 +127,7 @@ class IndicatorChart extends Component {
                         data={chartData}
                         margin={{top: 10, right: 0, bottom: 5, left: 0}}>
                         <CartesianGrid strokeDasharray="3" vertical={false}/>
-                        <XAxis dataKey="date" padding={{left: 30, right: 10}} tick={{stroke: '#BDBDBD'}}
+                        <XAxis dataKey="date" padding={{left: 30, right: 5}} tick={{stroke: '#BDBDBD'}}
                                tickFormatter={this.formatXAxis} ticks={xTicks}/>
                         <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']}
                                tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
@@ -145,11 +135,10 @@ class IndicatorChart extends Component {
                         <Tooltip/>
                         <ReferenceLine y={minY} stroke="red" strokeDasharray="3 3"/>
                         <ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3"/>
-                        <Area type="monotone" dataKey="value" stroke={chartColor} strokeWidth={2}
+                        <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                               dot={{stroke: chartColor, strokeWidth: 3}}
                               connectNulls={true}
                               activeDot={{r: 7, onClick: this.handleClick}}/>
-                        {/*{brush}*/}
                     </AreaChart>
                 </ResponsiveContainer>
             </div>
@@ -157,4 +146,4 @@ class IndicatorChart extends Component {
     }
 }
 
-export default withStyles(styles)(IndicatorChart);
+export default injectIntl(withStyles(styles)(IndicatorChart));
