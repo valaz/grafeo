@@ -4,7 +4,7 @@ import {withStyles} from 'material-ui/styles';
 import Table, {TableBody, TableCell, TableFooter, TablePagination, TableRow,} from 'material-ui/Table';
 import IconButton from 'material-ui/IconButton';
 import {Delete, Edit, KeyboardArrowLeft, KeyboardArrowRight} from "@material-ui/icons";
-import {FormattedNumber, injectIntl} from "react-intl";
+import {injectIntl} from "react-intl";
 import moment from "moment/moment";
 
 const dateFormat = 'YYYY-MM-DD';
@@ -178,7 +178,8 @@ class CustomPaginationActionsTable extends React.Component {
 
 
     formatNumber(n) {
-        return <FormattedNumber value={n}/>;
+        // return <FormattedNumber value={n}/>;
+        return this.props.intl.formatNumber(n) + ' ' + this.props.unit;
     }
 
     handleEdit(record) {

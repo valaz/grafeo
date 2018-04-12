@@ -232,14 +232,22 @@ class IndicatorPage extends Component {
 
         const {classes} = this.props;
 
-        let form = <AddRecordForm handleSubmit={this.handleSubmit} editDate={this.state.editDate}
-                                  editValue={this.state.editValue} data={this.state.records}/>;
-        let chart = <IndicatorChart showAllData={true} data={this.state.records}
+        let form = <AddRecordForm handleSubmit={this.handleSubmit}
+                                  editDate={this.state.editDate}
+                                  editValue={this.state.editValue}
+                                  data={this.state.records}
+                                  unit={this.state.indicator.unit}
+        />;
+        let chart = <IndicatorChart showAllData={true}
+                                    data={this.state.records}
                                     name={this.state.indicator.name}
-                                    onClickHandler={this.handleEdit}/>;
+                                    onClickHandler={this.handleEdit}
+        />;
         let table = <CustomPaginationActionsTable dataSource={this.state.records}
                                                   editHadler={this.handleEdit}
-                                                  deleteHandler={this.handleRecordDelete}/>;
+                                                  deleteHandler={this.handleRecordDelete}
+                                                  unit={this.state.indicator.unit}
+        />;
         return (
             <div>
                 {this.notification()}
