@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Area, AreaChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {getRandomColorName} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
@@ -24,7 +24,6 @@ const styles = theme => ({
         marginTop: theme.spacing.unit,
     },
     chart: {
-        width: '100%',
         height: '300px',
         marginTop: theme.spacing.unit,
     },
@@ -32,9 +31,7 @@ const styles = theme => ({
         margin: theme.spacing.unit,
         minWidth: 120,
     },
-    selectEmpty: {
-        // marginTop: theme.spacing.unit * 2,
-    },
+    selectEmpty: {},
 });
 
 class IndicatorChart extends Component {
@@ -179,6 +176,29 @@ class IndicatorChart extends Component {
         }
         return (
             <div className={classes.root}>
+                <div className={classes.chart}>
+                    <ResponsiveContainer>
+                        <AreaChart
+                            width={700}
+                            height={350}
+                            data={chartData}
+                            margin={{top: 10, right: 0, bottom: 5, left: 0}}>
+                            <CartesianGrid strokeDasharray="1" vertical={false}/>
+                            <XAxis dataKey="date" padding={{left: 30, right: 5}} tick={{stroke: '#BDBDBD'}}
+                                   tickFormatter={this.formatXAxis} ticks={xTicks}/>
+                            <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']}
+                                   tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
+                            />
+                            <Tooltip/>
+                            {/*<ReferenceLine y={minY} stroke="red" strokeDasharray="3 3"/>*/}
+                            {/*<ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3"/>*/}
+                            <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
+                                  dot={{stroke: chartColor, strokeWidth: 1}}
+                                  connectNulls={true}
+                                  activeDot={{r: 5, onClick: this.handleClick}}/>
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
                 <Grid container justify='center'>
                     <Grid item {...selectGridSize}>
                         <FormControl className={classes.formControl}>
@@ -227,29 +247,6 @@ class IndicatorChart extends Component {
                         />
                     </Grid>
                 </Grid>
-                <div className={classes.chart}>
-                    <ResponsiveContainer>
-                        <AreaChart
-                            width={700}
-                            height={350}
-                            data={chartData}
-                            margin={{top: 10, right: 0, bottom: 5, left: 0}}>
-                            <CartesianGrid strokeDasharray="1" vertical={false}/>
-                            <XAxis dataKey="date" padding={{left: 30, right: 5}} tick={{stroke: '#BDBDBD'}}
-                                   tickFormatter={this.formatXAxis} ticks={xTicks}/>
-                            <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']}
-                                   tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
-                            />
-                            <Tooltip/>
-                            <ReferenceLine y={minY} stroke="red" strokeDasharray="3 3"/>
-                            <ReferenceLine y={maxY} stroke="red" strokeDasharray="3 3"/>
-                            <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
-                                  dot={{stroke: chartColor, strokeWidth: 1}}
-                                  connectNulls={true}
-                                  activeDot={{r: 5, onClick: this.handleClick}}/>
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
             </div>
         )
     }

@@ -93,7 +93,7 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, {withTheme: true
 const styles = theme => ({
     root: {
         width: '100%',
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing.unit,
     },
     table: {
         minWidth: 300,
