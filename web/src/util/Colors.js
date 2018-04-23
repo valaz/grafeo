@@ -9,6 +9,9 @@ const colors = [
 const colorNames = [
     "orange", "green", "red", "blue", "purple"
 ];
+const colorValues = [
+    "#ffa726", "#66bb6a", "#ef5350", "#26c6da", "#ab47bc"
+];
 
 export function getRandomColor(name) {
     name = name.substr(0, 6);
@@ -19,6 +22,17 @@ export function getRandomColor(name) {
     }
     var index = Math.abs(hash % colors.length);
     return colors[index];
+}
+
+export function getRandomColorValue(name) {
+    name = name.substr(0, 6);
+
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) {
+        hash = 31 * hash + name.charCodeAt(i);
+    }
+    var index = Math.abs(hash % colorValues.length);
+    return colorValues[index];
 }
 
 export function getRandomColorName(name) {
