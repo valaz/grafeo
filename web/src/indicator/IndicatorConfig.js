@@ -198,10 +198,12 @@ class IndicatorConfig extends Component {
                 this.setState({
                     indicator: response,
                     name: {
-                        value: indicatorName
+                        value: indicatorName,
+                        validateStatus: 'success'
                     },
                     unit: {
-                        value: indicatorUnit
+                        value: indicatorUnit,
+                        validateStatus: 'success'
                     },
                     isLoading: false
                 });

@@ -229,6 +229,7 @@ class CustomPaginationActionsTable extends React.Component {
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 labelRowsPerPage={this.props.intl.formatMessage({id: 'indicator.view.table.rowsPerPage'})}
+                                labelDisplayedRows={({from, to, count}) => from + '-' + to + ' ' + this.props.intl.formatMessage({id: 'indicator.view.table.of'}) + ' ' + count}
                                 onChangePage={this.handleChangePage}
                                 onChangeRowsPerPage={this.handleChangeRowsPerPage}
                                 Actions={TablePaginationActionsWrapped}

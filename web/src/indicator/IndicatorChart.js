@@ -1,22 +1,17 @@
 import React, {Component} from 'react';
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {getRandomColorName} from "../util/Colors";
+import {getRandomColorValue} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
 import {injectIntl} from "react-intl";
-import {FormControl, FormControlLabel, Grid, MenuItem, Select, Switch} from "material-ui";
+import {FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
 
 const dateFormat = 'YYYY-MM-DD';
-const chartDateFormat = 'DD MMM';
+const chartDateFormat = 'DD MMMM';
 
 const selectGridSize = {
     xs: 12,
     sm: 12,
-    md: 4
-};
-const controlGridSize = {
-    xs: 12,
-    sm: 6,
     md: 4
 };
 const styles = theme => ({
@@ -26,6 +21,8 @@ const styles = theme => ({
     chart: {
         height: '300px',
         marginTop: theme.spacing.unit,
+        borderRadius: '15px',
+        overflow: 'hidden'
     },
     formControl: {
         margin: theme.spacing.unit,
@@ -151,7 +148,8 @@ class IndicatorChart extends Component {
 
     render() {
         let chartData = this.getChartData();
-        let chartColor = getRandomColorName(this.props.name);
+        let chartColor = "#FFF";
+        let chartBackColor = getRandomColorValue(this.props.name);
 
         if (chartData.length === 0) {
             return null;
@@ -176,18 +174,19 @@ class IndicatorChart extends Component {
         }
         return (
             <div className={classes.root}>
-                <div className={classes.chart}>
+                <div className={classes.chart} style={{background: chartBackColor}}>
                     <ResponsiveContainer>
                         <AreaChart
                             data={chartData}
-                            margin={{top: 10, right: 0, bottom: 5, left: 0}}>
-                            <CartesianGrid strokeDasharray="1" vertical={false}/>
-                            <XAxis dataKey="date" padding={{left: 30, right: 5}} tick={{stroke: '#BDBDBD'}}
+                            margin={{top: 0, right: 0, bottom: 0, left: 0}}>
+                            <CartesianGrid strokeDasharray="1" vertical={true}/>
+                            <XAxis dataKey="date" tick={{stroke: '#BDBDBD'}} hide
                                    tickFormatter={this.formatXAxis} ticks={xTicks}/>
-                            <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']}
+                            <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']} hide
                                    tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
                             />
-                            <Tooltip/>
+                            <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
+                                     cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
                             <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                                   dot={{stroke: chartColor, strokeWidth: 1}}
                                   connectNulls={true}
@@ -195,7 +194,7 @@ class IndicatorChart extends Component {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-                <Grid container justify='center'>
+                <Grid container justify='flex-start'>
                     <Grid item {...selectGridSize}>
                         <FormControl className={classes.formControl}>
                             <Select
@@ -216,36 +215,58 @@ class IndicatorChart extends Component {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item {...controlGridSize}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={this.state.emptyLeft}
-                                    onChange={this.handleSwitchChange('emptyLeft')}
-                                    value="emptyLeft"
-                                    color="primary"
-                                />
-                            }
-                            label={this.props.intl.formatMessage({id: 'indicator.view.chart.form.control.left'})}
-                        />
-                    </Grid>
-                    <Grid item {...controlGridSize}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={this.state.emptyRight}
-                                    onChange={this.handleSwitchChange('emptyRight')}
-                                    value="emptyRight"
-                                    color="primary"
-                                />
-                            }
-                            label={this.props.intl.formatMessage({id: 'indicator.view.chart.form.control.right'})}
-                        />
-                    </Grid>
                 </Grid>
             </div>
         )
     }
 }
+
+const tooltipStyles = theme => ({
+    root: {
+        paddingLeft: '5px',
+        paddingRight: '5px'
+    },
+});
+
+class CustomTooltip extends React.Component {
+
+    render() {
+        const {classes} = this.props;
+        const {active} = this.props;
+
+        if (active) {
+            const {payload, label, unit} = this.props;
+            if (payload && payload.length > 0 && label) {
+                return (
+                    <Paper className={classes.root}>
+                        <Typography component="p" style={{verticalAlign: 'middle'}}>
+                            {this.getLabelDate(label)}
+                        </Typography>
+                        <Typography component="p">
+                            {this.getUnitValue(payload, unit)}
+                        </Typography>
+                    </Paper>
+                )
+            }
+        }
+
+        return null;
+    }
+
+    getLabelDate(label) {
+        return moment(label, dateFormat).format(chartDateFormat);
+    }
+
+    getUnitValue(payload, unit) {
+        return <span>
+            <span style={{fontWeight: '600'}}>{unit} </span>
+            <span>{this.props.intl.formatNumber(payload[0].value)} </span>
+        </span>;
+    }
+};
+
+const CustomTooltipWrapped = injectIntl(withStyles(tooltipStyles, {withTheme: true})(
+    CustomTooltip,
+));
 
 export default injectIntl(withStyles(styles)(IndicatorChart));
