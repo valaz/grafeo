@@ -21,7 +21,7 @@ const styles = theme => ({
     chart: {
         height: '300px',
         marginTop: theme.spacing.unit,
-        borderRadius: '10px',
+        borderRadius: '15px',
         overflow: 'hidden'
     },
     formControl: {
@@ -185,7 +185,8 @@ class IndicatorChart extends Component {
                             <YAxis orientation="left" mirror={true} axisLine={false} domain={['auto', 'auto']} hide
                                    tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
                             />
-                            <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}/>
+                            <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
+                                     cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
                             <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                                   dot={{stroke: chartColor, strokeWidth: 1}}
                                   connectNulls={true}
@@ -193,7 +194,7 @@ class IndicatorChart extends Component {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-                <Grid container justify='left'>
+                <Grid container justify='flex-start'>
                     <Grid item {...selectGridSize}>
                         <FormControl className={classes.formControl}>
                             <Select
@@ -236,7 +237,6 @@ class CustomTooltip extends React.Component {
         if (active) {
             const {payload, label, unit} = this.props;
             if (payload && payload.length > 0 && label) {
-                console.log(this.props);
                 return (
                     <Paper className={classes.root}>
                         <Typography component="p" style={{verticalAlign: 'middle'}}>
@@ -258,10 +258,10 @@ class CustomTooltip extends React.Component {
     }
 
     getUnitValue(payload, unit) {
-        return <div>
+        return <span>
             <span style={{fontWeight: '600'}}>{unit} </span>
             <span>{this.props.intl.formatNumber(payload[0].value)} </span>
-        </div>;
+        </span>;
     }
 };
 

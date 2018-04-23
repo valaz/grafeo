@@ -190,7 +190,8 @@ export default {
                         value: 'Value',
                         action: 'Action'
                     },
-                    rowsPerPage: 'Rows per page:'
+                    rowsPerPage: 'Rows per page:',
+                    of: 'of'
                 },
                 chart: {
                     form: {
@@ -407,7 +408,8 @@ export default {
                         value: 'Значение',
                         action: 'Действие'
                     },
-                    rowsPerPage: 'Строк на странице:'
+                    rowsPerPage: 'Строк на странице:',
+                    of: 'из'
                 },
                 chart: {
                     form: {
