@@ -259,8 +259,8 @@ class CustomTooltip extends React.Component {
 
     getUnitValue(payload, unit) {
         return <span>
-            <span style={{fontWeight: '600'}}>{unit} </span>
             <span>{this.props.intl.formatNumber(payload[0].value)} </span>
+            <span style={{fontWeight: '600'}}>{unit} </span>
         </span>;
     }
 };
