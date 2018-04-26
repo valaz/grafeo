@@ -1,6 +1,5 @@
 import React from 'react';
-import {IconButton, Snackbar} from "material-ui";
-import {Close} from '@material-ui/icons'
+import {Snackbar} from "material-ui";
 
 
 class Notification extends React.Component {
@@ -52,16 +51,6 @@ class Notification extends React.Component {
                 'aria-describedby': 'message-id',
             }}
             message={<span id="message-id">{this.state.message}</span>}
-            action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    onClick={this.handleClose}
-                >
-                    <Close/>
-                </IconButton>,
-            ]}
         />;
     }
 }
