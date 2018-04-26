@@ -5,8 +5,8 @@ import {withRouter} from "react-router-dom";
 
 class Home extends Component {
 
-    componentDidMount() {
-        document.title = "Progressio";
+    componentWillMount() {
+        document.title = "Grafeo";
     }
 
     render() {
