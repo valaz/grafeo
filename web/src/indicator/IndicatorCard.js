@@ -118,8 +118,8 @@ class IndicatorCard extends React.Component {
                         title={this.props.indicator.name}
                     />
                     <CardContent>
-                        {this.props.form}
                         {this.props.chart}
+                        {this.props.form}
                     </CardContent>
 
                     <CardActions className={classes.actions} disableActionSpacing>
