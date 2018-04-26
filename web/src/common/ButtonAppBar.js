@@ -72,7 +72,7 @@ class ButtonAppBar extends React.Component {
                     <Toolbar>
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             <NavLink to="/" style={{color: '#FFFFFF', textDecoration: 'none'}}>
-                                Progressio
+                                Grafeo
                             </NavLink>
                         </Typography>
                         {profileMenu}
