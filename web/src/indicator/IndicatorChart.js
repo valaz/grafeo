@@ -14,6 +14,7 @@ const selectGridSize = {
     sm: 12,
     md: 4
 };
+const tooltipStyle = {position: "absolute", bottom: "0%", marginTop: "10px"};
 const styles = theme => ({
     root: {
         marginTop: theme.spacing.unit,
@@ -186,6 +187,7 @@ class IndicatorChart extends Component {
                                    tick={{stroke: '#BDBDBD'}} tickFormatter={this.formatYAxis}
                             />
                             <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
+                                     offset={0} wrapperStyle={tooltipStyle}
                                      cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
                             <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                                   dot={{stroke: chartColor, strokeWidth: 1}}
