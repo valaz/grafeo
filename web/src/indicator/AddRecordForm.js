@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, InputAdornment, TextField, withStyles} from "material-ui";
+import {Button, Grid, IconButton, InputAdornment, TextField, withStyles} from "material-ui";
 import {DatePicker} from "material-ui-pickers";
 import moment from "moment";
 import PropTypes from "prop-types";
 import NumberFormat from 'react-number-format';
+import classNames from 'classnames';
+import indigo from 'material-ui/colors/indigo';
 
 const dateFormat = 'YYYY-MM-DD';
 const datePickerFormat = "LL";
@@ -28,7 +30,54 @@ const styles = theme => ({
     },
     button: {
         marginTop: '10px'
-    }
+    },
+    dayWrapper: {
+        position: 'relative',
+    },
+    day: {
+        width: 36,
+        height: 36,
+        fontSize: theme.typography.caption.fontSize,
+        margin: '0 2px',
+        color: 'inherit',
+        fontWeight: '500'
+    },
+    customDayHighlight: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: '2px',
+        right: '2px',
+        border: `1px solid ${theme.palette.secondary.main}`,
+        borderRadius: '50%',
+    },
+    nonCurrentMonthDay: {
+        color: theme.palette.text.disabled,
+        fontWeight: '400',
+        visibility: 'hidden'
+    },
+    highlight: {
+        background: indigo['400'],
+        color: theme.palette.common.white,
+    },
+    selected: {
+        background: indigo['800'],
+        color: theme.palette.common.white,
+    },
+    futureDay: {
+        color: 'rgba(0, 0, 0, 0.3803921568627451)',
+        fontWeight: '500',
+    },
+    firstHighlight: {
+        extend: 'highlight',
+        borderTopLeftRadius: '50%',
+        borderBottomLeftRadius: '50%',
+    },
+    endHighlight: {
+        extend: 'highlight',
+        borderTopRightRadius: '50%',
+        borderBottomRightRadius: '50%',
+    },
 });
 
 function NumberFormatCustom(props) {
@@ -75,6 +124,7 @@ class AddRecordForm extends Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.renderWrappedWeekDay = this.renderWrappedWeekDay.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -173,6 +223,17 @@ class AddRecordForm extends Component {
             },
             editDate: value.format(dateFormat)
         });
+        const {data} = this.props;
+        let dateValue = data.filter(e => e.date === value.format(dateFormat));
+        if (dateValue.length > 0) {
+            let curValue = dateValue[0].value;
+            this.setState({
+                value: {
+                    value: curValue,
+                    ...this.validateValue(curValue)
+                }
+            });
+        }
     }
 
     handleNumberChange(name, event, validationFun) {
@@ -201,6 +262,53 @@ class AddRecordForm extends Component {
         });
     }
 
+    renderWrappedWeekDay(date, selectedDate, dayInCurrentMonth) {
+        const {classes, data} = this.props;
+        let currentLocaleData = moment.localeData();
+        let firstDayOfWeek = currentLocaleData.firstDayOfWeek();
+        let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
+
+        let hasRecord = false;
+        let hasPreviousRecord = false;
+        let hasNextRecord = false;
+        let isFuture = moment().isBefore(date);
+        let prevDate = moment(date).subtract(1, 'days');
+        let nextDate = moment(date).add(1, 'days');
+        if (data.some(e => e.date === date.format(dateFormat))) {
+            hasRecord = true
+        }
+        if (data.some(e => e.date === prevDate.format(dateFormat))) {
+            if (date.isSame(prevDate, 'month')) {
+                hasPreviousRecord = true
+            }
+        }
+        if (data.some(e => e.date === nextDate.format(dateFormat))) {
+            if (date.isSame(nextDate, 'month')) {
+                hasNextRecord = true
+            }
+        }
+        let selected = date.isSame(selectedDate);
+        const wrapperClassName = classNames({
+            [classes.highlight]: dayInCurrentMonth && hasRecord,
+            [classes.selected]: dayInCurrentMonth && selected,
+            [classes.firstHighlight]: !selected && (date.day() === firstDayOfWeek || !hasPreviousRecord),
+            [classes.endHighlight]: !selected && (date.day() === lastDayOfWeek || !hasNextRecord),
+        });
+
+        const dayClassName = classNames(classes.day, {
+            [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+            [classes.futureDay]: isFuture,
+        });
+
+        return (
+            <div className={wrapperClassName}>
+                <IconButton className={dayClassName} disabled={isFuture}>
+                    <span> {date.format('D')} </span>
+                </IconButton>
+            </div>
+        );
+    }
+
     render() {
         const selectedDate = this.state.date.value;
         const {classes, unit} = this.props;
@@ -210,7 +318,6 @@ class AddRecordForm extends Component {
                       spacing={16} justify="center">
                     <Grid item xs={12} sm={6} md={4} align="center">
                         <DatePicker fullWidth
-                                    autoOk
                                     error={this.state.date.hasError}
                                     helperText={this.state.date.errorMsg}
                                     id="date"
@@ -227,6 +334,7 @@ class AddRecordForm extends Component {
                                     onChange={(event) => this.handleDateChange(event, this.validateDate)}
                                     animateYearScrolling={false}
                                     className={classes.picker}
+                                    renderDay={this.renderWrappedWeekDay}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} align="center">
