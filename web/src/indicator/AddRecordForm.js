@@ -6,6 +6,7 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import NumberFormat from 'react-number-format';
 import classNames from 'classnames';
+import indigo from 'material-ui/colors/indigo';
 
 const dateFormat = 'YYYY-MM-DD';
 const datePickerFormat = "LL";
@@ -39,6 +40,7 @@ const styles = theme => ({
         fontSize: theme.typography.caption.fontSize,
         margin: '0 2px',
         color: 'inherit',
+        fontWeight: '500'
     },
     customDayHighlight: {
         position: 'absolute',
@@ -51,13 +53,20 @@ const styles = theme => ({
     },
     nonCurrentMonthDay: {
         color: theme.palette.text.disabled,
-    },
-    highlightNonCurrentMonthDay: {
-        color: '#676767',
+        fontWeight: '400',
+        visibility: 'hidden'
     },
     highlight: {
-        background: theme.palette.primary.main,
+        background: indigo['400'],
         color: theme.palette.common.white,
+    },
+    selected: {
+        background: indigo['800'],
+        color: theme.palette.common.white,
+    },
+    futureDay: {
+        color: 'rgba(0, 0, 0, 0.3803921568627451)',
+        fontWeight: '500',
     },
     firstHighlight: {
         extend: 'highlight',
@@ -214,6 +223,17 @@ class AddRecordForm extends Component {
             },
             editDate: value.format(dateFormat)
         });
+        const {data} = this.props;
+        let dateValue = data.filter(e => e.date === value.format(dateFormat));
+        if (dateValue.length > 0) {
+            let curValue = dateValue[0].value;
+            this.setState({
+                value: {
+                    value: curValue,
+                    ...this.validateValue(curValue)
+                }
+            });
+        }
     }
 
     handleNumberChange(name, event, validationFun) {
@@ -244,35 +264,45 @@ class AddRecordForm extends Component {
 
     renderWrappedWeekDay(date, selectedDate, dayInCurrentMonth) {
         const {classes, data} = this.props;
+        let currentLocaleData = moment.localeData();
+        let firstDayOfWeek = currentLocaleData.firstDayOfWeek();
+        let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
 
         let hasRecord = false;
-        let hasPreviuosRecord = false;
+        let hasPreviousRecord = false;
         let hasNextRecord = false;
+        let isFuture = moment().isBefore(date);
         let prevDate = moment(date).subtract(1, 'days');
         let nextDate = moment(date).add(1, 'days');
         if (data.some(e => e.date === date.format(dateFormat))) {
             hasRecord = true
         }
         if (data.some(e => e.date === prevDate.format(dateFormat))) {
-            hasPreviuosRecord = true
+            if (date.isSame(prevDate, 'month')) {
+                hasPreviousRecord = true
+            }
         }
         if (data.some(e => e.date === nextDate.format(dateFormat))) {
-            hasNextRecord = true
+            if (date.isSame(nextDate, 'month')) {
+                hasNextRecord = true
+            }
         }
+        let selected = date.isSame(selectedDate);
         const wrapperClassName = classNames({
-            [classes.highlight]: hasRecord,
-            [classes.firstHighlight]: date.day() === 1 || !hasPreviuosRecord,
-            [classes.endHighlight]: date.day() === 0 || !hasNextRecord,
+            [classes.highlight]: dayInCurrentMonth && hasRecord,
+            [classes.selected]: dayInCurrentMonth && selected,
+            [classes.firstHighlight]: !selected && (date.day() === firstDayOfWeek || !hasPreviousRecord),
+            [classes.endHighlight]: !selected && (date.day() === lastDayOfWeek || !hasNextRecord),
         });
 
         const dayClassName = classNames(classes.day, {
             [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
-            [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth && true,
+            [classes.futureDay]: isFuture,
         });
 
         return (
             <div className={wrapperClassName}>
-                <IconButton className={dayClassName}>
+                <IconButton className={dayClassName} disabled={isFuture}>
                     <span> {date.format('D')} </span>
                 </IconButton>
             </div>
@@ -288,7 +318,6 @@ class AddRecordForm extends Component {
                       spacing={16} justify="center">
                     <Grid item xs={12} sm={6} md={4} align="center">
                         <DatePicker fullWidth
-                                    autoOk
                                     error={this.state.date.hasError}
                                     helperText={this.state.date.errorMsg}
                                     id="date"

@@ -14,7 +14,11 @@ const selectGridSize = {
     sm: 12,
     md: 4
 };
-const tooltipStyle = {position: "absolute", bottom: "0%", marginTop: "10px"};
+const tooltipStyle = {
+    position: "absolute",
+    bottom: "0%",
+    marginTop: "10px",
+};
 const styles = theme => ({
     root: {
         marginTop: theme.spacing.unit,
@@ -157,14 +161,12 @@ class IndicatorChart extends Component {
         }
         let {classes} = this.props;
         let xTicks = [];
-        let yTicks = [];
         let minY = Number.MAX_VALUE;
         let maxY = Number.MIN_VALUE;
         for (let rec of chartData) {
             let value = rec.value;
             if (value) {
                 xTicks.push(rec.date);
-                yTicks.push(value);
                 if (value < minY) {
                     minY = value;
                 }
@@ -192,7 +194,7 @@ class IndicatorChart extends Component {
                             <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
                                   dot={{stroke: chartColor, strokeWidth: 1}}
                                   connectNulls={true}
-                                  activeDot={{r: 5, onClick: this.handleClick}}/>
+                                  activeDot={{r: 3, onClick: this.handleClick}}/>
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
