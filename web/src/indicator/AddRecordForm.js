@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, InputAdornment, TextField, withStyles} from "material-ui";
+import {Button, Grid, IconButton, InputAdornment, TextField, withStyles} from "material-ui";
 import {DatePicker} from "material-ui-pickers";
 import moment from "moment";
 import PropTypes from "prop-types";
 import NumberFormat from 'react-number-format';
+import classNames from 'classnames';
 
 const dateFormat = 'YYYY-MM-DD';
 const datePickerFormat = "LL";
@@ -28,7 +29,46 @@ const styles = theme => ({
     },
     button: {
         marginTop: '10px'
-    }
+    },
+    dayWrapper: {
+        position: 'relative',
+    },
+    day: {
+        width: 36,
+        height: 36,
+        fontSize: theme.typography.caption.fontSize,
+        margin: '0 2px',
+        color: 'inherit',
+    },
+    customDayHighlight: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: '2px',
+        right: '2px',
+        border: `1px solid ${theme.palette.secondary.main}`,
+        borderRadius: '50%',
+    },
+    nonCurrentMonthDay: {
+        color: theme.palette.text.disabled,
+    },
+    highlightNonCurrentMonthDay: {
+        color: '#676767',
+    },
+    highlight: {
+        background: theme.palette.primary.main,
+        color: theme.palette.common.white,
+    },
+    firstHighlight: {
+        extend: 'highlight',
+        borderTopLeftRadius: '50%',
+        borderBottomLeftRadius: '50%',
+    },
+    endHighlight: {
+        extend: 'highlight',
+        borderTopRightRadius: '50%',
+        borderBottomRightRadius: '50%',
+    },
 });
 
 function NumberFormatCustom(props) {
@@ -75,6 +115,7 @@ class AddRecordForm extends Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.renderWrappedWeekDay = this.renderWrappedWeekDay.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -201,6 +242,43 @@ class AddRecordForm extends Component {
         });
     }
 
+    renderWrappedWeekDay(date, selectedDate, dayInCurrentMonth) {
+        const {classes, data} = this.props;
+
+        let hasRecord = false;
+        let hasPreviuosRecord = false;
+        let hasNextRecord = false;
+        let prevDate = moment(date).subtract(1, 'days');
+        let nextDate = moment(date).add(1, 'days');
+        if (data.some(e => e.date === date.format(dateFormat))) {
+            hasRecord = true
+        }
+        if (data.some(e => e.date === prevDate.format(dateFormat))) {
+            hasPreviuosRecord = true
+        }
+        if (data.some(e => e.date === nextDate.format(dateFormat))) {
+            hasNextRecord = true
+        }
+        const wrapperClassName = classNames({
+            [classes.highlight]: hasRecord,
+            [classes.firstHighlight]: date.day() === 1 || !hasPreviuosRecord,
+            [classes.endHighlight]: date.day() === 0 || !hasNextRecord,
+        });
+
+        const dayClassName = classNames(classes.day, {
+            [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+            [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth && true,
+        });
+
+        return (
+            <div className={wrapperClassName}>
+                <IconButton className={dayClassName}>
+                    <span> {date.format('D')} </span>
+                </IconButton>
+            </div>
+        );
+    }
+
     render() {
         const selectedDate = this.state.date.value;
         const {classes, unit} = this.props;
@@ -227,6 +305,7 @@ class AddRecordForm extends Component {
                                     onChange={(event) => this.handleDateChange(event, this.validateDate)}
                                     animateYearScrolling={false}
                                     className={classes.picker}
+                                    renderDay={this.renderWrappedWeekDay}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} align="center">
