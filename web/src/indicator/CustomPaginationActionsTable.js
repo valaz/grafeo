@@ -106,7 +106,6 @@ const styles = theme => ({
         width: '10%'
     },
     action: {
-        cursor: 'pointer',
         margin: 0
     },
     tableWrapper: {
