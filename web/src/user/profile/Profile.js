@@ -5,9 +5,10 @@ import './Profile.css';
 import NotFound from '../../common/NotFound';
 import ServerError from '../../common/ServerError';
 import {FormattedDate, FormattedMessage, injectIntl} from 'react-intl';
-import {AppBar, Avatar, Grid, Tab, Tabs, Typography, withStyles} from "material-ui";
+import {AppBar, Avatar, Grid, IconButton, Tab, Tabs, Typography, withStyles} from "material-ui";
 import {getRandomColor} from "../../util/Colors";
 import IndicatorList from "../../indicator/IndicatorList";
+import {Edit} from '@material-ui/icons'
 
 function TabContainer(props) {
     return (
@@ -29,6 +30,9 @@ const styles = theme => ({
         height: 120,
         fontSize: 50
     },
+    button: {
+        margin: 0,
+    },
 });
 
 class Profile extends Component {
@@ -41,6 +45,7 @@ class Profile extends Component {
         };
         this.loadUserProfile = this.loadUserProfile.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleProfileEdit = this.handleProfileEdit.bind(this);
     }
 
     loadUserProfile(username) {
@@ -71,23 +76,26 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const username = this.props.match.params.username;
+        const username = this.props.currentUser.username;
         this.loadUserProfile(username);
         document.title = this.props.intl.formatMessage({id: 'profile.title'});
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.match.params.username !== nextProps.match.params.username) {
+        if (this.props.currentUser.username !== nextProps.currentUser.username) {
             this.loadUserProfile(nextProps.match.params.username);
         }
     }
-
 
     handleTabChange = (event, tab) => {
         this.setState({
             tab: tab
         });
     };
+
+    handleProfileEdit() {
+        this.props.history.push('/profile/edit');
+    }
 
     render() {
         if (this.state.isLoading) {
@@ -122,7 +130,13 @@ class Profile extends Component {
                                         </Avatar>
                                     </Grid>
                                     <Grid item xs={12} sm={8} md={8} className="user-summary">
-                                        <div className="full-name">{this.state.user.name}</div>
+                                        <div className="full-name">
+                                            {this.state.user.name}
+                                            <IconButton color="secondary" className={classes.button} aria-label="Edit"
+                                                        onClick={this.handleProfileEdit}>
+                                                <Edit/>
+                                            </IconButton>
+                                        </div>
                                         <div className="username">@{this.state.user.username}</div>
                                         <div className="user-joined">
                                             <FormattedMessage id="profile.joined" values={{

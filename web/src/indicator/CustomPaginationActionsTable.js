@@ -106,7 +106,7 @@ const styles = theme => ({
         width: '10%'
     },
     action: {
-        cursor: 'pointer'
+        margin: 0
     },
     tableWrapper: {
         overflowX: 'auto',
@@ -158,10 +158,16 @@ class CustomPaginationActionsTable extends React.Component {
     createRowData(data) {
         const {classes} = this.props;
         let editAction = <div>
-            <Edit className={classes.action} onClick={() => this.handleEdit(data)}/>
+            <IconButton className={classes.action} aria-label="Edit"
+                        onClick={() => this.handleEdit(data)}>
+                <Edit/>
+            </IconButton>
         </div>;
         let deleteAction = <div>
-            <Delete className={classes.action} onClick={() => this.handleDelete(data)}/>
+            <IconButton className={classes.action} aria-label="Delete"
+                        onClick={() => this.handleDelete(data)}>
+                <Delete/>
+            </IconButton>
         </div>;
         return {
             id: data.id,

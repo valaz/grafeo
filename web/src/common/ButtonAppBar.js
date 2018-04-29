@@ -54,7 +54,7 @@ class ButtonAppBar extends React.Component {
     }
 
     handleProfile() {
-        this.props.history.push('/users/' + this.props.currentUser.username);
+        this.props.history.push('/profile');
         this.handleClose();
     }
 

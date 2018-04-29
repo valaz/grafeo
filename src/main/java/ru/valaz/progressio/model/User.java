@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.NaturalId;
 import ru.valaz.progressio.model.audit.DateAudit;
 
 import javax.persistence.*;
@@ -41,7 +40,6 @@ public class User extends DateAudit {
     @NonNull
     private String username;
 
-    @NaturalId
     @NotBlank
     @Size(max = 40)
     @Email

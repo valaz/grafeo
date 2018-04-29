@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {checkEmailAvailability, checkUsernameAvailability, signup} from '../../util/APIUtils';
+import {checkEmailAvailability, checkUsernameAvailability, editProfile, signup} from '../../util/APIUtils';
 import {Link} from 'react-router-dom';
 import {
     EMAIL_MAX_LENGTH,
@@ -51,6 +51,7 @@ class Signup extends Component {
                 open: false,
                 message: ''
             },
+            isSignup: true
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,8 +63,25 @@ class Signup extends Component {
         this.clearNotification = this.clearNotification.bind(this);
     }
 
+    componentWillMount() {
+        let {currentUser} = this.props;
+        if (currentUser) {
+            document.title = currentUser.name;
+            this.setState({
+                isSignup: false
+            });
+            this.storeUserFields();
+        } else {
+            document.title = this.props.intl.formatMessage({id: 'signup.header'});
+        }
+    }
+
     componentDidMount() {
-        document.title = this.props.intl.formatMessage({id: 'signup.header'});
+        if (!this.state.isSignup) {
+            this.validateUsernameAvailability();
+            this.validateEmailAvailability();
+            this.validatePasswords();
+        }
     }
 
     handleInputChange(event, validationFun) {
@@ -91,6 +109,14 @@ class Signup extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        if (this.state.isSignup) {
+            this.handleSignupSubmit();
+        } else {
+            this.handleEditProfileSubmit();
+        }
+    }
+
+    handleSignupSubmit() {
         const signupRequest = {
             name: this.state.name.value,
             email: this.state.email.value,
@@ -100,6 +126,27 @@ class Signup extends Component {
         signup(signupRequest)
             .then(response => {
                 this.props.onSignup();
+            }).catch(error => {
+            this.setState({
+                notification: {
+                    open: true,
+                    message: this.props.intl.formatMessage({id: 'notification.error'})
+                }
+            });
+        });
+    }
+
+    handleEditProfileSubmit() {
+        const signupRequest = {
+            name: this.state.name.value,
+            email: this.state.email.value,
+            username: this.state.username.value,
+            password: this.state.password.value
+        };
+        editProfile(signupRequest)
+            .then(response => {
+                this.props.onEdit();
+                this.props.history.push('/profile');
             }).catch(error => {
             this.setState({
                 notification: {
@@ -135,7 +182,7 @@ class Signup extends Component {
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
                 <h1 className={classes.header}>
-                    <FormattedMessage id="signup.header"/>
+                    {this.getHeader()}
                 </h1>
                 <Notification open={this.state.notification.open} message={this.state.notification.message}
                               cleanup={this.clearNotification}/>
@@ -225,12 +272,16 @@ class Signup extends Component {
                                 <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
-                                        <FormattedMessage id="signup.form.submit"/>
+                                        {this.getSubmitButton()}
                                     </Button>
-
-                                    <FormattedMessage id="signup.form.login.registered"/> <Link to="/login">
-                                    <FormattedMessage id="signup.form.login.now"/>
-                                </Link>
+                                    {this.state.isSignup ?
+                                        <div>
+                                            <FormattedMessage id="signup.form.login.registered"/>
+                                            <Link to="/login">
+                                                <FormattedMessage id="signup.form.login.now"/>
+                                            </Link>
+                                        </div> : null
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -238,6 +289,22 @@ class Signup extends Component {
                 </form>
             </div>
         );
+    }
+
+    getSubmitButton() {
+        if (this.state.isSignup) {
+            return <FormattedMessage id="signup.form.submit"/>;
+        } else {
+            return <FormattedMessage id="profile.edit.submit"/>;
+        }
+    }
+
+    getHeader() {
+        if (this.state.isSignup) {
+            return <FormattedMessage id="signup.header"/>;
+        } else {
+            return <FormattedMessage id="profile.edit.header"/>;
+        }
     }
 
     // Validation Functions
@@ -388,7 +455,7 @@ class Signup extends Component {
 
         checkUsernameAvailability(usernameValue)
             .then(response => {
-                if (response.available) {
+                if (response.available || (!this.state.isSignup && usernameValue === this.props.currentUser.username)) {
                     this.setState({
                         username: {
                             value: usernameValue,
@@ -446,7 +513,7 @@ class Signup extends Component {
 
         checkEmailAvailability(emailValue)
             .then(response => {
-                if (response.available) {
+                if (response.available || (!this.state.isSignup && emailValue === this.props.currentUser.email)) {
                     this.setState({
                         email: {
                             value: emailValue,
@@ -482,7 +549,9 @@ class Signup extends Component {
         let password = this.state.password.value;
         let passwordConfirm = this.state.passwordConfirm.value;
         if (!password || !passwordConfirm) {
-            return;
+            if (this.state.isSignup) {
+                return;
+            }
         }
         if (password === passwordConfirm) {
             this.setState({
@@ -517,6 +586,23 @@ class Signup extends Component {
         }
     }
 
+    storeUserFields() {
+        let {currentUser} = this.props;
+        this.setState({
+            name: {
+                value: currentUser.name,
+                validateStatus: 'success'
+            },
+            username: {
+                value: currentUser.username,
+                validateStatus: 'success'
+            },
+            email: {
+                value: currentUser.email,
+                validateStatus: 'success'
+            }
+        });
+    }
 }
 
 export default injectIntl(withStyles(styles)(Signup));

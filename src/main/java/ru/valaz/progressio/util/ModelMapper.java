@@ -31,7 +31,7 @@ public class ModelMapper {
 
         indicatorResponse.setRecords(recordResponses);
 
-        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getName());
+        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getName());
         indicatorResponse.setCreatedBy(creatorSummary);
 
         return indicatorResponse;
