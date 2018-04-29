@@ -71,13 +71,13 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const username = this.props.match.params.username;
+        const username = this.props.currentUser.username;
         this.loadUserProfile(username);
         document.title = this.props.intl.formatMessage({id: 'profile.title'});
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.match.params.username !== nextProps.match.params.username) {
+        if (this.props.currentUser.username !== nextProps.currentUser.username) {
             this.loadUserProfile(nextProps.match.params.username);
         }
     }

@@ -157,7 +157,7 @@ class App extends React.Component {
                                                                      currentUser={this.state.currentUser}/>}/>
                                     <Route path="/signup"
                                            render={(props) => <Signup onSignup={this.handleSignup}/>}/>
-                                    <Route path="/users/:username"
+                                    <Route path="/profile"
                                            render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                        currentUser={this.state.currentUser} {...props}  />}>
                                     </Route>
