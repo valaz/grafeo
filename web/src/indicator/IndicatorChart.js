@@ -59,12 +59,20 @@ class IndicatorChart extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.setState(
             {
                 data: this.props.data,
             }
-        )
+        );
+        let currentDuration = localStorage.getItem('indicator_' + this.props.indicator.id + '_period');
+        if (currentDuration) {
+            this.setState(
+                {
+                    period: currentDuration,
+                }
+            );
+        }
     }
 
     getChartData() {
@@ -129,6 +137,7 @@ class IndicatorChart extends Component {
 
     handleChange = event => {
         this.setState({[event.target.name]: event.target.value});
+        localStorage.setItem('indicator_' + this.props.indicator.id + '_period', event.target.value);
     };
 
     handleSwitchChange = name => event => {
@@ -267,7 +276,7 @@ class CustomTooltip extends React.Component {
             <span style={{fontWeight: '600'}}>{unit} </span>
         </span>;
     }
-};
+}
 
 const CustomTooltipWrapped = injectIntl(withStyles(tooltipStyles, {withTheme: true})(
     CustomTooltip,
