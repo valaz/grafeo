@@ -95,6 +95,14 @@ export function signup(signupRequest) {
     });
 }
 
+export function editProfile(signupRequest) {
+    return request({
+        url: "/user/me",
+        method: 'POST',
+        body: JSON.stringify(signupRequest)
+    });
+}
+
 export function checkUsernameAvailability(username) {
     return request({
         url: "/user/checkUsernameAvailability?username=" + username,

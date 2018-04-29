@@ -49,6 +49,7 @@ class App extends React.Component {
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleSignup = this.handleSignup.bind(this);
+        this.handleProfileEdit = this.handleProfileEdit.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
     }
 
@@ -103,6 +104,11 @@ class App extends React.Component {
         this.props.history.push("/");
     }
 
+    handleProfileEdit() {
+        console.log('handleProfileEdit()');
+        this.loadCurrentUser();
+    }
+
     handleSignup() {
         this.setState({
             notification: {
@@ -151,16 +157,20 @@ class App extends React.Component {
                                                                     currentUser={this.state.currentUser}
                                                                     handleLogout={this.handleLogout} {...props} />}>
                                     </Route>
-                                    <Route path="/login"
+                                    <Route exact path="/login"
                                            render={(props) => <Login onLogin={this.handleLogin}
                                                                      isAuthenticated={this.state.isAuthenticated}
                                                                      currentUser={this.state.currentUser}/>}/>
-                                    <Route path="/signup"
+                                    <Route exact path="/signup"
                                            render={(props) => <Signup onSignup={this.handleSignup}/>}/>
-                                    <Route path="/profile"
+                                    <Route exact path="/profile"
                                            render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                        currentUser={this.state.currentUser} {...props}  />}>
                                     </Route>
+                                    <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile/edit"
+                                                  onEdit={this.handleProfileEdit}
+                                                  component={Signup} handleLogout={this.handleLogout}
+                                                  currentUser={this.state.currentUser}/>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
                                                   component={IndicatorConfig} handleLogout={this.handleLogout}/>
                                     <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"

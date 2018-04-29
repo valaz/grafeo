@@ -14,7 +14,12 @@ export default {
             title: 'Profile',
             indicators: 'Indicators',
             records: 'Records',
-            joined: 'Joined at {date}'
+            joined: 'Joined at {date}',
+            edit: {
+                title: 'Edit profile',
+                header: 'Edit profile',
+                submit: 'Save'
+            }
         },
         navbar: {
             profile: 'Profile',
@@ -233,7 +238,12 @@ export default {
             title: 'Профиль',
             indicators: 'Индикаторы',
             records: 'Записи',
-            joined: 'Присоединился {date}'
+            joined: 'Присоединился {date}',
+            edit: {
+                title: 'Изменить профиль',
+                header: 'Изменить профиль',
+                submit: 'Сохранить'
+            }
         },
         navbar: {
             profile: 'Профиль',
