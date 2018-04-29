@@ -132,7 +132,7 @@ class Profile extends Component {
                                     <Grid item xs={12} sm={8} md={8} className="user-summary">
                                         <div className="full-name">
                                             {this.state.user.name}
-                                            <IconButton color="secondary" className={classes.button} aria-label="Delete"
+                                            <IconButton color="secondary" className={classes.button} aria-label="Edit"
                                                         onClick={this.handleProfileEdit}>
                                                 <Edit/>
                                             </IconButton>
