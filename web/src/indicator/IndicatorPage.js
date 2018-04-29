@@ -243,6 +243,7 @@ class IndicatorPage extends Component {
                                     name={this.state.indicator.name}
                                     onClickHandler={this.handleEdit}
                                     unit={this.state.indicator.unit}
+                                    indicator={this.state.indicator}
         />;
         let table = <CustomPaginationActionsTable dataSource={this.state.records}
                                                   editHadler={this.handleEdit}

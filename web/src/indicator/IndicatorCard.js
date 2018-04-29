@@ -53,6 +53,16 @@ class IndicatorCard extends React.Component {
         this.handleExpandClick = this.handleExpandClick.bind(this);
     }
 
+    componentWillMount() {
+        let tableExpanded = localStorage.getItem('indicator_' + this.props.indicator.id + '_table_expanded');
+        if (tableExpanded) {
+            let isExpanded = (tableExpanded === 'true');
+            this.setState({
+                expanded: isExpanded
+            })
+        }
+    }
+
     handleMenuClick(event) {
         this.setState({
             anchorEl: event.currentTarget
@@ -94,7 +104,9 @@ class IndicatorCard extends React.Component {
     };
 
     handleExpandClick = () => {
-        this.setState({expanded: !this.state.expanded});
+        let expanded = this.state.expanded;
+        this.setState({expanded: !expanded});
+        localStorage.setItem('indicator_' + this.props.indicator.id + '_table_expanded', (!expanded).toString());
     };
 
     render() {
