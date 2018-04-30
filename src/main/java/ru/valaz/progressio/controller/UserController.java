@@ -54,7 +54,7 @@ public class UserController {
         user.setName(profileRequest.getName());
         user.setUsername(profileRequest.getUsername());
         user.setEmail(profileRequest.getEmail());
-        if (StringUtils.isNotBlank(currentUser.getPassword())) {
+        if (StringUtils.isNotBlank(profileRequest.getPassword())) {
             user.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
         }
 
