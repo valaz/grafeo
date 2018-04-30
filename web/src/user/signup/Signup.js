@@ -14,6 +14,7 @@ import {
 import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const gridSize = {
     xs: 12,
@@ -47,6 +48,9 @@ class Signup extends Component {
             passwordConfirm: {
                 value: ''
             },
+            recaptcha: {
+                value: ''
+            },
             notification: {
                 open: false,
                 message: ''
@@ -61,6 +65,7 @@ class Signup extends Component {
         this.validatePasswords = this.validatePasswords.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
+        this.onCaptchaChange = this.onCaptchaChange.bind(this);
     }
 
     componentWillMount() {
@@ -162,7 +167,8 @@ class Signup extends Component {
             this.state.username.validateStatus === 'success' &&
             this.state.email.validateStatus === 'success' &&
             this.state.password.validateStatus === 'success' &&
-            this.state.passwordConfirm.validateStatus === 'success';
+            this.state.passwordConfirm.validateStatus === 'success' &&
+            this.state.recaptcha.validateStatus === 'success';
         return !isValid;
     }
 
@@ -170,6 +176,18 @@ class Signup extends Component {
         this.validateUsernameAvailability();
         this.validateEmailAvailability();
         this.validatePasswords()
+    }
+
+    onCaptchaChange(event) {
+        if (event) {
+            this.setState({
+                recaptcha: {
+                    validateStatus: 'success',
+                    errorMsg: null,
+                    hasError: false
+                }
+            })
+        }
     }
 
     render() {
@@ -268,6 +286,16 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
+                            {this.state.isSignup ?
+                                <Grid container item spacing={0} justify="center">
+                                    <Grid item {...gridSize}>
+                                        <ReCAPTCHA
+                                            sitekey='6LcAPlYUAAAAACzQdrgRne3Is9Y1mm5-MtiLZ-L-'
+                                            onChange={this.onCaptchaChange}
+                                        />
+                                    </Grid>
+                                </Grid> : null
+                            }
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
@@ -599,6 +627,9 @@ class Signup extends Component {
             },
             email: {
                 value: currentUser.email,
+                validateStatus: 'success'
+            },
+            recaptcha: {
                 validateStatus: 'success'
             }
         });
