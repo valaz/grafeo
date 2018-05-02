@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @TestPropertySource(properties = {
-        "environment=local",
+        "environment=test",
 })
 public class UserServiceTest {
 

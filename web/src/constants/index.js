@@ -9,7 +9,7 @@ export const NAME_MIN_LENGTH = 1;
 export const NAME_MAX_LENGTH = 20;
 
 export const USERNAME_MIN_LENGTH = 3;
-export const USERNAME_MAX_LENGTH = 15;
+export const USERNAME_MAX_LENGTH = 30;
 
 export const EMAIL_MAX_LENGTH = 40;
 
