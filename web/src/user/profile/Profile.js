@@ -8,7 +8,7 @@ import {FormattedDate, FormattedMessage, injectIntl} from 'react-intl';
 import {AppBar, Avatar, Grid, IconButton, Tab, Tabs, Typography, withStyles} from "material-ui";
 import {getRandomColor} from "../../util/Colors";
 import IndicatorList from "../../indicator/IndicatorList";
-import {Edit} from '@material-ui/icons'
+import {Settings} from '@material-ui/icons'
 
 function TabContainer(props) {
     return (
@@ -134,7 +134,7 @@ class Profile extends Component {
                                             {this.state.user.name}
                                             <IconButton color="secondary" className={classes.button} aria-label="Edit"
                                                         onClick={this.handleProfileEdit}>
-                                                <Edit/>
+                                                <Settings style={{fontSize: 25}}/>
                                             </IconButton>
                                         </div>
                                         <div className="username">@{this.state.user.username}</div>
