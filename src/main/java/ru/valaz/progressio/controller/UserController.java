@@ -1,6 +1,5 @@
 package ru.valaz.progressio.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +15,7 @@ import ru.valaz.progressio.repository.UserRepository;
 import ru.valaz.progressio.security.CurrentUser;
 import ru.valaz.progressio.security.UserPrincipal;
 import ru.valaz.progressio.service.IndicatorService;
+import ru.valaz.progressio.service.UserService;
 import ru.valaz.progressio.util.AppConstants;
 
 import javax.validation.Valid;
@@ -37,6 +37,9 @@ public class UserController {
     private IndicatorService indicatorService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/me")
@@ -51,14 +54,7 @@ public class UserController {
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
 
-        user.setName(profileRequest.getName());
-        user.setUsername(profileRequest.getUsername());
-        user.setEmail(profileRequest.getEmail());
-        if (StringUtils.isNotBlank(profileRequest.getPassword())) {
-            user.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
-        }
-
-        User result = userRepository.save(user);
+        User result = userService.updateUser(user, profileRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
@@ -80,6 +76,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
+    @PreAuthorize("hasRole('USER')")
     public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
@@ -91,6 +88,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}/indicators")
+    @PreAuthorize("hasRole('USER')")
     public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(@PathVariable(value = "username") String username,
                                                                    @CurrentUser UserPrincipal currentUser,
                                                                    @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
