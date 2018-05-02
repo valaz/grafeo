@@ -48,6 +48,7 @@ class LoginForm extends Component {
                 open: false,
                 message: ''
             },
+            isLoading: false
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
@@ -68,18 +69,25 @@ class LoginForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        this.setState({
+            isLoading: true
+        });
         let loginRequest = {
             usernameOrEmail: this.state.username.value,
             password: this.state.password.value
         };
         login(loginRequest)
             .then(response => {
+                this.setState({
+                    isLoading: false
+                });
                 localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                 this.props.onLogin();
             }).catch(error => {
             console.log(error);
             if (error.status === 401) {
                 this.setState({
+                    isLoading: false,
                     notification: {
                         open: true,
                         message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
@@ -87,6 +95,7 @@ class LoginForm extends Component {
                 });
             } else {
                 this.setState({
+                    isLoading: false,
                     notification: {
                         open: true,
                         message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
@@ -131,6 +140,7 @@ class LoginForm extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
+                                               disabled={this.state.isLoading}
                                                error={this.state.username.hasError}
                                                helperText={this.state.username.errorMsg}
                                                id="username"
@@ -144,6 +154,7 @@ class LoginForm extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
+                                               disabled={this.state.isLoading}
                                                error={this.state.password.hasError}
                                                helperText={this.state.password.errorMsg}
                                                id="password"
@@ -159,7 +170,7 @@ class LoginForm extends Component {
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
-                                            disabled={this.isFormInvalid()}>
+                                            disabled={this.isFormInvalid() || this.state.isLoading}>
                                         <FormattedMessage id="login.form.submit"/>
                                     </Button>
                                     <FormattedMessage id="login.form.register.or"/> <Link to="/signup">
