@@ -55,7 +55,8 @@ class Signup extends Component {
                 open: false,
                 message: ''
             },
-            isSignup: true
+            isSignup: true,
+            isLoading: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -114,6 +115,10 @@ class Signup extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        this.setState({
+            isLoading: true
+        });
+
         if (this.state.isSignup) {
             this.handleSignupSubmit();
         } else {
@@ -130,9 +135,13 @@ class Signup extends Component {
         };
         signup(signupRequest)
             .then(response => {
+                this.setState({
+                    isLoading: false
+                });
                 this.props.onSignup();
             }).catch(error => {
             this.setState({
+                isLoading: false,
                 notification: {
                     open: true,
                     message: this.props.intl.formatMessage({id: 'notification.error'})
@@ -150,10 +159,14 @@ class Signup extends Component {
         };
         editProfile(signupRequest)
             .then(response => {
+                this.setState({
+                    isLoading: false
+                });
                 this.props.onEdit();
                 this.props.history.push('/profile');
             }).catch(error => {
             this.setState({
+                isLoading: false,
                 notification: {
                     open: true,
                     message: this.props.intl.formatMessage({id: 'notification.error'})
@@ -213,6 +226,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
+                                               disabled={this.state.isLoading}
                                                autoComplete="off"
                                                error={this.state.name.hasError}
                                                helperText={this.state.name.errorMsg}
@@ -227,6 +241,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
+                                               disabled={this.state.isLoading}
                                                autoComplete="off"
                                                error={this.state.username.hasError}
                                                helperText={this.state.username.errorMsg}
@@ -242,6 +257,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
+                                               disabled={this.state.isLoading}
                                                autoComplete="off"
                                                error={this.state.email.hasError}
                                                helperText={this.state.email.errorMsg}
@@ -257,6 +273,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
+                                               disabled={this.state.isLoading}
                                                autoComplete="off"
                                                error={this.state.password.hasError}
                                                helperText={this.state.password.errorMsg}
@@ -273,6 +290,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
+                                               disabled={this.state.isLoading}
                                                autoComplete="off"
                                                error={this.state.passwordConfirm.hasError}
                                                helperText={this.state.passwordConfirm.errorMsg}
@@ -299,7 +317,7 @@ class Signup extends Component {
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <Button fullWidth type="submit" variant="raised" color="primary" size="large"
-                                            disabled={this.isFormInvalid()}>
+                                            disabled={this.isFormInvalid() || this.state.isLoading}>
                                         {this.getSubmitButton()}
                                     </Button>
                                     {this.state.isSignup ?
