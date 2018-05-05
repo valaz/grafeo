@@ -89,6 +89,7 @@ public class IndicatorController {
     }
 
     @GetMapping("/{indicatorId}")
+    @PreAuthorize("hasRole('USER')")
     public IndicatorResponse getIndicatorById(@CurrentUser UserPrincipal currentUser,
                                               @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
@@ -105,6 +106,7 @@ public class IndicatorController {
     }
 
     @DeleteMapping("/{indicatorId}")
+    @PreAuthorize("hasRole('USER')")
     public ApiResponse deleteIndicatorById(@CurrentUser UserPrincipal currentUser,
                                            @PathVariable Long indicatorId) {
         Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
