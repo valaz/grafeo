@@ -48,12 +48,12 @@ class Profile extends Component {
         this.handleProfileEdit = this.handleProfileEdit.bind(this);
     }
 
-    loadUserProfile(username) {
+    loadUserProfile() {
         this.setState({
             isLoading: true
         });
 
-        getUserProfile(username)
+        getUserProfile()
             .then(response => {
                 this.setState({
                     user: response,
@@ -76,14 +76,13 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const username = this.props.currentUser.username;
-        this.loadUserProfile(username);
+        this.loadUserProfile();
         document.title = this.props.intl.formatMessage({id: 'profile.title'});
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.currentUser.username !== nextProps.currentUser.username) {
-            this.loadUserProfile(nextProps.match.params.username);
+            this.loadUserProfile();
         }
     }
 
