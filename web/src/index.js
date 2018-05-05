@@ -16,8 +16,7 @@ import ru from "react-intl/locale-data/ru";
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import createHistory from 'history/createBrowserHistory'
-
-ReactGA.initialize('UA-68428372-3');
+import {getGaUid} from './util/APIUtils'
 
 addLocaleData([...en, ...ru]);
 
@@ -36,6 +35,17 @@ if (languageWithoutRegionCode === 'ru') {
 }
 const messages = data[languageWithoutRegionCode] || data[locale] || data.en;
 
+let gaUid = '';
+let promise = getGaUid();
+if (promise) {
+    promise.then(response => {
+            gaUid = response.uid;
+            ReactGA.initialize(gaUid);
+        }
+    ).catch(error => {
+
+    })
+}
 
 const history = createHistory()
 history.listen((location, action) => {

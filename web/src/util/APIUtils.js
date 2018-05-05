@@ -145,3 +145,10 @@ export function getUserCreatedIndicators(username, page, size) {
         method: 'GET'
     });
 }
+
+export function getGaUid() {
+    return request({
+        url: "/api/common/ga",
+        method: 'GET'
+    });
+}

@@ -15,6 +15,7 @@ import {injectIntl} from "react-intl";
 import ButtonAppBar from "../common/ButtonAppBar";
 import Notification from "../common/Notification";
 import {withStyles} from "material-ui";
+import ReactGA from 'react-ga';
 
 const styles = theme => ({
     root: {
@@ -59,6 +60,7 @@ class App extends React.Component {
         });
         getCurrentUser()
             .then(response => {
+                ReactGA.set({userId: response.username});
                 this.setState({
                     currentUser: response,
                     isAuthenticated: true,
@@ -77,6 +79,8 @@ class App extends React.Component {
 
     handleLogout(redirectTo = "/", notificationType = "success", description = this.props.intl.formatMessage({id: 'notification.logout'})) {
         localStorage.removeItem(ACCESS_TOKEN);
+
+        ReactGA.set({userId: null});
 
         this.setState({
             currentUser: null,
@@ -101,6 +105,10 @@ class App extends React.Component {
             }
         });
         this.loadCurrentUser();
+        ReactGA.event({
+            category: 'User',
+            action: 'User login'
+        });
         this.props.history.push("/");
     }
 
@@ -114,6 +122,10 @@ class App extends React.Component {
                 open: true,
                 message: this.props.intl.formatMessage({id: 'signup.notification.success'})
             }
+        });
+        ReactGA.event({
+            category: 'User',
+            action: 'User signup'
         });
         this.props.history.push("/login");
     }
