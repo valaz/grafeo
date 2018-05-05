@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {Router} from 'react-router-dom';
 import App from "./app/App";
 import data from "./locale/messages";
 import {flattenMessages} from "./util/util"
@@ -15,6 +15,7 @@ import en from "react-intl/locale-data/en";
 import ru from "react-intl/locale-data/ru";
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import createHistory from 'history/createBrowserHistory'
 
 ReactGA.initialize('UA-68428372-3');
 
@@ -35,14 +36,17 @@ if (languageWithoutRegionCode === 'ru') {
 }
 const messages = data[languageWithoutRegionCode] || data[locale] || data.en;
 
-function fireTracking() {
-    ReactGA.pageview(window.location.hash);
-}
+
+const history = createHistory()
+history.listen((location, action) => {
+    ReactGA.set({page: location.pathname});
+    ReactGA.pageview(location.pathname);
+});
 
 ReactDOM.render(
     <MuiPickersUtilsProvider utils={MomentUtils}>
         <IntlProvider locale={locale} messages={flattenMessages(messages)}>
-            <Router onUpdate={fireTracking}>
+            <Router history={history}>
                 <App/>
             </Router>
         </IntlProvider>

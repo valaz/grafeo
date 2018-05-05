@@ -105,7 +105,6 @@ class App extends React.Component {
     }
 
     handleProfileEdit() {
-        console.log('handleProfileEdit()');
         this.loadCurrentUser();
     }
 
