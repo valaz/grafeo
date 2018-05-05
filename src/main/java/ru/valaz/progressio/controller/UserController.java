@@ -48,6 +48,19 @@ public class UserController {
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName());
     }
 
+    @GetMapping("/users/profile")
+    @PreAuthorize("hasRole('USER')")
+    public UserProfile getUserProfile(@CurrentUser UserPrincipal currentUser) {
+
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+
+        long indicatorCount = indicatorRepository.countByCreatedBy(user.getId());
+        long recordCount = recordRepository.countByCreatedBy(user.getId());
+
+        return new UserProfile(user.getId(), user.getUsername(), user.getEmail(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
+    }
+
     @PostMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity updateCurrentUser(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody ProfileRequest profileRequest) {
@@ -65,26 +78,14 @@ public class UserController {
 
     @GetMapping("/user/checkUsernameAvailability")
     public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
-        Boolean isAvailable = !userRepository.existsByUsernameIgnoreCase(username);
+        Boolean isAvailable = !userRepository.existsByUsernameIgnoreCase(username.trim());
         return new UserIdentityAvailability(isAvailable);
     }
 
     @GetMapping("/user/checkEmailAvailability")
     public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
-        Boolean isAvailable = !userRepository.existsByEmailIgnoreCase(email);
+        Boolean isAvailable = !userRepository.existsByEmailIgnoreCase(email.trim());
         return new UserIdentityAvailability(isAvailable);
-    }
-
-    @GetMapping("/users/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-
-        long indicatorCount = indicatorRepository.countByCreatedBy(user.getId());
-        long recordCount = recordRepository.countByCreatedBy(user.getId());
-
-        return new UserProfile(user.getId(), user.getUsername(), user.getEmail(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
     }
 
     @GetMapping("/users/{username}/indicators")

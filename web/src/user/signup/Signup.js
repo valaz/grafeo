@@ -60,6 +60,8 @@ class Signup extends Component {
             isLoading: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleNameInputChange = this.handleNameInputChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateAll = this.validateAll.bind(this);
         this.validateUsernameAvailability = this.validateUsernameAvailability.bind(this);
@@ -91,7 +93,7 @@ class Signup extends Component {
         }
     }
 
-    handleInputChange(event, validationFun) {
+    handleNameInputChange(event, validationFun) {
         const target = event.target;
         const inputName = target.name;
         const inputValue = target.value;
@@ -99,6 +101,32 @@ class Signup extends Component {
         this.setState({
             [inputName]: {
                 value: inputValue,
+                ...validationFun(inputValue)
+            }
+        });
+    }
+
+    handleInputChange(event, validationFun) {
+        const target = event.target;
+        const inputName = target.name;
+        const inputValue = target.value;
+
+        this.setState({
+            [inputName]: {
+                value: inputValue.trim().replace(/ +/g, ""),
+                ...validationFun(inputValue)
+            }
+        });
+    }
+
+    handlePasswordChange(event, validationFun) {
+        const target = event.target;
+        const inputName = target.name;
+        const inputValue = target.value;
+
+        this.setState({
+            [inputName]: {
+                value: inputValue.trim(),
                 ...validationFun(inputValue)
             }
         });
@@ -239,7 +267,7 @@ class Signup extends Component {
                                                name="name"
                                                label={nameLabel}
                                                value={this.state.name.value}
-                                               onChange={(event) => this.handleInputChange(event, this.validateName)}
+                                               onChange={(event) => this.handleNameInputChange(event, this.validateName)}
                                     />
                                 </Grid>
                             </Grid>
@@ -288,7 +316,7 @@ class Signup extends Component {
                                                type="password"
                                                value={this.state.password.value}
                                                onBlur={this.validatePasswords}
-                                               onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                               onChange={(event) => this.handlePasswordChange(event, this.validatePassword)}
                                     />
                                 </Grid>
                             </Grid>
@@ -305,7 +333,7 @@ class Signup extends Component {
                                                type="password"
                                                value={this.state.passwordConfirm.value}
                                                onBlur={this.validatePasswords}
-                                               onChange={(event) => this.handleInputChange(event, this.validatePasswordConfirm)}
+                                               onChange={(event) => this.handlePasswordChange(event, this.validatePasswordConfirm)}
                                     />
                                 </Grid>
                             </Grid>

@@ -129,9 +129,9 @@ export function getCurrentUser() {
     });
 }
 
-export function getUserProfile(username) {
+export function getUserProfile() {
     return request({
-        url: "/users/" + username,
+        url: "/users/profile",
         method: 'GET'
     });
 }
