@@ -4,6 +4,7 @@ import {INDICATOR_NAME_MAX_LENGTH, UNIT_NAME_MAX_LENGTH} from '../constants';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
 import Notification from "../common/Notification";
+import ReactGA from 'react-ga';
 
 const gridSize = {
     xs: 12,
@@ -126,6 +127,10 @@ class IndicatorConfig extends Component {
 
         createIndicator(indicatorData)
             .then(response => {
+                ReactGA.event({
+                    category: 'Indicator',
+                    action: 'Added Indicator'
+                });
                 this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
@@ -150,6 +155,10 @@ class IndicatorConfig extends Component {
         };
         editIndicator(indicatorData)
             .then(response => {
+                ReactGA.event({
+                    category: 'Indicator',
+                    action: 'Edited Indicator'
+                });
                 this.props.history.push("/indicator/" + response.id);
             }).catch(error => {
             if (error.status === 401) {

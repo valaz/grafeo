@@ -15,6 +15,7 @@ import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
 import ReCAPTCHA from "react-google-recaptcha";
+import ReactGA from 'react-ga';
 
 const gridSize = {
     xs: 12,
@@ -159,6 +160,10 @@ class Signup extends Component {
         };
         editProfile(signupRequest)
             .then(response => {
+                ReactGA.event({
+                    category: 'User',
+                    action: 'Updated profile'
+                });
                 this.setState({
                     isLoading: false
                 });

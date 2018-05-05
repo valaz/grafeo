@@ -12,6 +12,7 @@ import {Grid, withStyles} from "material-ui";
 import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
 import Notification from "../common/Notification";
+import ReactGA from 'react-ga';
 
 const gridSize = {
     xs: 12,
@@ -132,6 +133,10 @@ class IndicatorPage extends Component {
         };
         addRecord(recordRequest)
             .then(response => {
+                ReactGA.event({
+                    category: 'Indicator',
+                    action: 'Added Record'
+                });
                 this.setState({
                     indicator: response,
                     records: response.records,
@@ -166,6 +171,10 @@ class IndicatorPage extends Component {
 
         promise
             .then(response => {
+                ReactGA.event({
+                    category: 'Indicator',
+                    action: 'Deleted Indicator',
+                });
                 this.props.history.push("/");
             }).catch(error => {
             console.log(error);
@@ -181,6 +190,10 @@ class IndicatorPage extends Component {
         };
         removeRecord(recordRequest)
             .then(response => {
+                ReactGA.event({
+                    category: 'Indicator',
+                    action: 'Deleted Record'
+                });
                 this.setState({
                     indicator: response,
                     records: response.records,
