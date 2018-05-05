@@ -1,24 +1,20 @@
 language: java
 jdk: oraclejdk8
-
 addons:
   sonarcloud:
-    organization: "valaz-github"
+    organization: valaz-github
     token:
-      secure: $SONAR_TOKEN
-
+      secure: "$SONAR_TOKEN"
 install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar"
-
 deploy:
   provider: heroku
   api_key:
-    secure: iQJiRRtgdHKTKc3vIBUZ8y4tpF9GHr8so4GvBaH0ofSPnF95tpFZRJMheLIYuPjnakDj+bWtw+ZrKCvP7GdWftV+ZrnpSOLKF7iiGptswtuCpe5SNy+bLoHbHBD53FeNcoDRd652woY5Hv4Q9Oh7e8ZYExOj3Ot23b6f9kY+L2wgSBs8aAD5vlAL3kUP+w3d+42snwSOZbq3zCFSMltIg9sBdG8Y/ziscDVSHmwmL7R66Iw7qHDUoHT+t+aowHeTNczH9hOAaV/mRi0lXbTskHGbRmDnxD5M7eH9RXY/Dsf71SUp/WC9kWLfkDQqR80eC++XE7A0gkOWFRAxuewklLFFFtkkuMqlCCSYs4SXM2+w8A9+sceUACPMFRGCAoVwTmbVBb5xBQ1Ob3vuUQbUtEC1g569UmbJMerFUwBuivfLtGVKaSPbKrLBbmKW/q/xuchKhtv5qH5UcF3jZjwkAaTSAJxCGUh15c7VIAM7QIFUHaO9G4rD/tNvBdoduXJDfP03JzQVBYvOnFoHT+r+s+DHkGTiaGLCLTo7zNxMPDMx+6KwNQsoqzUzoKxB3l2bFYkPViv+N2eOqq3BIuRSRQVyg+uWuHEcQK5Ycrp+c3PYw2HIdwohgwMUKHeK2KYfKnWgwIr95RDUfzrKcDaLBAFzjCG61EPvhCcKKEVi5mM=
+    secure: GMrOhI/kB0ACYKsrzcruSpn0s570lL9g7pCYFTKYDQvBoB8Mp6fS1/qmUK9jI4o3ycQX+4s/pbhh3iCgXVvQj7D27asUh2Snlu2hMgqjnka0xMUbIowlr4Xwrf01PTXB9Sn2Fi9wM7pv4LD05KQtQ5CPBdRpTpn4aWUPJ8C+9rGAid6HuJOHbaqpRnKsrtoHW8jwWWsXoroN4dd3qJoCejm8JGVIoEG7Jwf2REp54apIkhHKfzVgk++Bn5GUR9N7cknuu8q5YK3OnziJbWRnT9vtsY9ctYdsyYNtyKzsI1COq5fOpuamV+yMTw+944oHECl/mIoFWRAV+7YWrE1jvQOotp8BFnt7GYsH9otH3NXbfAnixpLYY0w4DM3vhA4NTzqNUwgGa4JqiW8aakuShx87gdS+52yvqqDFfblQQpJVj9qONKlHRq8BQx0OXIEjDccE3/bcT2N769dHSYIUNGW9mvUdA3DcUVW5RDqpu26wAZOpTwd0+hJ/M5c/+fgKs9MykdwG73BoQFgaI1eRlV5bYPuMfNpQdMDrf1w7nIyE0MkIngRJGra8PPdNTF8Ed+yCDCS8jD7njGt4QPg5eNZViY0ggjSMaDmS826K2Ot+8WYVzPsBWNv/G1rkkYQtfKAlqqGwUBnJACT3nqKXwqdaNuwbf/9JpMsiHK6X2O8=
   app:
     master: progressio
     develop: progressio-dev
-
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
