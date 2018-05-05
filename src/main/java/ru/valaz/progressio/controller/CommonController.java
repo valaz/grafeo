@@ -10,7 +10,7 @@ import ru.valaz.progressio.payload.GaUid;
 @RequestMapping("/api/common")
 public class CommonController {
 
-    @Value("${ga}")
+    @Value("${ga:GAUID}")
     private String gaUid;
 
     @GetMapping("/ga")
