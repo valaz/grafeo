@@ -53,11 +53,11 @@ public class UserService {
             .withinRange('a', 'z').build();
 
     public User updateUser(User user, ProfileRequest profileRequest) {
-        user.setName(profileRequest.getName());
-        user.setUsername(profileRequest.getUsername());
-        user.setEmail(profileRequest.getEmail());
+        user.setName(profileRequest.getName().trim());
+        user.setUsername(profileRequest.getUsername().trim());
+        user.setEmail(profileRequest.getEmail().trim());
         if (StringUtils.isNotBlank(profileRequest.getPassword())) {
-            user.setPassword(passwordEncoder.encode(profileRequest.getPassword()));
+            user.setPassword(passwordEncoder.encode(profileRequest.getPassword().trim()));
         }
 
         return userRepository.save(user);
