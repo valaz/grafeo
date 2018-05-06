@@ -24,7 +24,7 @@ import java.util.Collections;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-public class AbstractControllerTest {
+public abstract class AbstractControllerTest {
 
     protected MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
