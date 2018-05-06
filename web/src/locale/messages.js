@@ -1,5 +1,8 @@
 export default {
     'en': {
+        common: {
+            demo: 'Demo'
+        },
         error: {
             notFound: 'The Page you\'re looking for was not found.',
             serverError: 'Oops! Something went wrong at our Server. Why don\'t you go back?',
@@ -224,6 +227,9 @@ export default {
 
     },
     'ru': {
+        common: {
+            demo: 'Демонстрация'
+        },
         error: {
             notFound: 'Страница, которую Вы ищете не существует',
             serverError: 'Извините, произошла ошибка на сервере. Почему бы Вам не вернуться назад?',

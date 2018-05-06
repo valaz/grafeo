@@ -64,6 +64,8 @@ public class Indicator extends UserDateAudit {
         records.add(newRecord);
         this.setUpdatedAt(Instant.now());
         newRecord.setIndicator(this);
+        newRecord.setCreatedBy(this.getCreatedBy());
+        newRecord.setUpdatedBy(this.getUpdatedBy());
     }
 
     public void removeRecord(Record record) {

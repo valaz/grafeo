@@ -9,17 +9,13 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import ru.valaz.progressio.exeption.AppException;
-import ru.valaz.progressio.model.Role;
-import ru.valaz.progressio.model.RoleName;
-import ru.valaz.progressio.model.User;
 import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
+import ru.valaz.progressio.service.UserService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -47,6 +43,9 @@ public abstract class AbstractControllerTest {
     protected PasswordEncoder passwordEncoder;
 
     @Autowired
+    protected UserService userService;
+
+    @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
 
         this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
@@ -61,20 +60,6 @@ public abstract class AbstractControllerTest {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-    }
-
-    protected void createUser(String name, String username, String email, String password) {
-        User user = new User(name, username,
-                email, password);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
     }
 
     protected String json(Object o) throws IOException {

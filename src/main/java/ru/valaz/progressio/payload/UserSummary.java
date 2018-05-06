@@ -11,5 +11,6 @@ public class UserSummary {
     private String username;
     private String email;
     private String name;
+    private Boolean isDemo;
 
 }

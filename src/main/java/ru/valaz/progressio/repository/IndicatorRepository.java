@@ -19,6 +19,8 @@ public interface IndicatorRepository extends JpaRepository<Indicator, Long> {
 
     Page<Indicator> findByCreatedByOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 
+    List<Indicator> findByCreatedBy(Long userId);
+
     long countByCreatedBy(Long userId);
 
     List<Indicator> findByIdIn(List<Long> indicatorIds);

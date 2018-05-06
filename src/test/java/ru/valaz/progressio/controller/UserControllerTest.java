@@ -29,7 +29,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void updateCurrentUser() throws Exception {
-        createUser("James Bons", "agent007",
+        userService.createUser("James Bons", "agent007",
                 "agent@007.com", "123456");
         assertTrue(!userRepository.findAll().isEmpty());
         LoginRequest loginRequest = new LoginRequest();
@@ -65,7 +65,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void getCurrentUser() throws Exception {
-        createUser("Current User", "currentuser", "currentuser@test.com", "123456");
+        userService.createUser("Current User", "currentuser", "currentuser@test.com", "123456");
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("currentuser");
@@ -87,7 +87,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void getUserProfile() throws Exception {
-        createUser("User Profile", "userprofile", "userprofile@test.com", "123456");
+        userService.createUser("User Profile", "userprofile", "userprofile@test.com", "123456");
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("userprofile");
@@ -111,7 +111,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void checkUsernameAvailability() throws Exception {
-        createUser("Username check", "usernameAvailability", "usernameAvailability@test.com", "123456");
+        userService.createUser("Username check", "usernameAvailability", "usernameAvailability@test.com", "123456");
 
         mockMvc.perform(get("/user/checkUsernameAvailability")
                 .param("username", "usernameAvailability")
@@ -137,7 +137,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void checkEmailAvailability() throws Exception {
-        createUser("Email check", "emailAvailability", "emailAvailability@test.com", "123456");
+        userService.createUser("Email check", "emailAvailability", "emailAvailability@test.com", "123456");
 
         mockMvc.perform(get("/user/checkEmailAvailability")
                 .param("email", "emailAvailability@test.com")

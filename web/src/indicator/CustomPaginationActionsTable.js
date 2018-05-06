@@ -8,6 +8,7 @@ import {injectIntl} from "react-intl";
 import moment from "moment/moment";
 
 const dateFormat = 'YYYY-MM-DD';
+const tableDateFormat = 'LL';
 
 const actionsStyles = theme => ({
     root: {
@@ -179,12 +180,11 @@ class CustomPaginationActionsTable extends React.Component {
     }
 
     formatDate(date) {
-        return moment(date, dateFormat).format('DD MMMM');
+        return moment(date, dateFormat).format(tableDateFormat);
     }
 
 
     formatNumber(n) {
-        // return <FormattedNumber value={n}/>;
         return this.props.intl.formatNumber(n) + ' ' + this.props.unit;
     }
 

@@ -7,7 +7,7 @@ import {injectIntl} from "react-intl";
 import {FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
 
 const dateFormat = 'YYYY-MM-DD';
-const chartDateFormat = 'DD MMMM';
+const chartDateFormat = 'LL';
 
 const selectGridSize = {
     xs: 12,
@@ -225,11 +225,11 @@ class IndicatorChart extends Component {
                                 <MenuItem
                                     value={'all'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.all'})}</MenuItem>
                                 <MenuItem
-                                    value={'week'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.week'})}</MenuItem>
+                                    value={'year'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.year'})}</MenuItem>
                                 <MenuItem
                                     value={'month'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.month'})}</MenuItem>
                                 <MenuItem
-                                    value={'year'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.year'})}</MenuItem>
+                                    value={'week'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.week'})}</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

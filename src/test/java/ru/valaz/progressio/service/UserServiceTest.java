@@ -9,16 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.valaz.progressio.Application;
-import ru.valaz.progressio.exeption.AppException;
-import ru.valaz.progressio.model.Role;
-import ru.valaz.progressio.model.RoleName;
 import ru.valaz.progressio.model.User;
 import ru.valaz.progressio.payload.ProfileRequest;
+import ru.valaz.progressio.repository.IndicatorRepository;
+import ru.valaz.progressio.repository.RecordRepository;
 import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,27 +41,19 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private IndicatorRepository indicatorRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
+
     @Before
     public void setUp() throws Exception {
     }
 
-    private void createUser(String name, String username, String email, String password) {
-        User user = new User(name, username,
-                email, password);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
-    }
-
     @Test
     public void fullProfileUpdateUserTest() {
-        createUser("Mike", "supermike",
+        userService.createUser("Mike", "supermike",
                 "mike@power.com", "123456");
         Optional<User> user = userRepository.findByUsername("supermike");
         assertTrue(user.isPresent());
@@ -89,7 +80,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserTest() {
-        createUser("John", "johny",
+        userService.createUser("John", "johny",
                 "johny@test.com", "123456");
         Optional<User> user = userRepository.findByUsername("johny");
         assertTrue(user.isPresent());
@@ -111,5 +102,30 @@ public class UserServiceTest {
         assertTrue(megabob.isPresent());
         assertEquals("JOHN", megabob.get().getName());
         assertTrue(passwordEncoder.matches("123456", megabob.get().getPassword()));
+    }
+
+    @Test
+    public void generateDemoUser() throws InterruptedException {
+        User demoUser = userService.generateDemoUser();
+
+        Optional<User> user = userRepository.findByUsername(demoUser.getUsername());
+        assertTrue(user.isPresent());
+        assertEquals(demoUser.getEmail(), user.get().getEmail());
+        assertEquals(demoUser.getName(), user.get().getName());
+        assertTrue(!userRepository.findAllByIsDemo(true).isEmpty());
+        assertTrue(!indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
+        assertTrue(!recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
+    }
+
+    @Test
+    public void expiredDemoUser() throws InterruptedException {
+        User demoUser = userService.generateDemoUser();
+
+        TimeUnit.SECONDS.sleep(70);
+        userService.removeExpiredDemoUsers();
+        assertTrue(!userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
+        assertTrue(userRepository.findAllByIsDemo(true).isEmpty());
+        assertTrue(indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
+        assertTrue(recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
     }
 }

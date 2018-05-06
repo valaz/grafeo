@@ -67,6 +67,7 @@ class App extends React.Component {
                     isLoading: false
                 });
             }).catch(error => {
+            this.removeUserInfo();
             this.setState({
                 isLoading: false
             });
@@ -78,14 +79,7 @@ class App extends React.Component {
     }
 
     handleLogout(redirectTo = "/", notificationType = "success", description = this.props.intl.formatMessage({id: 'notification.logout'})) {
-        localStorage.removeItem(ACCESS_TOKEN);
-
-        ReactGA.set({userId: null});
-
-        this.setState({
-            currentUser: null,
-            isAuthenticated: false
-        });
+        this.removeUserInfo();
 
         this.props.history.push(redirectTo);
 
@@ -94,6 +88,17 @@ class App extends React.Component {
                 open: true,
                 message: description
             }
+        });
+    }
+
+    removeUserInfo() {
+        localStorage.removeItem(ACCESS_TOKEN);
+
+        ReactGA.set({userId: null});
+
+        this.setState({
+            currentUser: null,
+            isAuthenticated: false
         });
     }
 
@@ -166,6 +171,7 @@ class App extends React.Component {
                                     <Route exact path="/"
                                            render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
                                                                     currentUser={this.state.currentUser}
+                                                                    onLogin={this.handleLogin}
                                                                     handleLogout={this.handleLogout} {...props} />}>
                                     </Route>
                                     <Route exact path="/login"
@@ -174,10 +180,9 @@ class App extends React.Component {
                                                                      currentUser={this.state.currentUser}/>}/>
                                     <Route exact path="/signup"
                                            render={(props) => <Signup onSignup={this.handleSignup}/>}/>
-                                    <Route exact path="/profile"
-                                           render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
-                                                                       currentUser={this.state.currentUser} {...props}  />}>
-                                    </Route>
+                                    <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile"
+                                                  component={Profile} currentUser={this.state.currentUser}
+                                                  isAuthenticated={this.state.isAuthenticated}/>
                                     <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile/edit"
                                                   onEdit={this.handleProfileEdit}
                                                   component={Signup} handleLogout={this.handleLogout}

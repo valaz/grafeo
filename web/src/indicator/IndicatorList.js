@@ -9,6 +9,9 @@ import {FormattedMessage} from "react-intl";
 import {Grid, withStyles} from "material-ui";
 
 const styles = theme => ({
+    button: {
+        margin: 0,
+    },
     root: {
         flexGrow: 1,
     },
