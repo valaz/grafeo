@@ -123,7 +123,7 @@ public class UserServiceTest {
     public void expiredDemoUser() throws InterruptedException {
         User demoUser = userService.generateDemoUser();
 
-        TimeUnit.SECONDS.sleep(61);
+        TimeUnit.SECONDS.sleep(65);
         userService.removeExpiredDemoUsers();
         assertTrue(!userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
         assertTrue(userRepository.findAllByIsDemo(true).isEmpty());
