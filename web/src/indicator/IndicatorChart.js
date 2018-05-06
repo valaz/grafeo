@@ -200,10 +200,15 @@ class IndicatorChart extends Component {
                             <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
                                      offset={0} wrapperStyle={tooltipStyle}
                                      cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
-                            <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
-                                  dot={{stroke: chartColor, strokeWidth: 1}}
+                            <Area type="monotone"
+                                  dataKey="value"
+                                  stroke={chartColor}
+                                  fill={chartColor}
+                                  fillOpacity={0.7}
+                                  strokeWidth={2}
                                   connectNulls={true}
-                                  activeDot={{r: 3, onClick: this.handleClick}}/>
+                                  activeDot={{r: 3, onClick: this.handleClick}}
+                            />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
