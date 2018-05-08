@@ -1,41 +1,25 @@
 package ru.valaz.progressio.service;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valaz.progressio.exeption.BadRequestException;
 import ru.valaz.progressio.exeption.ResourceNotFoundException;
 import ru.valaz.progressio.model.Indicator;
-import ru.valaz.progressio.model.Record;
 import ru.valaz.progressio.model.User;
 import ru.valaz.progressio.payload.IndicatorRequest;
 import ru.valaz.progressio.payload.IndicatorResponse;
 import ru.valaz.progressio.payload.PagedResponse;
 import ru.valaz.progressio.repository.IndicatorRepository;
-import ru.valaz.progressio.repository.RecordRepository;
 import ru.valaz.progressio.repository.UserRepository;
 import ru.valaz.progressio.security.UserPrincipal;
 import ru.valaz.progressio.util.AppConstants;
 import ru.valaz.progressio.util.ModelMapper;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,19 +29,12 @@ import java.util.stream.Collectors;
 @Service
 public class IndicatorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndicatorService.class);
-
-
     @Autowired
     private IndicatorRepository indicatorRepository;
 
     @Autowired
-    private RecordRepository recordRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
-    OkHttpClient okHttpClient = new OkHttpClient();
 
     public PagedResponse<IndicatorResponse> getAllIndicators(UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
@@ -131,56 +108,6 @@ public class IndicatorService {
         indicator.setUnit(indicatorRequest.getUnit());
         return indicatorRepository.save(indicator);
 
-    }
-
-    public List<Indicator> getDemoIndicators(User demoUser) {
-        List<Indicator> demoIndicators = new ArrayList<>();
-
-        Indicator demoIndicator1 = createBitcoinDemoIndicator(demoUser);
-        demoIndicator1 = fillBitcoinDemoIndicator(demoIndicator1);
-        demoIndicators.add(indicatorRepository.findById(demoIndicator1.getId()).get());
-
-        return demoIndicators;
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Indicator createBitcoinDemoIndicator(User demoUser) {
-        Indicator bitcoinIndicator = new Indicator();
-        bitcoinIndicator.setName("Bitcoin price");
-        bitcoinIndicator.setUnit("USD");
-        bitcoinIndicator.setCreatedBy(demoUser.getId());
-        bitcoinIndicator.setUpdatedBy(demoUser.getId());
-        return indicatorRepository.save(bitcoinIndicator);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Indicator fillBitcoinDemoIndicator(Indicator bitcoinIndicator) {
-        String today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        String url = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2015-01-01&end=" + today;
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        String jsonData = "";
-        try {
-            Response response = okHttpClient.newCall(request).execute();
-            jsonData = response.body().string();
-        } catch (IOException e) {
-            LOGGER.error("Error during bitcoin price request:", e);
-        }
-        if (StringUtils.isNotBlank(jsonData)) {
-            JSONObject data = new JSONObject(jsonData);
-            JSONObject prices = data.getJSONObject("bpi");
-            JSONArray pricesArray = prices.names();
-            for (Object key : pricesArray) {
-                String stringDate = String.valueOf(key);
-                LocalDate date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                Object value = prices.get(stringDate);
-                Double doubleValue = Double.valueOf(String.valueOf(value));
-
-                bitcoinIndicator.addRecord(new Record(doubleValue, date));
-            }
-        }
-        return indicatorRepository.save(bitcoinIndicator);
     }
 
 }

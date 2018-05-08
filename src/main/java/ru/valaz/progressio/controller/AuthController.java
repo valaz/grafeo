@@ -24,7 +24,7 @@ import ru.valaz.progressio.payload.SignUpRequest;
 import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
 import ru.valaz.progressio.security.JwtTokenProvider;
-import ru.valaz.progressio.service.UserService;
+import ru.valaz.progressio.service.DemoService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -50,7 +50,7 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @Autowired
-    private UserService userService;
+    private DemoService demoService;
 
     @PostMapping("/signin")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -71,7 +71,7 @@ public class AuthController {
     @PostMapping("demo/signin")
     public ResponseEntity demoAuthenticateUser() {
 
-        User demoUser = userService.generateDemoUser();
+        User demoUser = demoService.generateDemoUser();
         String jwt = tokenProvider.generateToken(demoUser);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }

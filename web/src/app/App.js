@@ -1,7 +1,6 @@
 import React from 'react';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
-import {ACCESS_TOKEN} from '../constants';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
@@ -92,7 +91,7 @@ class App extends React.Component {
     }
 
     removeUserInfo() {
-        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.clear();
 
         ReactGA.set({userId: null});
 

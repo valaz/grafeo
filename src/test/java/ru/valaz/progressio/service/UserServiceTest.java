@@ -1,7 +1,5 @@
 package ru.valaz.progressio.service;
 
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +10,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.valaz.progressio.Application;
 import ru.valaz.progressio.model.User;
 import ru.valaz.progressio.payload.ProfileRequest;
-import ru.valaz.progressio.repository.IndicatorRepository;
-import ru.valaz.progressio.repository.RecordRepository;
-import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,23 +28,10 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private IndicatorRepository indicatorRepository;
-
-    @Autowired
-    private RecordRepository recordRepository;
-
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     public void fullProfileUpdateUserTest() {
@@ -103,31 +84,5 @@ public class UserServiceTest {
         assertTrue(megabob.isPresent());
         assertEquals("JOHN", megabob.get().getName());
         assertTrue(passwordEncoder.matches("123456", megabob.get().getPassword()));
-    }
-
-    @Test
-    public void generateDemoUser() throws InterruptedException {
-        User demoUser = userService.generateDemoUser();
-
-        Optional<User> user = userRepository.findByUsername(demoUser.getUsername());
-        assertTrue(user.isPresent());
-        assertEquals(demoUser.getEmail(), user.get().getEmail());
-        assertEquals(demoUser.getName(), user.get().getName());
-        assertTrue(!userRepository.findAllByIsDemo(true).isEmpty());
-        assertTrue(!indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
-        // FIXME: 07.05.2018 assertionError during maven test
-//        assertTrue(!recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
-    }
-
-    @Test
-    public void expiredDemoUser() throws InterruptedException {
-        User demoUser = userService.generateDemoUser();
-
-        TimeUnit.SECONDS.sleep(65);
-        userService.removeExpiredDemoUsers();
-        assertTrue(!userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
-        assertTrue(userRepository.findAllByIsDemo(true).isEmpty());
-        assertTrue(indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
-        assertTrue(recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
     }
 }

@@ -42,12 +42,6 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @GetMapping("/demo")
-    public ResponseEntity generateDemoUser() {
-        userService.generateDemoUser();
-        return ResponseEntity.ok("Demo User Created");
-    }
-
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
