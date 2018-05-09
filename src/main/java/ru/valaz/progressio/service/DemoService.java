@@ -36,7 +36,7 @@ public class DemoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoService.class);
 
-    private static final String startStringDate = "2015-01-01";
+    private static final String startStringDate = "2017-01-01";
     public static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     public static final String CLOSE = "4. close";
     public static final String BPI = "bpi";
