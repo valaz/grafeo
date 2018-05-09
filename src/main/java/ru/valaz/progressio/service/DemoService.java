@@ -37,6 +37,9 @@ public class DemoService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoService.class);
 
     private static final String startStringDate = "2015-01-01";
+    public static final String TIME_SERIES_DAILY = "Time Series (Daily)";
+    public static final String CLOSE = "4. close";
+    public static final String BPI = "bpi";
 
     @Autowired
     private UserRepository userRepository;
@@ -58,6 +61,9 @@ public class DemoService {
 
     @Value("${demoSessionDurationMinutes:60}")
     private long demoSessionDurationMinutes;
+
+    @Value("${alpha_api_key}")
+    private String apiKey;
 
     public User generateDemoUser() {
         String generatedUsername = generator.generate(10);
@@ -151,7 +157,7 @@ public class DemoService {
         }
         if (StringUtils.isNotBlank(jsonData)) {
             JSONObject data = new JSONObject(jsonData);
-            JSONObject prices = data.getJSONObject("bpi");
+            JSONObject prices = data.getJSONObject(BPI);
             JSONArray pricesArray = prices.names();
             for (Object key : pricesArray) {
                 String stringDate = String.valueOf(key);
@@ -177,7 +183,7 @@ public class DemoService {
 
     private Map<LocalDate, Double> loadStockData(String stockName) {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + stockName + "&outputsize=full&apikey=1CJPY0IE1KG8JGE0";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + stockName + "&outputsize=full&apikey="+apiKey;
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -196,7 +202,7 @@ public class DemoService {
         if (StringUtils.isNotBlank(jsonData)) {
             Map<LocalDate, Double> data = new HashMap<>();
             JSONObject stockData = new JSONObject(jsonData);
-            JSONObject prices = stockData.getJSONObject("Time Series (Daily)");
+            JSONObject prices = stockData.getJSONObject(TIME_SERIES_DAILY);
             JSONArray pricesArray = prices.names();
             for (Object key : pricesArray) {
                 String stringDate = String.valueOf(key);
@@ -204,7 +210,7 @@ public class DemoService {
                     continue;
                 }
                 LocalDate date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                Object value = ((JSONObject) prices.get(stringDate)).get("4. close");
+                Object value = ((JSONObject) prices.get(stringDate)).get(CLOSE);
                 Double doubleValue = Double.valueOf(String.valueOf(value));
                 data.put(date, doubleValue);
             }
