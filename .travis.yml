@@ -6,7 +6,7 @@ addons:
     token:
       secure: "$SONAR_TOKEN"
 install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
-script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar" -Dalpha_api_key="$ALPHA_API_KEY"
+script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar -Dalpha_api_key='$ALPHA_API_KEY'"
 deploy:
   provider: heroku
   api_key:
