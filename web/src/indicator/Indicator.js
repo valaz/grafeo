@@ -11,6 +11,9 @@ import {getRandomColorName} from "../util/Colors";
 const styles = {
     link: {
         textDecoration: 'none'
+    },
+    card: {
+        overflow: 'visible'
     }
 };
 
@@ -101,6 +104,7 @@ class Indicator extends Component {
                                statIcon={EventNote}
                                statIconColor="gray"
                                statText={dateDescription}
+                               className={classes.card}
                     />
                 </NavLink>
             </Grid>

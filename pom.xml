@@ -200,9 +200,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <skip>${npm.skip}</skip>
-                </configuration>
                 <executions>
                     <execution>
                         <id>Copy frontend build to target</id>
@@ -243,6 +240,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

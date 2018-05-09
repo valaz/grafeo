@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Card, {CardHeader} from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
-import {Delete, Edit, ExpandMore, FileDownload, MoreVert} from "@material-ui/icons";
+import {Delete, Edit, ExpandMore, FileDownload, FileUpload, MoreVert} from "@material-ui/icons";
 import {Button, CardActions, CardContent, Collapse, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
 import {withRouter} from "react-router-dom";
 import Dialog, {
@@ -112,6 +112,13 @@ class IndicatorCard extends React.Component {
 
     };
 
+    onFileLoad(file) {
+        this.props.onUpload(file);
+        this.setState({
+            anchorEl: null
+        });
+    }
+
     handleMenuDelete() {
         this.setState({
             anchorEl: null,
@@ -194,6 +201,20 @@ class IndicatorCard extends React.Component {
                         </ListItemIcon>
                         <ListItemText classes={{primary: classes.primary}} inset
                                       primary={this.props.intl.formatMessage({id: 'indicator.view.card.delete.menu'})}/>
+                    </MenuItem>
+                    <MenuItem className={classes.menuItem}
+                              component="label">
+                        <ListItemIcon className={classes.icon}>
+                            <FileUpload/>
+                        </ListItemIcon>
+                        <ListItemText classes={{primary: classes.primary}} inset
+                                      primary={this.props.intl.formatMessage({id: 'indicator.view.card.upload.menu'})}/>
+
+                        <input
+                            onChange={e => this.onFileLoad(e.target.files[0])}
+                            style={{display: 'none'}}
+                            type="file"
+                        />
                     </MenuItem>
                     <MenuItem className={classes.menuItem} onClick={this.handleMenuDownload}>
                         <ListItemIcon className={classes.icon}>

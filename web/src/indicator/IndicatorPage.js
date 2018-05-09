@@ -13,6 +13,7 @@ import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
 import Notification from "../common/Notification";
 import ReactGA from 'react-ga';
+import {uploadIndicator} from "../util/APIFileUtils";
 
 const gridSize = {
     xs: 12,
@@ -62,6 +63,7 @@ class IndicatorPage extends Component {
         this.handleRecordDelete = this.handleRecordDelete.bind(this);
         this.handleIndicatorDelete = this.handleIndicatorDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleUpload = this.handleUpload.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
     }
 
@@ -108,7 +110,7 @@ class IndicatorPage extends Component {
                     records: response.records,
                     isLoading: false
                 });
-                document.title = this.state.indicator.name;
+                document.title = response.name;
             }).catch(error => {
             if (error.status === 404 || error.status === 403) {
                 this.setState({
@@ -222,6 +224,37 @@ class IndicatorPage extends Component {
         })
     }
 
+    handleUpload(file) {
+        this.setState({
+            isLoading: true
+        });
+        let promise = uploadIndicator(this.state.indicator.id, file);
+        if (promise) {
+            promise.then(response => {
+                this.setState({
+                    indicator: response,
+                    records: response.records,
+                    isLoading: false
+                });
+                document.title = response.name;
+
+            }).catch(error => {
+                console.log(error);
+                this.setState({
+                    notification: {
+                        isLoading: false,
+                        open: true,
+                        message: this.props.intl.formatMessage({id: 'notification.error'})
+                    }
+                });
+
+            })
+        }
+        this.setState({
+            isLoading: false
+        });
+    }
+
     notification() {
         let {notification} = this.state;
         return (
@@ -274,6 +307,7 @@ class IndicatorPage extends Component {
                         <Grid item {...gridSize}>
                             <IndicatorCard indicator={this.state.indicator}
                                            handleDelete={this.handleIndicatorDelete}
+                                           onUpload={this.handleUpload}
                                            form={form}
                                            chart={chart}
                                            table={table}/>

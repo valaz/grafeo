@@ -66,6 +66,8 @@ public class DemoService {
     private String apiKey;
 
     public User generateDemoUser() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+
         String generatedUsername = generator.generate(10);
         String name = "Demo User";
         String username = "demo_" + generatedUsername;
@@ -74,7 +76,6 @@ public class DemoService {
 
         User savedUser = createDemoUser(name, username, email, generatedPassword);
 
-        LOGGER.info("Added demo user with id={}, username: {};", savedUser.getId(), savedUser.getUsername());
         List<Indicator> demoIndicators = getDemoIndicators(savedUser);
         for (Indicator demoIndicator : demoIndicators) {
             demoIndicator.setCreatedBy(savedUser.getId());
@@ -82,6 +83,9 @@ public class DemoService {
             indicatorRepository.save(demoIndicator);
         }
 
+        stopwatch.stop();
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        LOGGER.info("Added demo user with id={}, username: {}; elapsed time: {} ms", savedUser.getId(), savedUser.getUsername(), elapsed);
         return savedUser;
     }
 
@@ -151,7 +155,9 @@ public class DemoService {
         String jsonData = "";
         try {
             Response response = okHttpClient.newCall(request).execute();
-            jsonData = response.body().string();
+            if (response.body() != null) {
+                jsonData = response.body().string();
+            }
         } catch (IOException e) {
             LOGGER.error("Error during bitcoin price request:", e);
         }

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -27,15 +28,15 @@ public class FileService {
         return IOUtils.toInputStream(jsonIndicator);
     }
 
-    public Indicator storeFile(MultipartFile mfile) {
+    public Optional<Indicator> storeFile(MultipartFile mfile) {
         try {
             String result = IOUtils.toString(mfile.getInputStream());
-            return gson.fromJson(result, Indicator.class);
+            return Optional.of(gson.fromJson(result, Indicator.class));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {

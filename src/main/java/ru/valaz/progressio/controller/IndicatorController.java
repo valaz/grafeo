@@ -154,14 +154,14 @@ public class IndicatorController {
         if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
             throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
         }
-        Indicator rawIndicator = fileService.storeFile(file);
 
-        Indicator updateIndicator = indicatorService.updateIndicator(indicator, rawIndicator);
+        final Indicator[] updateIndicator = {indicator};
+        fileService.storeFile(file).map(rawIndicator -> updateIndicator[0] = indicatorService.updateIndicator(indicator, rawIndicator));
 
-        User creator = userRepository.findById(updateIndicator.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", updateIndicator.getCreatedBy()));
+        User creator = userRepository.findById(updateIndicator[0].getCreatedBy())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", updateIndicator[0].getCreatedBy()));
 
-        return ModelMapper.mapIndicatorToIndicatorResponse(updateIndicator, creator);
+        return ModelMapper.mapIndicatorToIndicatorResponse(updateIndicator[0], creator);
     }
 
 

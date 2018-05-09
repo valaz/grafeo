@@ -194,6 +194,10 @@ export default {
                     download: {
                         menu: 'Export'
                     },
+                    upload: {
+                        menu: 'Import',
+                        error: 'You tried to upload incorrect file'
+                    },
                 },
                 table: {
                     header: {
@@ -422,6 +426,10 @@ export default {
                     },
                     download: {
                         menu: 'Экспорт'
+                    },
+                    upload: {
+                        menu: 'Импорт',
+                        error: 'Вы попытались загрузить некорректный файл'
                     },
                 },
                 table: {
