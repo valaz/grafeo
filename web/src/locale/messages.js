@@ -190,7 +190,10 @@ export default {
                             cancel: 'Cancel',
                             delete: 'Delete'
                         }
-                    }
+                    },
+                    download: {
+                        menu: 'Export'
+                    },
                 },
                 table: {
                     header: {
@@ -416,7 +419,10 @@ export default {
                             cancel: 'Отмена',
                             delete: 'Удалить'
                         }
-                    }
+                    },
+                    download: {
+                        menu: 'Экспорт'
+                    },
                 },
                 table: {
                     header: {

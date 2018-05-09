@@ -110,4 +110,11 @@ public class IndicatorService {
 
     }
 
+    public Indicator updateIndicator(Indicator indicator, Indicator rawIndicator) {
+        indicator.setName(rawIndicator.getName());
+        indicator.setUnit(rawIndicator.getUnit());
+        indicator.clearRecords();
+        indicator.addRecords(rawIndicator.getRecords());
+        return indicatorRepository.save(indicator);
+    }
 }

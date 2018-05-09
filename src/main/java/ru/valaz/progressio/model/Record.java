@@ -1,5 +1,6 @@
 package ru.valaz.progressio.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import ru.valaz.progressio.model.audit.UserDateAudit;
 
@@ -21,12 +22,13 @@ public class Record extends UserDateAudit {
 
     @NotNull
     @NonNull
+    @Expose
     private Double value;
 
     @NotNull
     @NonNull
+    @Expose
     private LocalDate date;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "indicator_id", nullable = false)
