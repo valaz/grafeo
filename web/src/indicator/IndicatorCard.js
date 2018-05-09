@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Card, {CardHeader} from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
-import {Delete, Edit, ExpandMore, MoreVert} from "@material-ui/icons";
+import {Delete, Edit, ExpandMore, FileDownload, FileUpload, MoreVert} from "@material-ui/icons";
 import {Button, CardActions, CardContent, Collapse, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
 import {withRouter} from "react-router-dom";
 import Dialog, {
@@ -15,6 +15,7 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import {injectIntl} from "react-intl";
 import classnames from 'classnames';
+import {downloadIndicator} from './../util/APIFileUtils'
 
 const styles = theme => ({
     card: {},
@@ -48,6 +49,7 @@ class IndicatorCard extends React.Component {
         this.handleMenuClose = this.handleMenuClose.bind(this);
         this.handleDialogClose = this.handleDialogClose.bind(this);
         this.handleMenuEdit = this.handleMenuEdit.bind(this);
+        this.handleMenuDownload = this.handleMenuDownload.bind(this);
         this.handleMenuDelete = this.handleMenuDelete.bind(this);
         this.handleDialogDelete = this.handleDialogDelete.bind(this);
         this.handleExpandClick = this.handleExpandClick.bind(this);
@@ -88,11 +90,39 @@ class IndicatorCard extends React.Component {
         this.props.history.push(this.props.location.pathname + "/edit")
     };
 
+    handleMenuDownload() {
+        let promise = downloadIndicator(this.props.indicator.id);
+        if (promise) {
+            promise.then(response => {
+                    console.log(response);
+                    const url = window.URL.createObjectURL(new Blob([response]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', this.props.indicator.name + '.json');
+                    document.body.appendChild(link);
+                    link.click();
+                }
+            ).catch(error => {
+
+            })
+        }
+        this.setState({
+            anchorEl: null
+        });
+
+    };
+
+    onFileLoad(file) {
+        this.props.onUpload(file);
+        this.setState({
+            anchorEl: null
+        });
+    }
+
     handleMenuDelete() {
         this.setState({
             anchorEl: null,
             open: true
-
         });
     };
 
@@ -171,6 +201,27 @@ class IndicatorCard extends React.Component {
                         </ListItemIcon>
                         <ListItemText classes={{primary: classes.primary}} inset
                                       primary={this.props.intl.formatMessage({id: 'indicator.view.card.delete.menu'})}/>
+                    </MenuItem>
+                    <MenuItem className={classes.menuItem}
+                              component="label">
+                        <ListItemIcon className={classes.icon}>
+                            <FileUpload/>
+                        </ListItemIcon>
+                        <ListItemText classes={{primary: classes.primary}} inset
+                                      primary={this.props.intl.formatMessage({id: 'indicator.view.card.upload.menu'})}/>
+
+                        <input
+                            onChange={e => this.onFileLoad(e.target.files[0])}
+                            style={{display: 'none'}}
+                            type="file"
+                        />
+                    </MenuItem>
+                    <MenuItem className={classes.menuItem} onClick={this.handleMenuDownload}>
+                        <ListItemIcon className={classes.icon}>
+                            <FileDownload/>
+                        </ListItemIcon>
+                        <ListItemText classes={{primary: classes.primary}} inset
+                                      primary={this.props.intl.formatMessage({id: 'indicator.view.card.download.menu'})}/>
                     </MenuItem>
                 </Menu>
                 <Dialog

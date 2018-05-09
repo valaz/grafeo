@@ -1,6 +1,5 @@
 package ru.valaz.progressio.service;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.valaz.progressio.Application;
-import ru.valaz.progressio.exeption.AppException;
-import ru.valaz.progressio.model.Role;
-import ru.valaz.progressio.model.RoleName;
 import ru.valaz.progressio.model.User;
 import ru.valaz.progressio.payload.ProfileRequest;
-import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -34,35 +28,14 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserService userService;
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    private void createUser(String name, String username, String email, String password) {
-        User user = new User(name, username,
-                email, password);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
-    }
-
     @Test
     public void fullProfileUpdateUserTest() {
-        createUser("Mike", "supermike",
+        userService.createUser("Mike", "supermike",
                 "mike@power.com", "123456");
         Optional<User> user = userRepository.findByUsername("supermike");
         assertTrue(user.isPresent());
@@ -89,7 +62,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserTest() {
-        createUser("John", "johny",
+        userService.createUser("John", "johny",
                 "johny@test.com", "123456");
         Optional<User> user = userRepository.findByUsername("johny");
         assertTrue(user.isPresent());

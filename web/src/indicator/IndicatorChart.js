@@ -7,7 +7,7 @@ import {injectIntl} from "react-intl";
 import {FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
 
 const dateFormat = 'YYYY-MM-DD';
-const chartDateFormat = 'DD MMMM';
+const chartDateFormat = 'LL';
 
 const selectGridSize = {
     xs: 12,
@@ -200,10 +200,15 @@ class IndicatorChart extends Component {
                             <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
                                      offset={0} wrapperStyle={tooltipStyle}
                                      cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
-                            <Area type="monotone" dataKey="value" stroke={chartColor} fill={chartColor} strokeWidth={2}
-                                  dot={{stroke: chartColor, strokeWidth: 1}}
+                            <Area type="monotone"
+                                  dataKey="value"
+                                  stroke={chartColor}
+                                  fill={chartColor}
+                                  fillOpacity={0.7}
+                                  strokeWidth={2}
                                   connectNulls={true}
-                                  activeDot={{r: 3, onClick: this.handleClick}}/>
+                                  activeDot={{r: 3, onClick: this.handleClick}}
+                            />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -220,11 +225,11 @@ class IndicatorChart extends Component {
                                 <MenuItem
                                     value={'all'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.all'})}</MenuItem>
                                 <MenuItem
-                                    value={'week'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.week'})}</MenuItem>
+                                    value={'year'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.year'})}</MenuItem>
                                 <MenuItem
                                     value={'month'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.month'})}</MenuItem>
                                 <MenuItem
-                                    value={'year'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.year'})}</MenuItem>
+                                    value={'week'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.week'})}</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

@@ -84,7 +84,6 @@ class LoginForm extends Component {
                 localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                 this.props.onLogin();
             }).catch(error => {
-            console.log(error);
             if (error.status === 401) {
                 this.setState({
                     isLoading: false,

@@ -28,7 +28,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Test
     public void loginTest() throws Exception {
-        createUser("Auth Test", "auth",
+        userService.createUser("Auth Test", "auth",
                 "auth@grafeo.me", "123456");
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("auth");
@@ -62,7 +62,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Test
     public void errorSignupTest() throws Exception {
-        createUser("Signup Test", "signup_err_username",
+        userService.createUser("Signup Test", "signup_err_username",
                 "signup_err_username@grafeo.me", "123456");
 
         SignUpRequest signUpRequest = new SignUpRequest();

@@ -24,6 +24,7 @@ import ru.valaz.progressio.payload.SignUpRequest;
 import ru.valaz.progressio.repository.RoleRepository;
 import ru.valaz.progressio.repository.UserRepository;
 import ru.valaz.progressio.security.JwtTokenProvider;
+import ru.valaz.progressio.service.DemoService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -48,6 +49,9 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    private DemoService demoService;
+
     @PostMapping("/signin")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -64,6 +68,14 @@ public class AuthController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
+    @PostMapping("demo/signin")
+    public ResponseEntity demoAuthenticateUser() {
+
+        User demoUser = demoService.generateDemoUser();
+        String jwt = tokenProvider.generateToken(demoUser);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    }
+
     @PostMapping("/signup")
     public ResponseEntity registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByUsernameIgnoreCase(signUpRequest.getUsername())) {
@@ -77,8 +89,8 @@ public class AuthController {
         }
 
         // Creating user's account
-        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
-                signUpRequest.getEmail(), signUpRequest.getPassword());
+        User user = new User(signUpRequest.getName().trim(), signUpRequest.getUsername().trim(),
+                signUpRequest.getEmail().trim(), signUpRequest.getPassword().trim());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

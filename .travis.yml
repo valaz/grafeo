@@ -6,14 +6,14 @@ addons:
     token:
       secure: "$SONAR_TOKEN"
 install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
-script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar"
+script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar -Dalpha_api_key='$ALPHA_API_KEY'"
 deploy:
   provider: heroku
   api_key:
     secure: "$HEROKU_API_KEY"
   app:
     master: progressio
-    develop: progressio-dev
+    develop: grafeo-dev
 cache:
   directories:
   - "$HOME/.m2/repository"

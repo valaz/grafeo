@@ -1,5 +1,6 @@
 package ru.valaz.progressio.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -32,10 +33,12 @@ public class Indicator extends UserDateAudit {
     @NotBlank
     @Size(max = 140)
     @NonNull
+    @Expose
     private String name;
 
     @NotBlank
     @Size(max = 4)
+    @Expose
     private String unit;
 
     @OneToMany(
@@ -46,6 +49,7 @@ public class Indicator extends UserDateAudit {
     )
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 30)
+    @Expose
     private List<Record> records = new ArrayList<>();
 
     public void addRecord(Record newRecord) {
@@ -64,12 +68,18 @@ public class Indicator extends UserDateAudit {
         records.add(newRecord);
         this.setUpdatedAt(Instant.now());
         newRecord.setIndicator(this);
+        newRecord.setCreatedBy(this.getCreatedBy());
+        newRecord.setUpdatedBy(this.getUpdatedBy());
     }
 
-    public void removeRecord(Record record) {
-        records.remove(record);
+    public void addRecords(Iterable<Record> newRecords) {
+        for (Record newRecord : newRecords) {
+            records.add(newRecord);
+            newRecord.setIndicator(this);
+            newRecord.setCreatedBy(this.getCreatedBy());
+            newRecord.setUpdatedBy(this.getUpdatedBy());
+        }
         this.setUpdatedAt(Instant.now());
-        record.setIndicator(null);
     }
 
     public void removeRecord(LocalDate date) {
@@ -77,8 +87,11 @@ public class Indicator extends UserDateAudit {
                 .filter(r -> r.getDate().equals(date))
                 .findFirst()
                 .ifPresent(r -> records.remove(r));
-        setUpdatedAt(Instant.now());
         this.setUpdatedAt(Instant.now());
+    }
 
+    public void clearRecords() {
+        records.clear();
+        this.setUpdatedAt(Instant.now());
     }
 }

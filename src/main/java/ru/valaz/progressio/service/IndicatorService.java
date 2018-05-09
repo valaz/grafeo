@@ -14,7 +14,6 @@ import ru.valaz.progressio.payload.IndicatorRequest;
 import ru.valaz.progressio.payload.IndicatorResponse;
 import ru.valaz.progressio.payload.PagedResponse;
 import ru.valaz.progressio.repository.IndicatorRepository;
-import ru.valaz.progressio.repository.RecordRepository;
 import ru.valaz.progressio.repository.UserRepository;
 import ru.valaz.progressio.security.UserPrincipal;
 import ru.valaz.progressio.util.AppConstants;
@@ -30,15 +29,12 @@ import java.util.stream.Collectors;
 @Service
 public class IndicatorService {
 
-
     @Autowired
     private IndicatorRepository indicatorRepository;
 
     @Autowired
-    private RecordRepository recordRepository;
-
-    @Autowired
     private UserRepository userRepository;
+
 
     public PagedResponse<IndicatorResponse> getAllIndicators(UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
@@ -95,7 +91,7 @@ public class IndicatorService {
         }
     }
 
-    Map<Long, User> getIndicatorCreatorMap(List<Indicator> indicators) {
+    private Map<Long, User> getIndicatorCreatorMap(List<Indicator> indicators) {
         // Get Indicator Creator details of the given list of indicators
         List<Long> creatorIds = indicators.stream()
                 .map(Indicator::getCreatedBy)
@@ -112,5 +108,13 @@ public class IndicatorService {
         indicator.setUnit(indicatorRequest.getUnit());
         return indicatorRepository.save(indicator);
 
+    }
+
+    public Indicator updateIndicator(Indicator indicator, Indicator rawIndicator) {
+        indicator.setName(rawIndicator.getName());
+        indicator.setUnit(rawIndicator.getUnit());
+        indicator.clearRecords();
+        indicator.addRecords(rawIndicator.getRecords());
+        return indicatorRepository.save(indicator);
     }
 }

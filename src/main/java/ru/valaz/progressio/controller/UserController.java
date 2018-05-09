@@ -3,7 +3,6 @@ package ru.valaz.progressio.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.valaz.progressio.exeption.ResourceNotFoundException;
@@ -39,13 +38,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName());
+        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName(), currentUser.getIsDemo());
     }
 
     @GetMapping("/users/profile")

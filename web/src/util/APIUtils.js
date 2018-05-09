@@ -87,6 +87,13 @@ export function login(loginRequest) {
     });
 }
 
+export function demoLogin() {
+    return request({
+        url: "/auth/demo/signin",
+        method: 'POST',
+    });
+}
+
 export function signup(signupRequest) {
     return request({
         url: "/auth/signup",
