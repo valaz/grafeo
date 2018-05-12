@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
-@Table(name = "indicarors")
+@Table(name = "indicators")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
