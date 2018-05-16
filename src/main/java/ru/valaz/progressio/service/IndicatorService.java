@@ -41,7 +41,7 @@ public class IndicatorService {
 
         // Retrieve Indicators
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByUpdatedAtDesc(currentUser.getId(), pageable);
+        Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByName(currentUser.getId(), pageable);
 
         if (indicators.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), indicators.getNumber(),
@@ -66,7 +66,7 @@ public class IndicatorService {
 
         // Retrieve all indicators created by the given username
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByUpdatedAtDesc(user.getId(), pageable);
+        Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByName(user.getId(), pageable);
 
         if (indicators.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), indicators.getNumber(),
