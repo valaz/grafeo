@@ -1,4 +1,5 @@
 export const ACCESS_TOKEN = 'accessToken';
+export const isDemo = 'isDemo';
 
 export const INDICATOR_LIST_SIZE = 30;
 export const INDICATOR_NAME_MAX_LENGTH = 40;
