@@ -15,6 +15,7 @@ import ButtonAppBar from "../common/ButtonAppBar";
 import Notification from "../common/Notification";
 import {withStyles} from "material-ui";
 import ReactGA from 'react-ga';
+import {isDemo} from "../constants";
 
 const styles = theme => ({
     root: {
@@ -65,8 +66,13 @@ class App extends React.Component {
                     isAuthenticated: true,
                     isLoading: false
                 });
+                if (response.isDemo) {
+                    localStorage.setItem(isDemo, "1");
+                }
             }).catch(error => {
-            this.removeUserInfo();
+            if (localStorage.getItem(isDemo)) {
+                this.removeUserInfo();
+            }
             this.setState({
                 isLoading: false
             });
@@ -166,37 +172,37 @@ class App extends React.Component {
                                       currentUser={this.state.currentUser}
                                       onLogout={this.handleLogout}/>
                         <div className={classes.content}>
-                                <Switch>
-                                    <Route exact path="/"
-                                           render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
-                                                                    currentUser={this.state.currentUser}
-                                                                    onLogin={this.handleLogin}
-                                                                    handleLogout={this.handleLogout} {...props} />}>
-                                    </Route>
-                                    <Route exact path="/login"
-                                           render={(props) => <Login onLogin={this.handleLogin}
-                                                                     isAuthenticated={this.state.isAuthenticated}
-                                                                     currentUser={this.state.currentUser}/>}/>
-                                    <Route exact path="/signup"
-                                           render={(props) => <Signup onSignup={this.handleSignup}/>}/>
-                                    <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile"
-                                                  component={Profile} currentUser={this.state.currentUser}
-                                                  isAuthenticated={this.state.isAuthenticated}/>
-                                    <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile/edit"
-                                                  onEdit={this.handleProfileEdit}
-                                                  component={Signup} handleLogout={this.handleLogout}
-                                                  currentUser={this.state.currentUser}/>
-                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
-                                                  component={IndicatorConfig} handleLogout={this.handleLogout}/>
-                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"
-                                                  component={IndicatorConfig} handleLogout={this.handleLogout}
-                                                  isAuthenticated={this.state.isAuthenticated}/>
-                                    <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
-                                                  component={IndicatorPage} handleLogout={this.handleLogout}
-                                                  isAuthenticated={this.state.isAuthenticated}/>
-                                    <Route component={NotFound}/>
-                                </Switch>
-                            </div>
+                            <Switch>
+                                <Route exact path="/"
+                                       render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
+                                                                currentUser={this.state.currentUser}
+                                                                onLogin={this.handleLogin}
+                                                                handleLogout={this.handleLogout} {...props} />}>
+                                </Route>
+                                <Route exact path="/login"
+                                       render={(props) => <Login onLogin={this.handleLogin}
+                                                                 isAuthenticated={this.state.isAuthenticated}
+                                                                 currentUser={this.state.currentUser}/>}/>
+                                <Route exact path="/signup"
+                                       render={(props) => <Signup onSignup={this.handleSignup}/>}/>
+                                <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile"
+                                              component={Profile} currentUser={this.state.currentUser}
+                                              isAuthenticated={this.state.isAuthenticated}/>
+                                <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile/edit"
+                                              onEdit={this.handleProfileEdit}
+                                              component={Signup} handleLogout={this.handleLogout}
+                                              currentUser={this.state.currentUser}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
+                                              component={IndicatorConfig} handleLogout={this.handleLogout}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"
+                                              component={IndicatorConfig} handleLogout={this.handleLogout}
+                                              isAuthenticated={this.state.isAuthenticated}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
+                                              component={IndicatorPage} handleLogout={this.handleLogout}
+                                              isAuthenticated={this.state.isAuthenticated}/>
+                                <Route component={NotFound}/>
+                            </Switch>
+                        </div>
                     </div>)
                 }
             </div>

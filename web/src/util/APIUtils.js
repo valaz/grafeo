@@ -5,7 +5,7 @@ const request = (options) => {
         'Content-Type': 'application/json',
     });
 
-    if (localStorage.getItem(ACCESS_TOKEN)) {
+    if (!options.public && localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
 
@@ -155,6 +155,7 @@ export function getUserCreatedIndicators(username, page, size) {
 
 export function getGaUid() {
     return request({
+        public: true,
         url: "/api/common/ga",
         method: 'GET'
     });

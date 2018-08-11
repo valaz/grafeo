@@ -1,6 +1,10 @@
 package ru.valaz.progressio.service;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -12,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,29 +34,52 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DemoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoService.class);
 
-    private static final String startStringDate = "2017-01-01";
-    public static final String TIME_SERIES_DAILY = "Time Series (Daily)";
-    public static final String CLOSE = "4. close";
-    public static final String BPI = "bpi";
+    private static final String START_STRING_DATE = "2017-01-01";
+    private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
+    private static final String CLOSE = "4. close";
+    private static final String BPI = "bpi";
+    private static final String BITCOIN_HTTP_URL = "https://api.coindesk.com/v1/bpi/historical/close.json?start=%s&end=%s";
+    private static final String DEMO_USER = "Demo User";
+    private static final String DEMO_USERNAME_PREFIX = "demo_%s";
+    private static final String DEMO_EMAIL_POSTFIX = "%s@grafeo.me";
+    private static final String STOCKS_HTTP_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&outputsize=full&apikey=%s";
 
-    @Autowired
-    private UserRepository userRepository;
+    private LoadingCache<String, Map<LocalDate, Double>> stocks = CacheBuilder.newBuilder()
+            .expireAfterWrite(12, TimeUnit.HOURS)
+            .build(
+                    new CacheLoader<String, Map<LocalDate, Double>>() {
+                        public Map<LocalDate, Double> load(@NonNull String stockName) {
+                            return loadStockData(stockName);
+                        }
+                    });
 
-    @Autowired
-    private IndicatorRepository indicatorRepository;
+    private LoadingCache<String, Map<LocalDate, Double>> cryptos = CacheBuilder.newBuilder()
+            .expireAfterWrite(12, TimeUnit.HOURS)
+            .build(
+                    new CacheLoader<String, Map<LocalDate, Double>>() {
+                        public Map<LocalDate, Double> load(@NonNull String stockName) {
+                            return loadCryptoData(stockName);
+                        }
+                    });
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final IndicatorRepository indicatorRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     private OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -65,16 +93,23 @@ public class DemoService {
     @Value("${alpha_api_key}")
     private String apiKey;
 
+    @Autowired
+    public DemoService(UserRepository userRepository, IndicatorRepository indicatorRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.indicatorRepository = indicatorRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     public User generateDemoUser() {
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         String generatedUsername = generator.generate(10);
-        String name = "Demo User";
-        String username = "demo_" + generatedUsername;
-        String email = username + "@grafeo.me";
+        String username = String.format(DEMO_USERNAME_PREFIX, generatedUsername);
+        String email = String.format(DEMO_EMAIL_POSTFIX, username);
         String generatedPassword = generator.generate(20);
 
-        User savedUser = createDemoUser(name, username, email, generatedPassword);
+        User savedUser = createDemoUser(DEMO_USER, username, email, generatedPassword);
 
         List<Indicator> demoIndicators = getDemoIndicators(savedUser);
         for (Indicator demoIndicator : demoIndicators) {
@@ -122,33 +157,61 @@ public class DemoService {
         return userRepository.save(user);
     }
 
-    public List<Indicator> getDemoIndicators(User demoUser) {
+    private List<Indicator> getDemoIndicators(User demoUser) {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
         List<Indicator> demoIndicators = new ArrayList<>();
+        executorService.execute(() -> demoIndicators.add(fillCryptoDemoIndicator(createDemoIndicator(demoUser, "Bitcoin price", "USD"), "BTC")));
+        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Apple stocks", "USD"), "AAPL")));
+        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Google stocks", "USD"), "GOOG")));
+        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Facebook stocks", "USD"), "FB")));
+        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Amazon stocks", "USD"), "AMZN")));
 
-        demoIndicators.add(fillBitcoinDemoIndicator(createDemoIndicator(demoUser, "Bitcoin price", "USD")));
-        demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Apple stocks", "USD"), "AAPL"));
-        demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Google stocks", "USD"), "GOOG"));
-        demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Facebook stocks", "USD"), "FB"));
-        demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Amazon stocks", "USD"), "AMZN"));
-
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            LOGGER.error("Error while awaiting executor finish:", e);
+            Thread.currentThread().interrupt();
+        }
         return demoIndicators;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Indicator createDemoIndicator(User demoUser, String name, String unit) {
-        Indicator bitcoinIndicator = new Indicator();
-        bitcoinIndicator.setName(name);
-        bitcoinIndicator.setUnit(unit);
-        bitcoinIndicator.setCreatedBy(demoUser.getId());
-        bitcoinIndicator.setUpdatedBy(demoUser.getId());
-        return indicatorRepository.save(bitcoinIndicator);
+        Indicator indicator = new Indicator();
+        indicator.setName(name);
+        indicator.setUnit(unit);
+        indicator.setCreatedBy(demoUser.getId());
+        indicator.setUpdatedBy(demoUser.getId());
+        return indicatorRepository.save(indicator);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Indicator fillBitcoinDemoIndicator(Indicator bitcoinIndicator) {
+    private Indicator fillCryptoDemoIndicator(Indicator cryptoIndicator, String cryptoName) {
+        try {
+            cryptos.get(cryptoName).forEach((date, value) -> cryptoIndicator.addRecord(new Record(value, date)));
+        } catch (ExecutionException e) {
+            LOGGER.error("Error while filling crypto demo indicator:", e);
+        }
+
+        return indicatorRepository.save(cryptoIndicator);
+    }
+
+    private Indicator fillStockDemoIndicator(Indicator stockIndicator, String stockName) {
+        try {
+            stocks.get(stockName).forEach((date, value) -> stockIndicator.addRecord(new Record(value, date)));
+        } catch (ExecutionException e) {
+            LOGGER.error("Error while filling stock demo indicator:", e);
+        }
+
+        return indicatorRepository.save(stockIndicator);
+    }
+
+    private Map<LocalDate, Double> loadCryptoData(String cryptoName) {
+        Preconditions.checkArgument("BTC".equals(cryptoName));
         Stopwatch stopwatch = Stopwatch.createStarted();
         String today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        String url = "https://api.coindesk.com/v1/bpi/historical/close.json?start=" + startStringDate + "&end=" + today;
+        String url = String.format(BITCOIN_HTTP_URL, START_STRING_DATE, today);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -161,6 +224,7 @@ public class DemoService {
         } catch (IOException e) {
             LOGGER.error("Error during bitcoin price request:", e);
         }
+        Map<LocalDate, Double> values = new HashMap<>();
         if (StringUtils.isNotBlank(jsonData)) {
             JSONObject data = new JSONObject(jsonData);
             JSONObject prices = data.getJSONObject(BPI);
@@ -171,25 +235,18 @@ public class DemoService {
                 Object value = prices.get(stringDate);
                 Double doubleValue = Double.valueOf(String.valueOf(value));
 
-                bitcoinIndicator.addRecord(new Record(doubleValue, date));
+                values.put(date, doubleValue);
             }
         }
         stopwatch.stop();
         long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
         LOGGER.info("Received crypto data for {}, elapsed time: {} ms", "BTC", elapsed);
-        return indicatorRepository.save(bitcoinIndicator);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Indicator fillStockDemoIndicator(Indicator stockIndicator, String stockName) {
-        loadStockData(stockName).forEach((date, value) -> stockIndicator.addRecord(new Record(value, date)));
-
-        return indicatorRepository.save(stockIndicator);
+        return values;
     }
 
     private Map<LocalDate, Double> loadStockData(String stockName) {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + stockName + "&outputsize=full&apikey="+apiKey;
+        String url = String.format(STOCKS_HTTP_URL, stockName, apiKey);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -200,10 +257,8 @@ public class DemoService {
                 jsonData = response.body().string();
             }
 
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             LOGGER.error("Error during stock ({}) data request:", stockName, e);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         if (StringUtils.isNotBlank(jsonData)) {
             Map<LocalDate, Double> data = new HashMap<>();
@@ -212,7 +267,7 @@ public class DemoService {
             JSONArray pricesArray = prices.names();
             for (Object key : pricesArray) {
                 String stringDate = String.valueOf(key);
-                if (StringUtils.compare(stringDate, startStringDate) < 0) {
+                if (StringUtils.compare(stringDate, START_STRING_DATE) < 0) {
                     continue;
                 }
                 LocalDate date = LocalDate.parse(stringDate, DateTimeFormatter.ISO_LOCAL_DATE);
