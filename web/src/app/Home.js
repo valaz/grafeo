@@ -52,6 +52,7 @@ class Home extends Component {
                 this.setState({
                     isLoading: false
                 });
+                localStorage.clear();
                 localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                 this.props.onLogin();
             }).catch(error => {

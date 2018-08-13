@@ -81,6 +81,7 @@ export function removeRecord(recordData) {
 
 export function login(loginRequest) {
     return request({
+        public: true,
         url: "/auth/signin",
         method: 'POST',
         body: JSON.stringify(loginRequest)
@@ -89,6 +90,7 @@ export function login(loginRequest) {
 
 export function demoLogin() {
     return request({
+        public: true,
         url: "/auth/demo/signin",
         method: 'POST',
     });
@@ -96,6 +98,7 @@ export function demoLogin() {
 
 export function signup(signupRequest) {
     return request({
+        public: true,
         url: "/auth/signup",
         method: 'POST',
         body: JSON.stringify(signupRequest)
@@ -112,6 +115,7 @@ export function editProfile(signupRequest) {
 
 export function checkUsernameAvailability(username) {
     return request({
+        public: true,
         url: "/user/checkUsernameAvailability?username=" + username,
         method: 'GET'
     });
@@ -119,6 +123,7 @@ export function checkUsernameAvailability(username) {
 
 export function checkEmailAvailability(email) {
     return request({
+        public: true,
         url: "/user/checkEmailAvailability?email=" + email,
         method: 'GET'
     });
