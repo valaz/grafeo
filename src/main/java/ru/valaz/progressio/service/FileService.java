@@ -2,6 +2,8 @@ package ru.valaz.progressio.service;
 
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.valaz.progressio.model.Indicator;
@@ -16,7 +18,10 @@ import java.util.Optional;
 @Service
 public class FileService {
 
-    public static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileService.class);
+
     private Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .setPrettyPrinting()
@@ -33,7 +38,7 @@ public class FileService {
             String result = IOUtils.toString(mfile.getInputStream());
             return Optional.of(gson.fromJson(result, Indicator.class));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error during file storing", e);
         }
 
         return Optional.empty();
@@ -46,7 +51,7 @@ public class FileService {
         }
 
         @Override
-        public LocalDate deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public LocalDate deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
             String stringData = jsonElement.getAsString();
             return LocalDate.parse(stringData, ISO_LOCAL_DATE);
         }

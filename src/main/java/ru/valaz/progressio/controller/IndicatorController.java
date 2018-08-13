@@ -34,22 +34,26 @@ import java.io.InputStream;
 @RequestMapping("/indicators")
 public class IndicatorController {
 
-    public static final String YOU_HAVE_NO_ACCESS = "You have no access";
-    public static final String INDICATOR = "Indicator";
+    private static final String YOU_HAVE_NO_ACCESS = "You have no access";
+    private static final String INDICATOR = "Indicator";
 
-    @Autowired
-    private IndicatorRepository indicatorRepository;
+    private final IndicatorRepository indicatorRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private IndicatorService indicatorService;
+    private final IndicatorService indicatorService;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndicatorController.class);
+
+    @Autowired
+    public IndicatorController(IndicatorRepository indicatorRepository, UserRepository userRepository, IndicatorService indicatorService, FileService fileService) {
+        this.indicatorRepository = indicatorRepository;
+        this.userRepository = userRepository;
+        this.indicatorService = indicatorService;
+        this.fileService = fileService;
+    }
 
     @GetMapping
     public PagedResponse<IndicatorResponse> getIndicators(@CurrentUser UserPrincipal currentUser,
@@ -156,7 +160,7 @@ public class IndicatorController {
         }
 
         final Indicator[] updateIndicator = {indicator};
-        fileService.storeFile(file).map(rawIndicator -> updateIndicator[0] = indicatorService.updateIndicator(indicator, rawIndicator));
+        fileService.storeFile(file).ifPresent(rawIndicator -> updateIndicator[0] = indicatorService.updateIndicator(indicator, rawIndicator));
 
         User creator = userRepository.findById(updateIndicator[0].getCreatedBy())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", updateIndicator[0].getCreatedBy()));
