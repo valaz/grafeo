@@ -1,10 +1,7 @@
 package ru.valaz.progressio.model;
 
 import com.google.gson.annotations.Expose;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.valaz.progressio.model.audit.UserDateAudit;
 
 import javax.persistence.*;
@@ -15,6 +12,7 @@ import java.time.LocalDate;
 @Table(name = "records")
 
 @Data
+@NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
 public class Record extends UserDateAudit {
