@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/icons": "^1.0.0-beta.42",
     "classnames": "^2.2.5",
+    "macaddress": "^0.2.9",
     "material-ui": "^1.0.0-beta.41",
     "material-ui-pickers": "^1.0.0-rc.5",
     "moment": "^2.21.0",
