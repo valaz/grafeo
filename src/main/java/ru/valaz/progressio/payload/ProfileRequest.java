@@ -10,16 +10,16 @@ import javax.validation.constraints.Size;
 public class ProfileRequest {
     @NotBlank
     @Size(min = 1, max = 40)
-    private String name;
+    protected String name;
 
     @NotBlank
     @Size(min = 3, max = 30)
-    private String username;
+    protected String username;
 
     @NotBlank
     @Size(max = 40)
     @Email
-    private String email;
+    protected String email;
 
     private String password;
 }
