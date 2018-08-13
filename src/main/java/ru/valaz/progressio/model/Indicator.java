@@ -1,10 +1,7 @@
 package ru.valaz.progressio.model;
 
 import com.google.gson.annotations.Expose;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -19,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "indicators")
 @Data
