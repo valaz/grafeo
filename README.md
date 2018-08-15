@@ -1,4 +1,4 @@
-# Progressio
+# Grafeo
 
 ## Backend:
 * Maven
