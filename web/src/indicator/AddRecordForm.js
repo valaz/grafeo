@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from "react-dom";
 import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, IconButton, InputAdornment, TextField, withStyles} from "material-ui";
 import {DatePicker} from "material-ui-pickers";
@@ -125,6 +126,7 @@ class AddRecordForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.renderWrappedWeekDay = this.renderWrappedWeekDay.bind(this);
+        this.handleValueFocus = this.handleValueFocus.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -234,6 +236,16 @@ class AddRecordForm extends Component {
                 }
             });
         }
+
+        let valueEl = ReactDOM.findDOMNode(this._valueEl);
+        valueEl.focus();
+    }
+
+    handleValueFocus() {
+        let dateEl = ReactDOM.findDOMNode(this._dateEl);
+        dateEl.blur();
+        let valueEl = ReactDOM.findDOMNode(this._valueEl);
+        valueEl.focus();
     }
 
     handleNumberChange(name, event, validationFun) {
@@ -318,6 +330,9 @@ class AddRecordForm extends Component {
                       spacing={16} justify="center">
                     <Grid item xs={12} sm={6} md={4} align="center">
                         <DatePicker fullWidth
+                                    inputRef={(node) => {
+                                        this._dateEl = node;
+                                    }}
                                     error={this.state.date.hasError}
                                     helperText={this.state.date.errorMsg}
                                     id="date"
@@ -337,8 +352,12 @@ class AddRecordForm extends Component {
                                     renderDay={this.renderWrappedWeekDay}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} align="center">
+                    <Grid item xs={12} sm={6} md={4} align="center" ref="valueGrid">
                         <TextField fullWidth
+                                   inputRef={(node) => {
+                                       this._valueEl = node;
+                                   }}
+                                   onFocus={() => this.handleValueFocus()}
                                    autoComplete="off"
                                    error={this.state.value.hasError}
                                    helperText={this.state.value.errorMsg}
