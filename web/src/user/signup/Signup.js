@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {checkEmailAvailability, checkUsernameAvailability, editProfile, signup} from '../../util/APIUtils';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {
     EMAIL_MAX_LENGTH,
     NAME_MAX_LENGTH,
@@ -62,6 +62,7 @@ class Signup extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleNameInputChange = this.handleNameInputChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateAll = this.validateAll.bind(this);
         this.validateUsernameAvailability = this.validateUsernameAvailability.bind(this);
@@ -75,6 +76,9 @@ class Signup extends Component {
     componentWillMount() {
         let {currentUser} = this.props;
         if (currentUser) {
+            if (currentUser.isDemo) {
+                this.props.history.push('/profile');
+            }
             document.title = currentUser.name;
             this.setState({
                 isSignup: false
@@ -139,6 +143,11 @@ class Signup extends Component {
                 message: ''
             }
         });
+    }
+
+    handleCancel(event) {
+        event.preventDefault();
+        this.props.history.goBack();
     }
 
     handleSubmit(event) {
@@ -366,8 +375,27 @@ class Signup extends Component {
                         </Grid>
                     </Grid>
                 </form>
+                <Grid item xs={12}>
+                    <Grid container
+                          justify="center"
+                          direction='column'
+                          spacing={16}>
+                        <Grid container item spacing={0} justify="center">
+                            <Grid item {...gridSize}>
+                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                        onClick={this.handleCancel}>
+                                    {this.getCancelButton()}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         );
+    }
+
+    getCancelButton() {
+        return <FormattedMessage id="profile.edit.cancel"/>;
     }
 
     getSubmitButton() {
@@ -687,4 +715,4 @@ class Signup extends Component {
     }
 }
 
-export default injectIntl(withStyles(styles)(Signup));
+export default injectIntl(withRouter(withStyles(styles)(Signup)));

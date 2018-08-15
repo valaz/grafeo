@@ -83,6 +83,7 @@ class IndicatorConfig extends Component {
             },
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
         this.loadIndicator = this.loadIndicator.bind(this);
     }
@@ -107,6 +108,11 @@ class IndicatorConfig extends Component {
                 message: ''
             }
         });
+    }
+
+    handleCancel(event) {
+        event.preventDefault();
+        this.props.history.goBack();
     }
 
     handleSubmit(event) {
@@ -302,6 +308,22 @@ class IndicatorConfig extends Component {
                         </Grid>
                     </Grid>
                 </form>
+                <Grid item xs={12}>
+                    <Grid container
+                          justify="center"
+                          direction='column'
+                          spacing={16}>
+                        <Grid container item spacing={0} justify="center" margin='dense'>
+                            <Grid item {...gridSize}>
+                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                        onClick={this.handleCancel}>
+                                    <Icon type="plus"/>
+                                    {this.getCancelButton()}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         );
     }
@@ -312,6 +334,10 @@ class IndicatorConfig extends Component {
         } else {
             return <FormattedMessage id="indicator.config.form.button.create"/>;
         }
+    }
+
+    getCancelButton() {
+        return <FormattedMessage id="indicator.config.form.button.cancel"/>;
     }
 
     getHeader() {

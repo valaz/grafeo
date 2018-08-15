@@ -21,7 +21,8 @@ export default {
             edit: {
                 title: 'Edit profile',
                 header: 'Edit profile',
-                submit: 'Save'
+                submit: 'Save',
+                cancel: 'Cancel',
             }
         },
         navbar: {
@@ -147,6 +148,7 @@ export default {
                     button: {
                         create: 'Create indicator',
                         edit: 'Edit Indicator',
+                        cancel: 'Cancel',
                     },
 
                 },
@@ -255,7 +257,8 @@ export default {
             edit: {
                 title: 'Изменить профиль',
                 header: 'Изменить профиль',
-                submit: 'Сохранить'
+                submit: 'Сохранить',
+                cancel: 'Отмена',
             }
         },
         navbar: {
@@ -380,6 +383,7 @@ export default {
                     button: {
                         create: 'Создать Индикатор',
                         edit: 'Обновить Индикатор',
+                        cancel: 'Отмена',
                     },
 
                 },
