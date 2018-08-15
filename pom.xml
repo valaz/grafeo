@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.valaz</groupId>
-    <artifactId>progressio</artifactId>
+    <artifactId>grafeo</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>progressio</name>
+    <name>grafeo</name>
     <description>Spring Boot project</description>
 
     <parent>

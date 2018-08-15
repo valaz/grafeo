@@ -23,8 +23,5 @@ dist/
 nbdist/
 .nb-gradle/
 
-/progressio-app-server/web/node_modules
-/progressio-app-server/web/node
-
 /web/node_modules
 /web/node
