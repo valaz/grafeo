@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import {NavLink, withRouter} from "react-router-dom";
-import {AccountCircle} from "@material-ui/icons";
+import {AccountCircle, Add, Home} from "@material-ui/icons";
 import {Menu, MenuItem} from "material-ui";
 import {FormattedMessage} from "react-intl";
 
@@ -37,6 +37,7 @@ class ButtonAppBar extends React.Component {
         this.handleMenu = this.handleMenu.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleProfile = this.handleProfile.bind(this);
+        this.handleHome = this.handleHome.bind(this);
         this.handleAddIndicator = this.handleAddIndicator.bind(this);
     }
 
@@ -51,6 +52,11 @@ class ButtonAppBar extends React.Component {
 
     handleLogout() {
         this.props.onLogout()
+    }
+
+    handleHome() {
+        this.props.history.push('/');
+        this.handleClose();
     }
 
     handleProfile() {
@@ -89,6 +95,22 @@ class ButtonAppBar extends React.Component {
             <IconButton
                 aria-owns={open ? 'menu-appbar' : null}
                 aria-haspopup="true"
+                onClick={this.handleHome}
+                color="inherit"
+            >
+                <Home/>
+            </IconButton>
+            <IconButton
+                aria-owns={open ? 'menu-appbar' : null}
+                aria-haspopup="true"
+                onClick={this.handleAddIndicator}
+                color="inherit"
+            >
+                <Add/>
+            </IconButton>
+            <IconButton
+                aria-owns={open ? 'menu-appbar' : null}
+                aria-haspopup="true"
                 onClick={this.handleMenu}
                 color="inherit"
             >
@@ -108,8 +130,6 @@ class ButtonAppBar extends React.Component {
                 open={open}
                 onClose={this.handleClose}
             >
-                <MenuItem onClick={this.handleAddIndicator}>
-                    <FormattedMessage id="navbar.addIndicator"/></MenuItem>
                 <MenuItem onClick={this.handleProfile}>
                     <FormattedMessage id="navbar.profile"/>
                 </MenuItem>
