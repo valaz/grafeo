@@ -24,7 +24,7 @@ const styles = {
     },
 };
 
-class ButtonAppBar extends React.Component {
+class NavigationTopBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -163,8 +163,8 @@ class ButtonAppBar extends React.Component {
     }
 }
 
-ButtonAppBar.propTypes = {
+NavigationTopBar.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(ButtonAppBar));
+export default withRouter(withStyles(styles)(NavigationTopBar));
