@@ -1,5 +1,6 @@
 package ru.valaz.grafeo.service;
 
+import com.google.common.base.Stopwatch;
 import com.google.gson.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FileService {
@@ -34,14 +36,18 @@ public class FileService {
     }
 
     public Optional<Indicator> storeFile(MultipartFile mfile) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        Optional<Indicator> indicator = Optional.empty();
         try {
-            String result = IOUtils.toString(mfile.getInputStream());
-            return Optional.of(gson.fromJson(result, Indicator.class));
+            String rawData = IOUtils.toString(mfile.getInputStream());
+            indicator = Optional.ofNullable(gson.fromJson(rawData, Indicator.class));
         } catch (IOException e) {
             LOGGER.error("Error during file storing", e);
         }
-
-        return Optional.empty();
+        stopwatch.stop();
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        LOGGER.info("File was parsed; elapsed time: {} ms", elapsed);
+        return indicator;
     }
 
     class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {

@@ -118,7 +118,7 @@ class Profile extends Component {
                     this.state.user ? (
                         <div>
                             <div className={classes.root}>
-                                <Grid container style={{paddingTop: 10, paddingBottom: 10}}
+                                <Grid container style={{paddingTop: 10, paddingBottom: 10, margin: 0}}
                                       className="user-details" align="center"
                                       spacing={24}>
                                     <Grid item xs={12} sm={4} md={4} align="center">

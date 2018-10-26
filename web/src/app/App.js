@@ -11,7 +11,7 @@ import PrivateRoute from "../common/PrivateRoute";
 import IndicatorPage from "../indicator/IndicatorPage";
 import Home from "./Home";
 import {injectIntl} from "react-intl";
-import ButtonAppBar from "../common/ButtonAppBar";
+import NavigationTopBar from "../common/NavigationTopBar";
 import Notification from "../common/Notification";
 import {withStyles} from "material-ui";
 import ReactGA from 'react-ga';
@@ -24,7 +24,7 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        marginTop: theme.spacing.unit * 3,
+        marginTop: 0,
         backgroundColor: '#f1f1f1',
     },
     bigAvatar: {
@@ -168,9 +168,9 @@ class App extends React.Component {
                     </div>) :
 
                     (<div className={classes.root}>
-                        <ButtonAppBar isAuthenticated={this.state.isAuthenticated}
-                                      currentUser={this.state.currentUser}
-                                      onLogout={this.handleLogout}/>
+                        <NavigationTopBar isAuthenticated={this.state.isAuthenticated}
+                                          currentUser={this.state.currentUser}
+                                          onLogout={this.handleLogout}/>
                         <div className={classes.content}>
                             <Switch>
                                 <Route exact path="/"
