@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import {NavLink, withRouter} from "react-router-dom";
-import {AccountCircle, Add, Home} from "@material-ui/icons";
+import {AccountCircle, Add, ExpandMore, Eject, Home, PermIdentity} from "@material-ui/icons";
 import {Menu, MenuItem} from "material-ui";
 import {FormattedMessage} from "react-intl";
 
@@ -108,14 +108,16 @@ class NavigationTopBar extends React.Component {
             >
                 <Add/>
             </IconButton>
-            <IconButton
+            <Button
                 aria-owns={open ? 'menu-appbar' : null}
                 aria-haspopup="true"
                 onClick={this.handleMenu}
                 color="inherit"
             >
-                <AccountCircle/>
-            </IconButton>
+                <PermIdentity/>
+                {this.props.currentUser.username}
+                <ExpandMore/>
+            </Button>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -131,10 +133,10 @@ class NavigationTopBar extends React.Component {
                 onClose={this.handleClose}
             >
                 <MenuItem onClick={this.handleProfile}>
-                    <FormattedMessage id="navbar.profile"/>
+                    <AccountCircle/><FormattedMessage id="navbar.profile"/>
                 </MenuItem>
                 <MenuItem onClick={this.handleLogout}>
-                    <FormattedMessage id="navbar.logout"/></MenuItem>
+                    <Eject/><FormattedMessage id="navbar.logout"/></MenuItem>
             </Menu>
         </div>
 
