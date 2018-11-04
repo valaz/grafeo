@@ -194,7 +194,7 @@ export default {
                         }
                     },
                     download: {
-                        menu: 'Export'
+                        menu: 'Download'
                     },
                     upload: {
                         menu: 'Import',
@@ -429,7 +429,7 @@ export default {
                         }
                     },
                     download: {
-                        menu: 'Экспорт'
+                        menu: 'Скачать'
                     },
                     upload: {
                         menu: 'Импорт',
