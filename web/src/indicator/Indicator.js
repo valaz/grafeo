@@ -31,11 +31,11 @@ class Indicator extends Component {
     }
 
     handleView() {
-        this.props.history.push("/indicator/" + this.props.indicator.id);
+        this.props.history.push("/indicators/" + this.props.indicator.id);
     }
 
     handleEdit() {
-        this.props.history.push("/indicator/edit/" + this.props.indicator.id);
+        this.props.history.push("/indicators/edit/" + this.props.indicator.id);
     }
 
     handleDelete() {
@@ -93,7 +93,7 @@ class Indicator extends Component {
         const {classes} = this.props;
         return (
             <Grid item xs={12} sm={6} lg={4}>
-                <NavLink to={"/indicator/" + this.props.indicator.id}
+                <NavLink to={"/indicators/" + this.props.indicator.id}
                          className={classes.link}>
                     <StatsCard item
                                icon={Timeline}
