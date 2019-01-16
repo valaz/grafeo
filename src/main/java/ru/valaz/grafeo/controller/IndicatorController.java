@@ -31,7 +31,7 @@ import javax.validation.Valid;
 import java.io.InputStream;
 
 @RestController
-@RequestMapping("/indicators")
+@RequestMapping("/api/indicators")
 public class IndicatorController {
 
     private static final String YOU_HAVE_NO_ACCESS = "You have no access";

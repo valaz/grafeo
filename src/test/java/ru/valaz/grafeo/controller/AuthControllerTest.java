@@ -26,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class AuthControllerTest extends AbstractControllerTest {
 
+    static final String API_AUTH_PREFIX = "/api/auth";
+
     @Test
     public void loginTest() throws Exception {
         userService.createUser("Auth Test", "auth",
@@ -34,7 +36,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         loginRequest.setUsernameOrEmail("auth");
         loginRequest.setPassword("123456");
 
-        mockMvc.perform(post("/auth/signin")
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signin")
                 .content(json(loginRequest))
                 .contentType(contentType))
                 .andExpect(status().isOk());
@@ -48,7 +50,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         signUpRequest.setEmail("signup@grafeo.me");
         signUpRequest.setPassword("123456");
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signup")
                 .content(json(signUpRequest))
                 .contentType(contentType))
                 .andExpect(status().isCreated());
@@ -71,7 +73,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         signUpRequest.setEmail("signup_err_username@grafeo.me");
         signUpRequest.setPassword("123456");
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signup")
                 .content(json(signUpRequest))
                 .contentType(contentType))
                 .andExpect(status().isBadRequest());

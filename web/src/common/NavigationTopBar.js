@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import {NavLink, withRouter} from "react-router-dom";
-import {AccountCircle, Add, ExpandMore, Eject, Home, PermIdentity} from "@material-ui/icons";
+import {AccountCircle, Add, Eject, ExpandMore, Home, PermIdentity} from "@material-ui/icons";
 import {Menu, MenuItem} from "material-ui";
 import {FormattedMessage} from "react-intl";
 
@@ -65,7 +65,7 @@ class NavigationTopBar extends React.Component {
     }
 
     handleAddIndicator() {
-        this.props.history.push('/indicator/new');
+        this.props.history.push('/indicators/new');
         this.handleClose();
     }
 

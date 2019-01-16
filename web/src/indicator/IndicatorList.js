@@ -44,7 +44,7 @@ class IndicatorList extends Component {
     loadIndicatorList(page = 0, size = INDICATOR_LIST_SIZE) {
         let promise;
         if (this.props.isAuthenticated) {
-            promise = getUserCreatedIndicators(this.props.currentUser.username, page, size);
+            promise = getUserCreatedIndicators(this.props.currentUser.id, page, size);
         }
 
         if (!promise) {

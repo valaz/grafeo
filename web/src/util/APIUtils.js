@@ -28,21 +28,21 @@ export function getAllIndicators(page, size) {
     size = size || INDICATOR_LIST_SIZE;
 
     return request({
-        url: "/indicators?page=" + page + "&size=" + size,
+        url: "/api/indicators?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
 
 export function getIndicator(id) {
     return request({
-        url: "/indicators/" + id,
+        url: "/api/indicators/" + id,
         method: 'GET'
     });
 }
 
 export function createIndicator(indicatorData) {
     return request({
-        url: "/indicators",
+        url: "/api/indicators",
         method: 'POST',
         body: JSON.stringify(indicatorData)
     });
@@ -50,7 +50,7 @@ export function createIndicator(indicatorData) {
 
 export function editIndicator(indicatorData) {
     return request({
-        url: "/indicators",
+        url: "/api/indicators",
         method: 'PUT',
         body: JSON.stringify(indicatorData)
     });
@@ -58,14 +58,14 @@ export function editIndicator(indicatorData) {
 
 export function deleteIndicator(id) {
     return request({
-        url: "/indicators/" + id,
+        url: "/api/indicators/" + id,
         method: 'DELETE'
     });
 }
 
 export function addRecord(recordData) {
     return request({
-        url: "/indicators/" + recordData.indicatorId + "/records",
+        url: "/api/indicators/" + recordData.indicatorId + "/records",
         method: 'POST',
         body: JSON.stringify(recordData)
     });
@@ -73,7 +73,7 @@ export function addRecord(recordData) {
 
 export function removeRecord(recordData) {
     return request({
-        url: "/indicators/" + recordData.indicatorId + "/records",
+        url: "/api/indicators/" + recordData.indicatorId + "/records",
         method: 'DELETE',
         body: JSON.stringify(recordData)
     });
@@ -82,7 +82,7 @@ export function removeRecord(recordData) {
 export function login(loginRequest) {
     return request({
         public: true,
-        url: "/auth/signin",
+        url: "/api/auth/signin",
         method: 'POST',
         body: JSON.stringify(loginRequest)
     });
@@ -91,7 +91,7 @@ export function login(loginRequest) {
 export function demoLogin() {
     return request({
         public: true,
-        url: "/auth/demo/signin",
+        url: "/api/auth/demo/signin",
         method: 'POST',
     });
 }
@@ -99,7 +99,7 @@ export function demoLogin() {
 export function signup(signupRequest) {
     return request({
         public: true,
-        url: "/auth/signup",
+        url: "/api/auth/signup",
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
@@ -107,7 +107,7 @@ export function signup(signupRequest) {
 
 export function editProfile(signupRequest) {
     return request({
-        url: "/user/me",
+        url: "/api/users/me",
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
@@ -116,7 +116,7 @@ export function editProfile(signupRequest) {
 export function checkUsernameAvailability(username) {
     return request({
         public: true,
-        url: "/user/checkUsernameAvailability?username=" + username,
+        url: "/api/users/checkUsernameAvailability?username=" + username,
         method: 'GET'
     });
 }
@@ -124,7 +124,7 @@ export function checkUsernameAvailability(username) {
 export function checkEmailAvailability(email) {
     return request({
         public: true,
-        url: "/user/checkEmailAvailability?email=" + email,
+        url: "/api/users/checkEmailAvailability?email=" + email,
         method: 'GET'
     });
 }
@@ -136,24 +136,24 @@ export function getCurrentUser() {
     }
 
     return request({
-        url: "/user/me",
+        url: "/api/users/me",
         method: 'GET'
     });
 }
 
 export function getUserProfile() {
     return request({
-        url: "/users/profile",
+        url: "/api/users/profile",
         method: 'GET'
     });
 }
 
-export function getUserCreatedIndicators(username, page, size) {
+export function getUserCreatedIndicators(id, page, size) {
     page = page || 0;
     size = size || INDICATOR_LIST_SIZE;
 
     return request({
-        url: "/users/" + username + "/indicators?page=" + page + "&size=" + size,
+        url: "/api/users/" + id + "/indicators?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
