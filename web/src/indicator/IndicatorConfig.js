@@ -5,6 +5,9 @@ import {FormattedMessage, injectIntl} from 'react-intl';
 import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
 import Notification from "../common/Notification";
 import ReactGA from 'react-ga';
+import LoadingIndicator from "./IndicatorPage";
+import NotFound from "../common/NotFound";
+import ServerError from "../common/ServerError";
 
 const gridSize = {
     xs: 12,
@@ -137,7 +140,7 @@ class IndicatorConfig extends Component {
                     category: 'Indicator',
                     action: 'Added Indicator'
                 });
-                this.props.history.push("/indicator/" + response.id);
+                this.props.history.push("/indicators/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.config.notification.logout'}));
@@ -165,7 +168,7 @@ class IndicatorConfig extends Component {
                     category: 'Indicator',
                     action: 'Edited Indicator'
                 });
-                this.props.history.push("/indicator/" + response.id);
+                this.props.history.push("/indicators/" + response.id);
             }).catch(error => {
             if (error.status === 401) {
                 this.props.handleLogout('/login', 'error', this.props.intl.formatMessage({id: 'indicator.edit.notification.logout'}));
@@ -253,6 +256,19 @@ class IndicatorConfig extends Component {
     }
 
     render() {
+
+        if (this.state.isLoading) {
+            return <LoadingIndicator/>;
+        }
+
+        if (this.state.notFound) {
+            return <NotFound/>;
+        }
+
+        if (this.state.serverError) {
+            return <ServerError/>;
+        }
+
         let nameLabel = this.props.intl.formatMessage({id: 'indicator.config.form.name.label'});
         let unitLabel = this.props.intl.formatMessage({id: 'indicator.config.form.unit.label'});
         const {classes} = this.props;

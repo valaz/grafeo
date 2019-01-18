@@ -192,12 +192,12 @@ class App extends React.Component {
                                               onEdit={this.handleProfileEdit}
                                               component={Signup} handleLogout={this.handleLogout}
                                               currentUser={this.state.currentUser}/>
-                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/new"
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicators/new"
                                               component={IndicatorConfig} handleLogout={this.handleLogout}/>
-                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id/edit"
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicators/:id/edit"
                                               component={IndicatorConfig} handleLogout={this.handleLogout}
                                               isAuthenticated={this.state.isAuthenticated}/>
-                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicator/:id"
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/indicators/:id"
                                               component={IndicatorPage} handleLogout={this.handleLogout}
                                               isAuthenticated={this.state.isAuthenticated}/>
                                 <Route component={NotFound}/>

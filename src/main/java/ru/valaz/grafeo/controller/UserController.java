@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
@@ -38,13 +39,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user/me")
+    @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName(), currentUser.getIsDemo());
     }
 
-    @GetMapping("/users/profile")
+    @GetMapping("/profile")
     @PreAuthorize("hasRole('USER')")
     public UserProfile getUserProfile(@CurrentUser UserPrincipal currentUser) {
 
@@ -57,7 +58,7 @@ public class UserController {
         return new UserProfile(user.getId(), user.getUsername(), user.getEmail(), user.getName(), user.getCreatedAt(), indicatorCount, recordCount);
     }
 
-    @PostMapping("/user/me")
+    @PostMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity updateCurrentUser(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody ProfileRequest profileRequest) {
         User user = userRepository.findByUsername(currentUser.getUsername())
@@ -72,24 +73,24 @@ public class UserController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "Profile updated successfully"));
     }
 
-    @GetMapping("/user/checkUsernameAvailability")
+    @GetMapping("/checkUsernameAvailability")
     public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
         Boolean isAvailable = !userRepository.existsByUsernameIgnoreCase(username.trim());
         return new UserIdentityAvailability(isAvailable);
     }
 
-    @GetMapping("/user/checkEmailAvailability")
+    @GetMapping("/checkEmailAvailability")
     public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
         Boolean isAvailable = !userRepository.existsByEmailIgnoreCase(email.trim());
         return new UserIdentityAvailability(isAvailable);
     }
 
-    @GetMapping("/users/{username}/indicators")
+    @GetMapping("/{id}/indicators")
     @PreAuthorize("hasRole('USER')")
-    public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(@PathVariable(value = "username") String username,
+    public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(@PathVariable(value = "id") Long id,
                                                                    @CurrentUser UserPrincipal currentUser,
                                                                    @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                                    @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return indicatorService.getIndicatorsCreatedBy(username, page, size);
+        return indicatorService.getIndicatorsCreatedBy(id, page, size);
     }
 }

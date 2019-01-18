@@ -46,7 +46,7 @@ const storeFile = (options) => {
 
 export function downloadIndicator(id) {
     return requestFile({
-        url: "/indicators/" + id + "/download",
+        url: "/api/indicators/" + id + "/download",
         method: 'GET'
     });
 }
@@ -55,7 +55,7 @@ export function uploadIndicator(id, file) {
     let data = new FormData();
     data.append('file', file);
     return storeFile({
-        url: "/indicators/" + id + "/upload",
+        url: "/api/indicators/" + id + "/upload",
         method: 'POST',
         body: data
     });

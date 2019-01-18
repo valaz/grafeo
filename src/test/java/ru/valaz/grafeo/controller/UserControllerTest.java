@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.valaz.grafeo.controller.AuthControllerTest.API_AUTH_PREFIX;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -26,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "environment=test",
 })
 public class UserControllerTest extends AbstractControllerTest {
+
+    private static final String API_USERS_PREFIX = "/api/users";
 
     @Test
     public void updateCurrentUser() throws Exception {
@@ -36,13 +39,13 @@ public class UserControllerTest extends AbstractControllerTest {
         loginRequest.setUsernameOrEmail("agent007");
         loginRequest.setPassword("123456");
 
-        String response = mockMvc.perform(post("/auth/signin")
+        String response = mockMvc.perform(post(API_AUTH_PREFIX + "/signin")
                 .content(json(loginRequest))
                 .contentType(contentType))
                 .andReturn().getResponse().getContentAsString();
         System.out.println(response);
 
-        mockMvc.perform(get("/user/me"))
+        mockMvc.perform(get(API_USERS_PREFIX + "/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType));
 
@@ -53,7 +56,7 @@ public class UserControllerTest extends AbstractControllerTest {
         profileRequest.setEmail("agent@007.ln");
         profileRequest.setPassword("");
 
-        mockMvc.perform(post("/user/me")
+        mockMvc.perform(post(API_USERS_PREFIX + "/me")
                 .content(json(profileRequest))
                 .contentType(contentType))
                 .andExpect(status().isCreated());
@@ -71,12 +74,12 @@ public class UserControllerTest extends AbstractControllerTest {
         loginRequest.setUsernameOrEmail("currentuser");
         loginRequest.setPassword("123456");
 
-        mockMvc.perform(post("/auth/signin")
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signin")
                 .content(json(loginRequest))
                 .contentType(contentType))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/user/me")
+        mockMvc.perform(get(API_USERS_PREFIX + "/me")
                 .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Current User"))
@@ -93,12 +96,12 @@ public class UserControllerTest extends AbstractControllerTest {
         loginRequest.setUsernameOrEmail("userprofile");
         loginRequest.setPassword("123456");
 
-        mockMvc.perform(post("/auth/signin")
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signin")
                 .content(json(loginRequest))
                 .contentType(contentType))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/users/profile")
+        mockMvc.perform(get(API_USERS_PREFIX + "/profile")
                 .contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("User Profile"))
@@ -113,21 +116,21 @@ public class UserControllerTest extends AbstractControllerTest {
     public void checkUsernameAvailability() throws Exception {
         userService.createUser("Username check", "usernameAvailability", "usernameAvailability@test.com", "123456");
 
-        mockMvc.perform(get("/user/checkUsernameAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkUsernameAvailability")
                 .param("username", "usernameAvailability")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("available").value("false"));
 
-        mockMvc.perform(get("/user/checkUsernameAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkUsernameAvailability")
                 .param("username", " usernameAvailability  ")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("available").value("false"));
 
-        mockMvc.perform(get("/user/checkUsernameAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkUsernameAvailability")
                 .param("username", "USERNameAVAILABILITY")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
@@ -139,21 +142,21 @@ public class UserControllerTest extends AbstractControllerTest {
     public void checkEmailAvailability() throws Exception {
         userService.createUser("Email check", "emailAvailability", "emailAvailability@test.com", "123456");
 
-        mockMvc.perform(get("/user/checkEmailAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkEmailAvailability")
                 .param("email", "emailAvailability@test.com")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("available").value("false"));
 
-        mockMvc.perform(get("/user/checkEmailAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkEmailAvailability")
                 .param("email", " emailAvailability@test.com ")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("available").value("false"));
 
-        mockMvc.perform(get("/user/checkEmailAvailability")
+        mockMvc.perform(get(API_USERS_PREFIX + "/checkEmailAvailability")
                 .param("email", "EMAILAvailability@test.com")
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
