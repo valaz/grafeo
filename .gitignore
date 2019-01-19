@@ -23,5 +23,10 @@ dist/
 nbdist/
 .nb-gradle/
 
+# deployment keys
+.travis/*.key
+.travis/*.key.pub
+
 /web/node_modules
 /web/node
+/web/yarn-error.log
