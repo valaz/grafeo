@@ -29,3 +29,4 @@ nbdist/
 
 /web/node_modules
 /web/node
+/web/yarn-error.log
