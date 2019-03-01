@@ -1,10 +1,10 @@
-version: '2'
+version: '3'
 services:
     db:
-        container_name: sample_db
-        image: postgres:9.5
+        container_name: grafeo_db
+        image: postgres:10.4
         volumes:
-            - sample_db:/var/lib/postgresql/data
+            - grafeo_db:/var/lib/postgresql/data
         environment:
             - POSTGRES_PASSWORD=sample
             - POSTGRES_USER=sample
@@ -14,4 +14,4 @@ services:
             - 5432:5432
 
 volumes:
-    sample_db: {}
+    grafeo_db: {}
