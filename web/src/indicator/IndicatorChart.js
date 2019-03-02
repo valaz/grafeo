@@ -4,20 +4,30 @@ import {getRandomColorValue} from "../util/Colors";
 import moment from "moment";
 import {withStyles} from "material-ui/styles/index";
 import {injectIntl} from "react-intl";
-import {FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
+import {Button, FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
 
 const dateFormat = 'YYYY-MM-DD';
 const chartDateFormat = 'LL';
 
 const selectGridSize = {
-    xs: 12,
-    sm: 12,
-    md: 4
+    xs: 4,
+    sm: 4,
+    md: 4,
+    lg: 3,
 };
 const tooltipStyle = {
     position: "absolute",
     bottom: "0%",
     marginTop: "10px",
+};
+const progressStyle = {
+    color: '#3f51b5',
+};
+const redTextStyle = {
+    color: 'red',
+};
+const greenTextStyle = {
+    color: 'green',
 };
 const styles = theme => ({
     root: {
@@ -32,6 +42,10 @@ const styles = theme => ({
     formControl: {
         margin: theme.spacing.unit,
         minWidth: 120,
+    },
+    statisticText: {
+        margin: theme.spacing.unit,
+        // minWidth: 120,
     },
     selectEmpty: {},
 });
@@ -76,6 +90,9 @@ class IndicatorChart extends Component {
     }
 
     getChartData() {
+        if (this.props.data.length === 0) {
+            return [];
+        }
         let {emptyLeft, emptyRight, period} = this.state;
         let periodLength;
         if (period === 'all') {
@@ -87,9 +104,6 @@ class IndicatorChart extends Component {
             periodLength = 30;
         } else if (period === 'year') {
             periodLength = 365;
-        }
-        if (this.props.data.length === 0) {
-            return [];
         }
         let data = this.props.data.map(r => ({...r}));
         let dates = data.map(d => d['date']);
@@ -123,7 +137,7 @@ class IndicatorChart extends Component {
             if (!emptyLeft) {
                 let i = 0;
                 for (let item of periodData) {
-                    if (item.value) {
+                    if (item.value != null) {
                         break;
                     } else {
                         i++;
@@ -133,6 +147,42 @@ class IndicatorChart extends Component {
             }
             return periodData;
         }
+    }
+
+    getProgressText(chartData) {
+        let firstValue = chartData[0].value;
+        let lastValue = chartData[chartData.length - 1].value;
+        let delta;
+        if (firstValue !== 0) {
+            delta = (lastValue - firstValue) / firstValue;
+            delta = delta * 100;
+            delta = Math.ceil(delta * 100) / 100;
+        } else {
+            delta = null;
+        }
+        let deltaStyle;
+        if (delta != null) {
+            if (delta > 0) {
+                deltaStyle = greenTextStyle;
+            } else {
+                deltaStyle = redTextStyle;
+            }
+            return <text>
+                <b style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)}</b>
+                <b style={deltaStyle}> ({this.props.intl.formatNumber(delta)}%) </b>
+            </text>
+        }
+        return <text>
+            <b style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)} </b>
+        </text>
+    }
+
+    getMinMaxText(min, max) {
+        return <text>
+            <b style={redTextStyle}> min: {this.props.intl.formatNumber(min)}</b>
+            <b> - </b>
+            <b style={greenTextStyle}> max: {this.props.intl.formatNumber(max)} </b>
+        </text>
     }
 
     handleChange = event => {
@@ -232,6 +282,12 @@ class IndicatorChart extends Component {
                                     value={'week'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.week'})}</MenuItem>
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item {...selectGridSize}>
+                        <Button disabled className={classes.statisticText}> {this.getProgressText(chartData)}</Button>
+                    </Grid>
+                    <Grid item {...selectGridSize}>
+                        <Button disabled className={classes.statisticText}>{this.getMinMaxText(minY, maxY)}</Button>
                     </Grid>
                 </Grid>
             </div>

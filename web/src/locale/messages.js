@@ -96,6 +96,7 @@ export default {
                     error: {
                         short: 'Password is too short (Minimum {minLength} characters needed)',
                         long: 'Password is too long (Maximum {maxLength} characters allowed)',
+                        different: 'Passwords are not matching',
                     }
 
                 },
@@ -105,6 +106,7 @@ export default {
                     error: {
                         short: 'Password is too short (Minimum {minLength} characters needed)',
                         long: 'Password is too long (Maximum {maxLength} characters allowed)',
+                        different: 'Passwords are not matching',
                     }
                 },
                 submit: 'Signup',
@@ -332,6 +334,7 @@ export default {
                     error: {
                         short: 'Пароль слишком короткий (Минимальная длина {minLength})',
                         long: 'Пароль слишком длинный (Максимальная длина {maxLength})',
+                        different: 'Пароли не совпадают',
                     }
                 },
                 passwordConfirm: {
@@ -340,6 +343,7 @@ export default {
                     error: {
                         short: 'Пароль слишком короткий (Минимальная длина {minLength})',
                         long: 'Пароль слишком длинный (Максимальная длина {maxLength})',
+                        different: 'Пароли не совпадают',
                     }
                 },
                 submit: 'Зарегистрироваться',

@@ -29,10 +29,10 @@ import ru.valaz.grafeo.repository.RoleRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +45,7 @@ public class DemoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoService.class);
 
-    private static final String START_STRING_DATE = "2017-01-01";
+    private static final String START_STRING_DATE = "2015-01-01";
     private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     private static final String CLOSE = "4. close";
     private static final String BPI = "bpi";
@@ -86,9 +86,8 @@ public class DemoService {
     private RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange('a', 'z').build();
 
-
-    @Value("${demoSessionDurationMinutes:60}")
-    private long demoSessionDurationMinutes;
+    @Value("${demoSessionDurationSeconds:600}")
+    private long demoSessionDurationSeconds;
 
     @Value("${alpha_api_key}")
     private String apiKey;
@@ -125,14 +124,14 @@ public class DemoService {
     }
 
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 5000)
     public void removeExpiredDemoUsers() {
         List<User> demoUsers = userRepository.findAllByIsDemo(true);
         for (User demoUser : demoUsers) {
             Instant createdAt = demoUser.getCreatedAt();
             Instant now = Instant.now();
-            long duration = Duration.between(createdAt, now).abs().toMinutes();
-            if (duration >= demoSessionDurationMinutes) {
+            long duration = ChronoUnit.SECONDS.between(createdAt, now);
+            if (duration >= demoSessionDurationSeconds) {
                 List<Indicator> userDemoIndicators = indicatorRepository.findByCreatedBy(demoUser.getId());
                 indicatorRepository.deleteAll(userDemoIndicators);
                 userRepository.delete(demoUser);

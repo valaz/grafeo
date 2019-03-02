@@ -39,7 +39,7 @@ public class DemoServiceTest {
     private DemoService demoService;
 
     @Test
-    public void generateDemoUser() throws InterruptedException {
+    public void generateDemoUser() {
         User demoUser = demoService.generateDemoUser();
 
         Optional<User> user = userRepository.findByUsername(demoUser.getUsername());
@@ -56,8 +56,7 @@ public class DemoServiceTest {
     public void expiredDemoUser() throws InterruptedException {
         User demoUser = demoService.generateDemoUser();
 
-        TimeUnit.SECONDS.sleep(65);
-        demoService.removeExpiredDemoUsers();
+        TimeUnit.SECONDS.sleep(6);
         assertTrue(!userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
         assertTrue(userRepository.findAllByIsDemo(true).isEmpty());
         assertTrue(indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());

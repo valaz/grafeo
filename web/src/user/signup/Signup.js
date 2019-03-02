@@ -680,13 +680,13 @@ class Signup extends Component {
                 password: {
                     value: password,
                     validateStatus: 'error',
-                    errorMsg: "Passwords are not matching",
+                    errorMsg: this.props.intl.formatMessage({id: 'signup.form.password.error.different'}),
                     hasError: true
                 },
                 passwordConfirm: {
                     value: passwordConfirm,
                     validateStatus: 'error',
-                    errorMsg: "Passwords are not matching",
+                    errorMsg: this.props.intl.formatMessage({id: 'signup.form.passwordConfirm.error.different'}),
                     hasError: true
                 }
             });
