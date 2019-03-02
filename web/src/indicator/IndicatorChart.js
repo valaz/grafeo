@@ -168,20 +168,20 @@ class IndicatorChart extends Component {
                 deltaStyle = redTextStyle;
             }
             return <text>
-                <a style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)}</a>
-                <a style={deltaStyle}> ({this.props.intl.formatNumber(delta)}%) </a>
+                <b style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)}</b>
+                <b style={deltaStyle}> ({this.props.intl.formatNumber(delta)}%) </b>
             </text>
         }
         return <text>
-            <a style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)} </a>
+            <b style={progressStyle}>{this.props.intl.formatNumber(firstValue)} → {this.props.intl.formatNumber(lastValue)} </b>
         </text>
     }
 
     getMinMaxText(min, max) {
         return <text>
-            <a style={redTextStyle}> min: {this.props.intl.formatNumber(min)}</a>
-            <a> - </a>
-            <a style={greenTextStyle}> max: {this.props.intl.formatNumber(max)} </a>
+            <b style={redTextStyle}> min: {this.props.intl.formatNumber(min)}</b>
+            <b> - </b>
+            <b style={greenTextStyle}> max: {this.props.intl.formatNumber(max)} </b>
         </text>
     }
 
