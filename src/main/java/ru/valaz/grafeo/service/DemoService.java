@@ -45,7 +45,7 @@ public class DemoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoService.class);
 
-    private static final String START_STRING_DATE = "2017-01-01";
+    private static final String START_STRING_DATE = "2015-01-01";
     private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     private static final String CLOSE = "4. close";
     private static final String BPI = "bpi";
