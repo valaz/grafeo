@@ -10,7 +10,13 @@ const dateFormat = 'YYYY-MM-DD';
 const chartDateFormat = 'LL';
 
 const selectGridSize = {
-    xs: 4,
+    xs: 12,
+    sm: 4,
+    md: 4,
+    lg: 3,
+};
+const statisticGridSize = {
+    xs: 6,
     sm: 4,
     md: 4,
     lg: 3,
@@ -283,11 +289,13 @@ class IndicatorChart extends Component {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item {...selectGridSize}>
-                        <Button disabled className={classes.statisticText}> {this.getProgressText(chartData)}</Button>
+                    <Grid item {...statisticGridSize}>
+                        <Button disabled fullWidth
+                                className={classes.statisticText}> {this.getProgressText(chartData)}</Button>
                     </Grid>
-                    <Grid item {...selectGridSize}>
-                        <Button disabled className={classes.statisticText}>{this.getMinMaxText(minY, maxY)}</Button>
+                    <Grid item {...statisticGridSize}>
+                        <Button disabled fullWidth
+                                className={classes.statisticText}>{this.getMinMaxText(minY, maxY)}</Button>
                     </Grid>
                 </Grid>
             </div>
