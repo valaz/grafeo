@@ -153,7 +153,8 @@ class Profile extends Component {
                                 </Grid>
                             </div>
                             <div>
-                                <AppBar position="static" color='inherit' style={{backgroundColor: '#F1F1F1'}}>
+                                <AppBar elevation={0} position="static" color='inherit'
+                                        style={{backgroundColor: '#F1F1F1'}}>
                                     <Tabs value={tab} onChange={this.handleTabChange} centered>
                                         <Tab label={this.props.intl.formatMessage({id: 'profile.indicators'})}/>
                                         <Tab label={this.props.intl.formatMessage({id: 'profile.records'})}/>

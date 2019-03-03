@@ -8,10 +8,10 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import {NavLink, withRouter} from "react-router-dom";
 import {AccountCircle, Add, Eject, ExpandMore, Home, PermIdentity} from "@material-ui/icons";
-import {Menu, MenuItem} from "material-ui";
+import {ListItemIcon, Menu, MenuItem} from "material-ui";
 import {FormattedMessage} from "react-intl";
 
-const styles = {
+const styles = theme => ({
     root: {
         flexGrow: 1,
     },
@@ -22,7 +22,13 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
-};
+    leftIcon: {
+        marginRight: theme.spacing.unit/2,
+    },
+    rightIcon: {
+        marginLeft: theme.spacing.unit/2,
+    },
+});
 
 class NavigationTopBar extends React.Component {
     constructor(props) {
@@ -74,7 +80,7 @@ class NavigationTopBar extends React.Component {
         let profileMenu = this.getProfileMenu();
         return (
             <div className={classes.root}>
-                <AppBar position="static">
+                <AppBar position="static" elevation={0}>
                     <Toolbar>
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             <NavLink to="/" style={{color: '#FFFFFF', textDecoration: 'none'}}>
@@ -91,6 +97,7 @@ class NavigationTopBar extends React.Component {
     getAuthMenu() {
         const {anchorEl} = this.state;
         const open = Boolean(anchorEl);
+        let {classes} = this.props;
         return <div>
             <IconButton
                 aria-owns={open ? 'menu-appbar' : null}
@@ -114,9 +121,9 @@ class NavigationTopBar extends React.Component {
                 onClick={this.handleMenu}
                 color="inherit"
             >
-                <PermIdentity/>
+                <PermIdentity className={classes.leftIcon} />
                 {this.props.currentUser.username}
-                <ExpandMore/>
+                <ExpandMore className={classes.rightIcon} />
             </Button>
             <Menu
                 id="menu-appbar"
@@ -133,10 +140,17 @@ class NavigationTopBar extends React.Component {
                 onClose={this.handleClose}
             >
                 <MenuItem onClick={this.handleProfile}>
-                    <AccountCircle/><FormattedMessage id="navbar.profile"/>
+                    <ListItemIcon>
+                        <AccountCircle/>
+                    </ListItemIcon>
+                    <FormattedMessage id="navbar.profile"/>
                 </MenuItem>
                 <MenuItem onClick={this.handleLogout}>
-                    <Eject/><FormattedMessage id="navbar.logout"/></MenuItem>
+                    <ListItemIcon>
+                        <Eject/>
+                    </ListItemIcon>
+                    <FormattedMessage id="navbar.logout"/>
+                </MenuItem>
             </Menu>
         </div>
 
