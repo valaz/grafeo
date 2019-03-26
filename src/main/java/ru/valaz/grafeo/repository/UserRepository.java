@@ -19,9 +19,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByFacebookUserId(String facebookUserId);
+
     Boolean existsByUsernameIgnoreCase(String username);
 
     Boolean existsByEmailIgnoreCase(String email);
+
+    Boolean existsByFacebookUserId(String facebookUserId);
 
     List<User> findAllByIsDemo(Boolean isDemo);
 }

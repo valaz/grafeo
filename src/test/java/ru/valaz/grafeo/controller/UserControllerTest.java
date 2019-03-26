@@ -84,7 +84,8 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Current User"))
                 .andExpect(jsonPath("username").value("currentuser"))
-                .andExpect(jsonPath("email").value("currentuser@test.com"));
+                .andExpect(jsonPath("email").value("currentuser@test.com"))
+                .andExpect(jsonPath("isSocialLogin").value("false"));
 
     }
 

@@ -12,5 +12,5 @@ public class UserSummary {
     private String email;
     private String name;
     private Boolean isDemo;
-
+    private Boolean isSocialLogin;
 }

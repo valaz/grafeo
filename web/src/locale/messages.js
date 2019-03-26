@@ -53,7 +53,8 @@ export default {
                 register: {
                     or: 'Or',
                     now: 'register now'
-                }
+                },
+                facebook: 'Login with Facebook',
             },
             notification: {
                 incorrect: 'Your Username or Password is incorrect. Please try again!',
@@ -291,7 +292,8 @@ export default {
                 register: {
                     or: 'Или',
                     now: 'зарегистрируйтесь сейчас!'
-                }
+                },
+                facebook: 'Войти через Facebook',
             },
             notification: {
                 incorrect: 'Ваши логин и/или пароль неверны. Пожалуйста, попробуйте снова!',

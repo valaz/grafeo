@@ -122,7 +122,7 @@ class NavigationTopBar extends React.Component {
                 color="inherit"
             >
                 <PermIdentity className={classes.leftIcon} />
-                {this.props.currentUser.username}
+                {this.props.currentUser.name}
                 <ExpandMore className={classes.rightIcon} />
             </Button>
             <Menu
@@ -161,10 +161,6 @@ class NavigationTopBar extends React.Component {
             <NavLink to="/login" style={{color: '#FFFFFF', textDecoration: 'none'}}>
                 <Button color="inherit">
                     <FormattedMessage id="navbar.login"/></Button>
-            </NavLink>
-            <NavLink to="/signup" style={{color: '#FFFFFF', textDecoration: 'none'}}>
-                <Button color="inherit">
-                    <FormattedMessage id="navbar.signup"/></Button>
             </NavLink>
         </div>
     }

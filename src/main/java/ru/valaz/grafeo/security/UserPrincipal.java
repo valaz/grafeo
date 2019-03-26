@@ -3,6 +3,7 @@ package ru.valaz.grafeo.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,15 +30,18 @@ public class UserPrincipal implements UserDetails {
 
     private Boolean isDemo;
 
+    private Boolean isSocialLogin;
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String name, String username, String email, String password, Boolean isDemo, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String name, String username, String email, String password, Boolean isDemo, boolean isSocialLogin, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
         this.isDemo = isDemo;
+        this.isSocialLogin = isSocialLogin;
         this.authorities = authorities;
     }
 
@@ -53,6 +57,7 @@ public class UserPrincipal implements UserDetails {
                 user.getEmail(),
                 user.getPassword(),
                 user.getIsDemo(),
+                StringUtils.isNotBlank(user.getFacebookUserId()),
                 authorities
         );
     }

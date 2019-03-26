@@ -21,12 +21,15 @@ const gridSize = {
     xs: 12,
     sm: 8,
     md: 6,
-    lg: 4
+    lg: 3,
 };
 
 const styles = theme => ({
     header: {
         textAlign: 'center'
+    },
+    invisible:{
+        display: 'none'
     }
 });
 
@@ -252,6 +255,12 @@ class Signup extends Component {
         let passwordLabel = this.props.intl.formatMessage({id: 'signup.form.password.label'});
         let passwordConfirmLabel = this.props.intl.formatMessage({id: 'signup.form.passwordConfirm.label'});
         const {classes} = this.props;
+
+        let isSocial = false;
+        if(this.props.currentUser && this.props.currentUser.isSocialLogin){
+            isSocial = true;
+        }
+
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
                 <h1 className={classes.header}>
@@ -280,7 +289,7 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" className={isSocial ? classes.invisible : null}>
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                disabled={this.state.isLoading}
@@ -296,7 +305,7 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" className={isSocial ? classes.invisible : null}>
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                disabled={this.state.isLoading}
@@ -312,7 +321,7 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" className={isSocial ? classes.invisible : null}>
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                disabled={this.state.isLoading}
@@ -329,7 +338,7 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" className={isSocial ? classes.invisible : null}>
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                disabled={this.state.isLoading}
