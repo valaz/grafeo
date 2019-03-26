@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "environment=local",
 })
-public class ProgressioApplicationTests {
+public class GrafeoApplicationTests {
 
     @Test
     public void contextLoads() {

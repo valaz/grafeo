@@ -46,6 +46,8 @@ public class User extends DateAudit {
     @NonNull
     private String email;
 
+    private String facebookUserId;
+
     @NotBlank
     @Size(max = 100)
     @NonNull

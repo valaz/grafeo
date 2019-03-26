@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
-import {login} from '../../util/APIUtils';
+import {facebookLogin, login} from '../../util/APIUtils';
 import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
 import {Link} from "react-router-dom";
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import FBLoginButton from "./FBLoginButton";
 
 const gridSize = {
     xs: 12,
     sm: 8,
     md: 6,
-    lg: 4
+    lg: 3
 };
 
 const styles = theme => ({
@@ -51,11 +53,54 @@ class LoginForm extends Component {
             isLoading: false
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.responseFacebook = this.responseFacebook.bind(this);
+        this.componentClicked = this.componentClicked.bind(this);
         this.clearNotification = this.clearNotification.bind(this);
     }
 
     componentDidMount() {
         document.title = this.props.intl.formatMessage({id: 'login.header'});
+    }
+
+    responseFacebook(response) {
+        const fbLoginRequest = {
+            name: response.name,
+            email: response.email,
+            userId: response.userID
+        };
+        facebookLogin(fbLoginRequest)
+            .then(response => {
+                this.setState({
+                    isLoading: false
+                });
+                localStorage.clear();
+                localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+                this.props.onLogin();
+            }).catch(error => {
+            if (error.status === 401) {
+                this.setState({
+                    isLoading: false,
+                    notification: {
+                        open: true,
+                        message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
+                    }
+                });
+            } else {
+                this.setState({
+                    isLoading: false,
+                    notification: {
+                        open: true,
+                        message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
+                    }
+                });
+            }
+        });
+    }
+
+    componentClicked(response) {
+        this.setState({
+            isLoading: true
+        });
     }
 
     clearNotification() {
@@ -137,6 +182,19 @@ class LoginForm extends Component {
                               justify="center"
                               direction='column'
                               spacing={16}>
+                            <Grid container item spacing={0} justify="center" margin='dense'>
+                                <Grid item {...gridSize}>
+                                    <FacebookLogin
+                                        appId="258829245004957"
+                                        autoLoad={false}
+                                        fields="name,email"
+                                        callback={this.responseFacebook}
+                                        render={renderProps => (
+                                            <FBLoginButton onClick={renderProps.onClick}/>
+                                        )}
+                                    />
+                                </Grid>
+                            </Grid>
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus

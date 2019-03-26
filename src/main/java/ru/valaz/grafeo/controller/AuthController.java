@@ -17,16 +17,14 @@ import ru.valaz.grafeo.exeption.AppException;
 import ru.valaz.grafeo.model.Role;
 import ru.valaz.grafeo.model.RoleName;
 import ru.valaz.grafeo.model.User;
-import ru.valaz.grafeo.payload.ApiResponse;
-import ru.valaz.grafeo.payload.JwtAuthenticationResponse;
-import ru.valaz.grafeo.payload.LoginRequest;
-import ru.valaz.grafeo.payload.SignUpRequest;
+import ru.valaz.grafeo.payload.*;
 import ru.valaz.grafeo.repository.RoleRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.security.JwtTokenProvider;
 import ru.valaz.grafeo.service.DemoService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.net.URI;
 import java.util.Collections;
 
@@ -66,6 +64,39 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    }
+
+    @PostMapping("/fb/login")
+    public ResponseEntity authenticateFacebookUser(@Valid @RequestBody FBLoginRequest fbLoginRequest) {
+
+        @NotBlank String email = fbLoginRequest.getEmail();
+        if (!userRepository.existsByEmailIgnoreCase(email)) {
+            // Creating user's account
+            User user = new User(fbLoginRequest.getName().trim(), fbLoginRequest.getEmail().trim(),
+                    fbLoginRequest.getEmail().trim(), fbLoginRequest.getUserId());
+            user.setFacebookUserId(fbLoginRequest.getUserId());
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new AppException("User Role not set."));
+
+            user.setRoles(Collections.singleton(userRole));
+
+            userRepository.save(user);
+        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        fbLoginRequest.getEmail(),
+                        fbLoginRequest.getUserId()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+
     }
 
     @PostMapping("demo/signin")

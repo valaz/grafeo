@@ -1,5 +1,6 @@
 package ru.valaz.grafeo.util;
 
+import org.apache.commons.lang3.StringUtils;
 import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.User;
 import ru.valaz.grafeo.payload.IndicatorResponse;
@@ -31,7 +32,7 @@ public class ModelMapper {
 
         indicatorResponse.setRecords(recordResponses);
 
-        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getName(), creator.getIsDemo());
+        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getName(), creator.getIsDemo(), StringUtils.isNotBlank(creator.getFacebookUserId()));
         indicatorResponse.setCreatedBy(creatorSummary);
 
         return indicatorResponse;

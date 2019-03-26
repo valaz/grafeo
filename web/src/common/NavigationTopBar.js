@@ -162,10 +162,6 @@ class NavigationTopBar extends React.Component {
                 <Button color="inherit">
                     <FormattedMessage id="navbar.login"/></Button>
             </NavLink>
-            <NavLink to="/signup" style={{color: '#FFFFFF', textDecoration: 'none'}}>
-                <Button color="inherit">
-                    <FormattedMessage id="navbar.signup"/></Button>
-            </NavLink>
         </div>
     }
 
