@@ -21,7 +21,7 @@ const gridSize = {
     xs: 12,
     sm: 8,
     md: 6,
-    lg: 4
+    lg: 3,
 };
 
 class Home extends Component {

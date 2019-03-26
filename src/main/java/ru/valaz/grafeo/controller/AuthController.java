@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,12 +70,16 @@ public class AuthController {
     @PostMapping("/fb/login")
     public ResponseEntity authenticateFacebookUser(@Valid @RequestBody FBLoginRequest fbLoginRequest) {
 
-        @NotBlank String email = fbLoginRequest.getEmail();
-        if (!userRepository.existsByEmailIgnoreCase(email)) {
+        @NotBlank String fbUserId = fbLoginRequest.getUserId();
+        @NotBlank String fbEmail = fbLoginRequest.getEmail();
+        @NotBlank String fbName = fbLoginRequest.getName();
+        if (!userRepository.existsByFacebookUserId(fbUserId)) {
+            if (userRepository.existsByUsernameIgnoreCase(fbEmail) || userRepository.existsByEmailIgnoreCase(fbEmail)) {
+                return ResponseEntity.badRequest().body("Email already used");
+            }
             // Creating user's account
-            User user = new User(fbLoginRequest.getName().trim(), fbLoginRequest.getEmail().trim(),
-                    fbLoginRequest.getEmail().trim(), fbLoginRequest.getUserId());
-            user.setFacebookUserId(fbLoginRequest.getUserId());
+            User user = new User(fbName.trim(), fbEmail.trim(), fbEmail.trim(), fbUserId);
+            user.setFacebookUserId(fbUserId);
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -84,13 +89,22 @@ public class AuthController {
             user.setRoles(Collections.singleton(userRole));
 
             userRepository.save(user);
+        } else {
+            Optional<User> fbUser = userRepository.findByFacebookUserId(fbUserId);
+            if (!fbUser.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            User user = fbUser.get();
+            if (!fbEmail.equals(user.getEmail())) {
+                user.setEmail(fbEmail);
+            }
+            if (!fbEmail.equals(user.getUsername())) {
+                user.setUsername(fbEmail);
+            }
+            userRepository.save(user);
         }
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        fbLoginRequest.getEmail(),
-                        fbLoginRequest.getUserId()
-                )
-        );
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(fbEmail, fbUserId));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

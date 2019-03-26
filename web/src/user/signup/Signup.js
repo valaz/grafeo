@@ -289,7 +289,7 @@ class Signup extends Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container item spacing={0} justify="center">
+                            <Grid container item spacing={0} justify="center" className={isSocial ? classes.invisible : null}>
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth
                                                disabled={this.state.isLoading}

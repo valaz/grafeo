@@ -69,7 +69,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         FBLoginRequest fbSignUpRequest = new FBLoginRequest();
         fbSignUpRequest.setName("Facebook Signup");
         fbSignUpRequest.setEmail("fb_signup@grafeo.pro");
-        fbSignUpRequest.setUserId("123456");
+        fbSignUpRequest.setUserId("12345");
 
         mockMvc.perform(post(API_AUTH_PREFIX + "/fb/login")
                 .content(json(fbSignUpRequest))
@@ -80,7 +80,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         assertTrue(signupUser.isPresent());
         assertEquals("Facebook Signup", signupUser.get().getName());
         assertEquals("fb_signup@grafeo.pro", signupUser.get().getEmail());
-        assertEquals("123456", signupUser.get().getFacebookUserId());
+        assertEquals("12345", signupUser.get().getFacebookUserId());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
         FBLoginRequest fbSignUpRequest = new FBLoginRequest();
         fbSignUpRequest.setName("Facebook Login");
-        fbSignUpRequest.setEmail("fb_signin@grafeo.pro");
+        fbSignUpRequest.setEmail("fb_signin_new@grafeo.pro");
         fbSignUpRequest.setUserId("123456");
 
         long before = userRepository.count();
@@ -107,10 +107,10 @@ public class AuthControllerTest extends AbstractControllerTest {
         long after = userRepository.count();
         assertEquals(before, after);
 
-        Optional<User> signupUser = userRepository.findByUsername("fb_signin@grafeo.pro");
+        Optional<User> signupUser = userRepository.findByFacebookUserId("123456");
         assertTrue(signupUser.isPresent());
         assertEquals("Facebook Login", signupUser.get().getName());
-        assertEquals("fb_signin@grafeo.pro", signupUser.get().getEmail());
+        assertEquals("fb_signin_new@grafeo.pro", signupUser.get().getEmail());
         assertEquals("123456", signupUser.get().getFacebookUserId());
     }
 

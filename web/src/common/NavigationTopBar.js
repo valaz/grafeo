@@ -122,7 +122,7 @@ class NavigationTopBar extends React.Component {
                 color="inherit"
             >
                 <PermIdentity className={classes.leftIcon} />
-                {this.props.currentUser.username}
+                {this.props.currentUser.name}
                 <ExpandMore className={classes.rightIcon} />
             </Button>
             <Menu
