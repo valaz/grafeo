@@ -17,18 +17,17 @@ import ru.valaz.grafeo.exeption.AppException;
 import ru.valaz.grafeo.model.Role;
 import ru.valaz.grafeo.model.RoleName;
 import ru.valaz.grafeo.model.User;
-import ru.valaz.grafeo.payload.ApiResponse;
-import ru.valaz.grafeo.payload.JwtAuthenticationResponse;
-import ru.valaz.grafeo.payload.LoginRequest;
-import ru.valaz.grafeo.payload.SignUpRequest;
+import ru.valaz.grafeo.payload.*;
 import ru.valaz.grafeo.repository.RoleRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.security.JwtTokenProvider;
 import ru.valaz.grafeo.service.DemoService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -66,6 +65,52 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    }
+
+    @PostMapping("/fb/login")
+    public ResponseEntity authenticateFacebookUser(@Valid @RequestBody FBLoginRequest fbLoginRequest) {
+
+        @NotBlank String fbUserId = fbLoginRequest.getUserId();
+        @NotBlank String fbEmail = fbLoginRequest.getEmail();
+        @NotBlank String fbName = fbLoginRequest.getName();
+        if (!userRepository.existsByFacebookUserId(fbUserId)) {
+            if (userRepository.existsByUsernameIgnoreCase(fbEmail) || userRepository.existsByEmailIgnoreCase(fbEmail)) {
+                return ResponseEntity.badRequest().body("Email already used");
+            }
+            // Creating user's account
+            User user = new User(fbName.trim(), fbEmail.trim(), fbEmail.trim(), fbUserId);
+            user.setFacebookUserId(fbUserId);
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new AppException("User Role not set."));
+
+            user.setRoles(Collections.singleton(userRole));
+
+            userRepository.save(user);
+        } else {
+            Optional<User> fbUser = userRepository.findByFacebookUserId(fbUserId);
+            if (!fbUser.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            User user = fbUser.get();
+            if (!fbEmail.equals(user.getEmail())) {
+                user.setEmail(fbEmail);
+            }
+            if (!fbEmail.equals(user.getUsername())) {
+                user.setUsername(fbEmail);
+            }
+            userRepository.save(user);
+        }
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(fbEmail, fbUserId));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+
     }
 
     @PostMapping("demo/signin")

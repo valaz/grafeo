@@ -105,6 +105,15 @@ export function signup(signupRequest) {
     });
 }
 
+export function facebookLogin(loginRequest) {
+    return request({
+        public: true,
+        url: "/api/auth/fb/login",
+        method: 'POST',
+        body: JSON.stringify(loginRequest)
+    });
+}
+
 export function editProfile(signupRequest) {
     return request({
         url: "/api/users/me",
