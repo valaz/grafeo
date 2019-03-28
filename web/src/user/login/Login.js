@@ -4,7 +4,6 @@ import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
 import {Button, Grid, TextField, withStyles} from "material-ui";
 import Notification from "../../common/Notification";
-import {Link} from "react-router-dom";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import FBLoginButton from "./FBLoginButton";
 
@@ -186,6 +185,7 @@ class LoginForm extends Component {
                                 <Grid item {...gridSize}>
                                     <FacebookLogin
                                         appId="258829245004957"
+                                        isMobile={false}
                                         autoLoad={false}
                                         fields="name,email"
                                         callback={this.responseFacebook}
@@ -231,9 +231,6 @@ class LoginForm extends Component {
                                             disabled={this.isFormInvalid() || this.state.isLoading}>
                                         <FormattedMessage id="login.form.submit"/>
                                     </Button>
-                                    <FormattedMessage id="login.form.register.or"/> <Link to="/signup">
-                                    <FormattedMessage id="login.form.register.now"/>
-                                </Link>
                                 </Grid>
                             </Grid>
                         </Grid>
