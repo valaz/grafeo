@@ -51,7 +51,6 @@ public class DemoService {
     private static final String BPI = "bpi";
     private static final String BITCOIN_HTTP_URL = "https://api.coindesk.com/v1/bpi/historical/close.json?start=%s&end=%s";
     private static final String DEMO_USER = "Demo User";
-    private static final String DEMO_USERNAME_PREFIX = "demo_%s";
     private static final String DEMO_EMAIL_POSTFIX = "%s@grafeo.pro";
     private static final String STOCKS_HTTP_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&outputsize=full&apikey=%s";
 
@@ -104,11 +103,10 @@ public class DemoService {
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         String generatedUsername = generator.generate(10);
-        String username = String.format(DEMO_USERNAME_PREFIX, generatedUsername);
-        String email = String.format(DEMO_EMAIL_POSTFIX, username);
+        String email = String.format(DEMO_EMAIL_POSTFIX, generatedUsername);
         String generatedPassword = generator.generate(20);
 
-        User savedUser = createDemoUser(DEMO_USER, username, email, generatedPassword);
+        User savedUser = createDemoUser(DEMO_USER, email, email, generatedPassword);
 
         List<Indicator> demoIndicators = getDemoIndicators(savedUser);
         for (Indicator demoIndicator : demoIndicators) {
