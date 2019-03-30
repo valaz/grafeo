@@ -9,6 +9,7 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import ru.valaz.grafeo.repository.IndicatorRepository;
 import ru.valaz.grafeo.repository.RoleRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.service.UserService;
@@ -35,6 +36,9 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected IndicatorRepository indicatorRepository;
 
     @Autowired
     protected RoleRepository roleRepository;

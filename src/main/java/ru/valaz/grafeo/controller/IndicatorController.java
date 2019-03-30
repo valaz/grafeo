@@ -65,14 +65,10 @@ public class IndicatorController {
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public IndicatorResponse createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
-        Indicator indicator = new Indicator();
-        indicator.setName(indicatorRequest.getName());
-        indicator.setUnit(indicatorRequest.getUnit());
-
-        Indicator result = indicatorRepository.save(indicator);
+        Indicator result = indicatorService.createIndicator(indicatorRequest);
 
         // Retrieve indicator creator details
-        User creator = userRepository.findById(indicator.getCreatedBy())
+        User creator = userRepository.findById(result.getCreatedBy())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
         return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
     }

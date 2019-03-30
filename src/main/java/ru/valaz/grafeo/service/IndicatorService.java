@@ -81,6 +81,14 @@ public class IndicatorService {
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
     }
 
+    public Indicator createIndicator(IndicatorRequest indicatorRequest) {
+        Indicator indicator = new Indicator();
+        indicator.setName(indicatorRequest.getName());
+        indicator.setUnit(indicatorRequest.getUnit());
+
+        return indicatorRepository.save(indicator);
+    }
+
     private void validatePageNumberAndSize(int page, int size) {
         if (page < 0) {
             throw new BadRequestException("Page number cannot be less than zero.");
