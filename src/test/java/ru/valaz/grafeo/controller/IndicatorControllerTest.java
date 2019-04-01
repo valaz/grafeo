@@ -1,8 +1,6 @@
 package ru.valaz.grafeo.controller;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +20,18 @@ import ru.valaz.grafeo.Application;
 import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.Record;
 import ru.valaz.grafeo.model.User;
-import ru.valaz.grafeo.payload.*;
-import ru.valaz.grafeo.service.FileService;
-import ru.valaz.grafeo.service.json.IndicatorResponseDeserializer;
+import ru.valaz.grafeo.payload.IndicatorRequest;
+import ru.valaz.grafeo.payload.IndicatorResponse;
+import ru.valaz.grafeo.payload.LoginRequest;
+import ru.valaz.grafeo.payload.RecordRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -48,14 +49,8 @@ public class IndicatorControllerTest extends AbstractControllerTest {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(IndicatorControllerTest.class);
 
-
-    private static final String API_INDICATOR_PREFIX = "/api/indicators";
     private static final String TEST_EMAIL = "indicator_test@grafeo.pro";
     private static final String TEST_PASSWORD = "123456";
-
-    private GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(IndicatorResponse.class, new IndicatorResponseDeserializer())
-            .registerTypeAdapter(LocalDate.class, new FileService.LocalDateAdapter());
-    private Gson gson = gsonBuilder.create();
 
     @Before
     public void signin() throws Exception {
@@ -76,57 +71,7 @@ public class IndicatorControllerTest extends AbstractControllerTest {
                 .contentType(contentType))
                 .andExpect(status().isOk());
     }
-
-
-    private IndicatorResponse submitNewIndicator(String testName, String testUnit, User user) throws Exception {
-        IndicatorRequest indicatorRequest = new IndicatorRequest();
-        indicatorRequest.setId(user.getId());
-        indicatorRequest.setName(testName);
-        indicatorRequest.setUnit(testUnit);
-
-        MvcResult mvcResult = mockMvc.perform(post(API_INDICATOR_PREFIX)
-                .content(json(indicatorRequest))
-                .contentType(contentType))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value("Test Name"))
-                .andExpect(jsonPath("unit").value("TT"))
-                .andReturn();
-
-        String jsonResponse = mvcResult.getResponse().getContentAsString();
-        return gson.fromJson(jsonResponse, IndicatorResponse.class);
-    }
-
-    @Test
-    public void getIndicators() throws Exception {
-        String anotherUserEmail = "MAIN_" + TEST_EMAIL;
-        User user = userService.createUser(anotherUserEmail, anotherUserEmail, anotherUserEmail, TEST_PASSWORD);
-
-        loginUser(anotherUserEmail);
-        IndicatorResponse createIndicatorResponse = submitNewIndicator("Test Name", "TT", user);
-        Optional<Indicator> initialIndicator = indicatorRepository.findById(createIndicatorResponse.getId());
-        assertTrue(initialIndicator.isPresent());
-        long indicatorId = initialIndicator.get().getId();
-
-        MvcResult mvcResult = mockMvc.perform(get(API_INDICATOR_PREFIX)
-                .contentType(contentType))
-                .andExpect(status().isOk())
-                .andReturn();
-
-
-        String jsonResponse = mvcResult.getResponse().getContentAsString();
-        PagedResponse pagedResponse = gson.fromJson(jsonResponse, PagedResponse.class);
-
-        assertNotNull(pagedResponse);
-        List content = pagedResponse.getContent();
-
-        assertEquals(1, content.size());
-        Map<String, Object> indicatorResponse = (Map<String, Object>) content.get(0);
-
-        assertEquals(indicatorId, ((Double) indicatorResponse.get("id")).longValue(), 0);
-        assertEquals(initialIndicator.get().getName(), indicatorResponse.get("name"));
-        assertEquals(initialIndicator.get().getUnit(), indicatorResponse.get("unit"));
-    }
-
+    
     @Test
     public void createIndicator() throws Exception {
         Optional<User> user = userRepository.findByEmail(TEST_EMAIL);

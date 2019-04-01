@@ -17,14 +17,16 @@ import ru.valaz.grafeo.exeption.ResourceNotFoundException;
 import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.Record;
 import ru.valaz.grafeo.model.User;
-import ru.valaz.grafeo.payload.*;
+import ru.valaz.grafeo.payload.ApiResponse;
+import ru.valaz.grafeo.payload.IndicatorRequest;
+import ru.valaz.grafeo.payload.IndicatorResponse;
+import ru.valaz.grafeo.payload.RecordRequest;
 import ru.valaz.grafeo.repository.IndicatorRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.security.CurrentUser;
 import ru.valaz.grafeo.security.UserPrincipal;
 import ru.valaz.grafeo.service.FileService;
 import ru.valaz.grafeo.service.IndicatorService;
-import ru.valaz.grafeo.util.AppConstants;
 import ru.valaz.grafeo.util.ModelMapper;
 
 import javax.validation.Valid;
@@ -53,13 +55,6 @@ public class IndicatorController {
         this.userRepository = userRepository;
         this.indicatorService = indicatorService;
         this.fileService = fileService;
-    }
-
-    @GetMapping
-    public PagedResponse<IndicatorResponse> getIndicators(@CurrentUser UserPrincipal currentUser,
-                                                          @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                          @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return indicatorService.getAllIndicators(currentUser, page, size);
     }
 
     @PostMapping
