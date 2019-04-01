@@ -1,13 +1,19 @@
 package ru.valaz.grafeo.controller;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -17,13 +23,14 @@ import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.Record;
 import ru.valaz.grafeo.model.User;
 import ru.valaz.grafeo.payload.*;
+import ru.valaz.grafeo.service.FileService;
 import ru.valaz.grafeo.service.json.IndicatorResponseDeserializer;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -46,7 +53,8 @@ public class IndicatorControllerTest extends AbstractControllerTest {
     private static final String TEST_EMAIL = "indicator_test@grafeo.pro";
     private static final String TEST_PASSWORD = "123456";
 
-    private GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(IndicatorResponse.class, new IndicatorResponseDeserializer());
+    private GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(IndicatorResponse.class, new IndicatorResponseDeserializer())
+            .registerTypeAdapter(LocalDate.class, new FileService.LocalDateAdapter());
     private Gson gson = gsonBuilder.create();
 
     @Before
@@ -293,8 +301,6 @@ public class IndicatorControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        LOGGER.info(mvcResult.getResponse().getContentAsString());
-
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         IndicatorResponse indicatorResponse = gson.fromJson(jsonResponse, IndicatorResponse.class);
 
@@ -470,10 +476,78 @@ public class IndicatorControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void downloadIndicatorById() {
+    public void downloadIndicatorById() throws Exception {
+        Optional<User> user = userRepository.findByEmail(TEST_EMAIL);
+        assertTrue(user.isPresent());
+
+        IndicatorResponse createIndicatorResponse = submitNewIndicator("Test Name", "TT", user.get());
+        long indicatorId = createIndicatorResponse.getId();
+
+        for (int i = 1; i < 11; i++) {
+            RecordRequest recordRequest = new RecordRequest();
+            recordRequest.setIndicatorId(indicatorId);
+            recordRequest.setDate(LocalDate.now().minusDays(i));
+            recordRequest.setValue(100.1 + i);
+            mockMvc.perform(post(API_INDICATOR_PREFIX + "/" + indicatorId + "/records")
+                    .content(json(recordRequest))
+                    .contentType(contentType))
+                    .andExpect(status().isOk());
+        }
+
+        Optional<Indicator> initialIndicator = indicatorRepository.findById(createIndicatorResponse.getId());
+        assertTrue(initialIndicator.isPresent());
+        Indicator indicator = initialIndicator.get();
+
+        MvcResult mvcResult = mockMvc.perform(get(API_INDICATOR_PREFIX + "/" + indicatorId + "/download")
+                .contentType(MediaType.parseMediaType("application/octet-stream")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        byte[] content = mvcResult.getResponse().getContentAsByteArray();
+
+        String rawData = IOUtils.toString(new ByteArrayInputStream(content));
+        Indicator fileIndicator = gson.fromJson(rawData, Indicator.class);
+
+        assertEquals(indicator.getName(), fileIndicator.getName());
+        assertEquals(indicator.getUnit(), fileIndicator.getUnit());
+        assertEquals(indicator.getRecords().size(), fileIndicator.getRecords().size());
+        for (int i = 0; i < indicator.getRecords().size(); i++) {
+            assertEquals(indicator.getRecords().get(i).getValue(), fileIndicator.getRecords().get(i).getValue());
+            assertEquals(indicator.getRecords().get(i).getDate(), fileIndicator.getRecords().get(i).getDate());
+        }
     }
 
     @Test
-    public void uploadIndicatorById() {
+    public void uploadIndicatorById() throws Exception {
+        Optional<User> user = userRepository.findByEmail(TEST_EMAIL);
+        assertTrue(user.isPresent());
+        IndicatorResponse createIndicatorResponse = submitNewIndicator("Test Name", "TT", user.get());
+        long indicatorId = createIndicatorResponse.getId();
+
+        Resource resource = new ClassPathResource("Test.json");
+        InputStream resourceInputStream = resource.getInputStream();
+
+
+        MockMultipartFile jsonFile = new MockMultipartFile("file", "Test.json", "multipart/form-data", resourceInputStream);
+
+        mockMvc.perform(multipart(API_INDICATOR_PREFIX + "/" + indicatorId + "/upload")
+                .file(jsonFile))
+                .andExpect(status().isOk());
+
+        Optional<Indicator> initialIndicator = indicatorRepository.findById(indicatorId);
+        assertTrue(initialIndicator.isPresent());
+        Indicator indicator = initialIndicator.get();
+        assertEquals("Test", indicator.getName());
+        assertEquals("TU", indicator.getUnit());
+        assertEquals(2, indicator.getRecords().size());
+
+        ArrayList<Record> records = Lists.newArrayList(indicator.getRecords());
+        records.sort(Comparator.comparing(Record::getDate));
+
+        assertEquals(records.get(0).getDate(), LocalDate.of(2019, 3, 30));
+        assertEquals(45.0, records.get(0).getValue(), 0);
+
+        assertEquals(records.get(1).getDate(), LocalDate.of(2019, 4, 1));
+        assertEquals(123.0, records.get(1).getValue(), 0);
     }
 }

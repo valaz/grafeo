@@ -98,8 +98,7 @@ public class IndicatorController {
         Indicator result = indicatorRepository.save(indicator);
 
         // Retrieve indicator creator details
-        User creator = userRepository.findById(indicator.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
+        User creator = getIndicatorCreator(indicator.getCreatedBy());
         return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
     }
 

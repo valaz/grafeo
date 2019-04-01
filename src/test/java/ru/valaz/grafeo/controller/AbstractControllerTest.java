@@ -23,13 +23,13 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 public abstract class AbstractControllerTest {
 
-    protected MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+    MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
             Charset.forName("utf8"));
 
-    protected MockMvc mockMvc;
+    MockMvc mockMvc;
 
-    protected HttpMessageConverter mappingJackson2HttpMessageConverter;
+    private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
