@@ -10,6 +10,7 @@ const styles = {
         height: 40,
     },
 };
+const interval = 500;
 
 class LinearDeterminate extends React.Component {
     state = {
@@ -17,7 +18,7 @@ class LinearDeterminate extends React.Component {
     };
 
     componentDidMount() {
-        this.timer = setInterval(this.progress, 400);
+        this.timer = setInterval(this.progress, interval);
     }
 
     componentWillUnmount() {
@@ -29,7 +30,7 @@ class LinearDeterminate extends React.Component {
         if (completed === 99) {
             this.setState({completed: 99});
         } else {
-            const diff = 100*400/(this.props.timeout);
+            const diff = 100 * interval / (this.props.timeout);
             this.setState({completed: Math.min(completed + diff, 99)});
         }
     };
