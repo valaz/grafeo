@@ -62,38 +62,48 @@ class LoginForm extends Component {
     }
 
     responseFacebook(response) {
-        const fbLoginRequest = {
-            name: response.name,
-            email: response.email,
-            userId: response.userID
-        };
-        facebookLogin(fbLoginRequest)
-            .then(response => {
-                this.setState({
-                    isLoading: false
-                });
-                localStorage.clear();
-                localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                this.props.onLogin();
-            }).catch(error => {
-            if (error.status === 401) {
-                this.setState({
-                    isLoading: false,
-                    notification: {
-                        open: true,
-                        message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
-                    }
-                });
-            } else {
-                this.setState({
-                    isLoading: false,
-                    notification: {
-                        open: true,
-                        message: error.message || this.props.intl.formatMessage({id: 'notification.error'})
-                    }
-                });
-            }
-        });
+        if (!response.name || !response.email || !response.userID) {
+            this.setState({
+                isLoading: false,
+                notification: {
+                    open: true,
+                    message: this.props.intl.formatMessage({id: 'notification.error'})
+                }
+            });
+        } else {
+            const fbLoginRequest = {
+                name: response.name,
+                email: response.email,
+                userId: response.userID
+            };
+            facebookLogin(fbLoginRequest)
+                .then(response => {
+                    this.setState({
+                        isLoading: false
+                    });
+                    localStorage.clear();
+                    localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+                    this.props.onLogin();
+                }).catch(error => {
+                if (error.status === 401) {
+                    this.setState({
+                        isLoading: false,
+                        notification: {
+                            open: true,
+                            message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
+                        }
+                    });
+                } else {
+                    this.setState({
+                        isLoading: false,
+                        notification: {
+                            open: true,
+                            message: this.props.intl.formatMessage({id: 'notification.error'})
+                        }
+                    });
+                }
+            });
+        }
     }
 
     componentClicked(response) {
