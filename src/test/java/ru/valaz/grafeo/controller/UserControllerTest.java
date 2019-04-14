@@ -6,15 +6,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MvcResult;
 import ru.valaz.grafeo.Application;
+import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.User;
+import ru.valaz.grafeo.payload.IndicatorResponse;
 import ru.valaz.grafeo.payload.LoginRequest;
+import ru.valaz.grafeo.payload.PagedResponse;
 import ru.valaz.grafeo.payload.ProfileRequest;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,7 +37,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void updateCurrentUser() throws Exception {
-        userService.createUser("James Bons", "agent007",
+        userService.createUser("James Bond", "agent007",
                 "agent@007.com", "123456");
         assertTrue(!userRepository.findAll().isEmpty());
         LoginRequest loginRequest = new LoginRequest();
@@ -68,7 +73,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void getCurrentUser() throws Exception {
-        userService.createUser("Current User", "currentuser", "currentuser@test.com", "123456");
+        userService.createUser("Current User", "currentuser", "currentuser@grafeo.pro", "123456");
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("currentuser");
@@ -84,7 +89,7 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Current User"))
                 .andExpect(jsonPath("username").value("currentuser"))
-                .andExpect(jsonPath("email").value("currentuser@test.com"))
+                .andExpect(jsonPath("email").value("currentuser@grafeo.pro"))
                 .andExpect(jsonPath("isSocialLogin").value("false"));
 
     }
@@ -166,6 +171,40 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getIndicatorsCreatedBy() {
+    public void getIndicatorsCreatedBy() throws Exception {
+        User user = userService.createUser("User Profile", "user_c_3@grafeo.pro", "user_c_3@grafeo.pro", "123456");
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsernameOrEmail("user_c_3@grafeo.pro");
+        loginRequest.setPassword("123456");
+
+        mockMvc.perform(post(API_AUTH_PREFIX + "/signin")
+                .content(json(loginRequest))
+                .contentType(contentType))
+                .andExpect(status().isOk());
+
+        IndicatorResponse createIndicatorResponse = submitNewIndicator("Test Name", "TT", user);
+        Optional<Indicator> initialIndicator = indicatorRepository.findById(createIndicatorResponse.getId());
+        assertTrue(initialIndicator.isPresent());
+        long indicatorId = initialIndicator.get().getId();
+
+        MvcResult mvcResult = mockMvc.perform(get(API_USERS_PREFIX + "/" + user.getId() + "/indicators")
+                .contentType(contentType))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        PagedResponse pagedResponse = gson.fromJson(jsonResponse, PagedResponse.class);
+
+        assertNotNull(pagedResponse);
+        List content = pagedResponse.getContent();
+
+        assertEquals(1, content.size());
+        Map<String, Object> indicatorResponse = (Map<String, Object>) content.get(0);
+
+        assertEquals(indicatorId, ((Double) indicatorResponse.get("id")).longValue(), 0);
+        assertEquals(initialIndicator.get().getName(), indicatorResponse.get("name"));
+        assertEquals(initialIndicator.get().getUnit(), indicatorResponse.get("unit"));
+
     }
 }

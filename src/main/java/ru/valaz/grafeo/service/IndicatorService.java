@@ -15,16 +15,12 @@ import ru.valaz.grafeo.payload.IndicatorResponse;
 import ru.valaz.grafeo.payload.PagedResponse;
 import ru.valaz.grafeo.repository.IndicatorRepository;
 import ru.valaz.grafeo.repository.UserRepository;
-import ru.valaz.grafeo.security.UserPrincipal;
 import ru.valaz.grafeo.util.AppConstants;
 import ru.valaz.grafeo.util.ModelMapper;
 
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class IndicatorService {
@@ -34,29 +30,6 @@ public class IndicatorService {
 
     @Autowired
     private UserRepository userRepository;
-
-
-    public PagedResponse<IndicatorResponse> getAllIndicators(UserPrincipal currentUser, int page, int size) {
-        validatePageNumberAndSize(page, size);
-
-        // Retrieve Indicators
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Indicator> indicators = indicatorRepository.findByCreatedByOrderByName(currentUser.getId(), pageable);
-
-        if (indicators.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), indicators.getNumber(),
-                    indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
-        }
-
-        Map<Long, User> creatorMap = getIndicatorCreatorMap(indicators.getContent());
-
-        List<IndicatorResponse> indicatorResponses = indicators.map(indicator ->
-                ModelMapper.mapIndicatorToIndicatorResponse(indicator,
-                        creatorMap.get(indicator.getCreatedBy()))).getContent();
-
-        return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
-                indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
-    }
 
     public PagedResponse<IndicatorResponse> getIndicatorsCreatedBy(Long userId, int page, int size) {
         validatePageNumberAndSize(page, size);
@@ -73,12 +46,19 @@ public class IndicatorService {
                     indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
         }
 
-
         List<IndicatorResponse> indicatorResponses = indicators.map(indicator ->
                 ModelMapper.mapIndicatorToIndicatorResponse(indicator, user)).getContent();
 
         return new PagedResponse<>(indicatorResponses, indicators.getNumber(),
                 indicators.getSize(), indicators.getTotalElements(), indicators.getTotalPages(), indicators.isLast());
+    }
+
+    public Indicator createIndicator(IndicatorRequest indicatorRequest) {
+        Indicator indicator = new Indicator();
+        indicator.setName(indicatorRequest.getName());
+        indicator.setUnit(indicatorRequest.getUnit());
+
+        return indicatorRepository.save(indicator);
     }
 
     private void validatePageNumberAndSize(int page, int size) {
@@ -89,18 +69,6 @@ public class IndicatorService {
         if (size > AppConstants.MAX_PAGE_SIZE) {
             throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
         }
-    }
-
-    private Map<Long, User> getIndicatorCreatorMap(List<Indicator> indicators) {
-        // Get Indicator Creator details of the given list of indicators
-        List<Long> creatorIds = indicators.stream()
-                .map(Indicator::getCreatedBy)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<User> creators = userRepository.findByIdIn(creatorIds);
-        return creators.stream()
-                .collect(Collectors.toMap(User::getId, Function.identity()));
     }
 
     public Indicator updateIndicator(Indicator indicator, @Valid IndicatorRequest indicatorRequest) {

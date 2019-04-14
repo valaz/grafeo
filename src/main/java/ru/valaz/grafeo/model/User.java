@@ -31,17 +31,17 @@ public class User extends DateAudit {
     private Long id;
 
     @NotBlank
-    @Size(max = 40)
+    @Size(max = 50)
     @NonNull
     private String name;
 
     @NotBlank
-    @Size(max = 30)
+    @Size(max = 50)
     @NonNull
     private String username;
 
     @NotBlank
-    @Size(max = 40)
+    @Size(max = 50)
     @Email
     @NonNull
     private String email;

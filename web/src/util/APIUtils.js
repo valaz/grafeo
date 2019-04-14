@@ -23,16 +23,6 @@ const request = (options) => {
         );
 };
 
-export function getAllIndicators(page, size) {
-    page = page || 0;
-    size = size || INDICATOR_LIST_SIZE;
-
-    return request({
-        url: "/api/indicators?page=" + page + "&size=" + size,
-        method: 'GET'
-    });
-}
-
 export function getIndicator(id) {
     return request({
         url: "/api/indicators/" + id,

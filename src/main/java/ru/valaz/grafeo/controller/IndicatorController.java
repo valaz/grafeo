@@ -17,14 +17,16 @@ import ru.valaz.grafeo.exeption.ResourceNotFoundException;
 import ru.valaz.grafeo.model.Indicator;
 import ru.valaz.grafeo.model.Record;
 import ru.valaz.grafeo.model.User;
-import ru.valaz.grafeo.payload.*;
+import ru.valaz.grafeo.payload.ApiResponse;
+import ru.valaz.grafeo.payload.IndicatorRequest;
+import ru.valaz.grafeo.payload.IndicatorResponse;
+import ru.valaz.grafeo.payload.RecordRequest;
 import ru.valaz.grafeo.repository.IndicatorRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.security.CurrentUser;
 import ru.valaz.grafeo.security.UserPrincipal;
 import ru.valaz.grafeo.service.FileService;
 import ru.valaz.grafeo.service.IndicatorService;
-import ru.valaz.grafeo.util.AppConstants;
 import ru.valaz.grafeo.util.ModelMapper;
 
 import javax.validation.Valid;
@@ -55,46 +57,13 @@ public class IndicatorController {
         this.fileService = fileService;
     }
 
-    @GetMapping
-    public PagedResponse<IndicatorResponse> getIndicators(@CurrentUser UserPrincipal currentUser,
-                                                          @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                          @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return indicatorService.getAllIndicators(currentUser, page, size);
-    }
-
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public IndicatorResponse createIndicator(@Valid @RequestBody IndicatorRequest indicatorRequest) {
-        Indicator indicator = new Indicator();
-        indicator.setName(indicatorRequest.getName());
-        indicator.setUnit(indicatorRequest.getUnit());
-
-        Indicator result = indicatorRepository.save(indicator);
+        Indicator result = indicatorService.createIndicator(indicatorRequest);
 
         // Retrieve indicator creator details
-        User creator = userRepository.findById(indicator.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
-        return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
-    }
-
-    @PutMapping
-    @PreAuthorize("hasRole('USER')")
-    public IndicatorResponse editIndicator(@CurrentUser UserPrincipal currentUser,
-                                           @Valid @RequestBody IndicatorRequest indicatorRequest) {
-        Long indicatorId = indicatorRequest.getId();
-        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
-
-        indicator = indicatorService.updateIndicator(indicator, indicatorRequest);
-
-        Indicator result = indicatorRepository.save(indicator);
-
-        // Retrieve indicator creator details
-        User creator = userRepository.findById(indicator.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", result.getCreatedBy()));
+        User creator = getIndicatorCreator(result.getCreatedBy());
         return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
     }
 
@@ -102,28 +71,38 @@ public class IndicatorController {
     @PreAuthorize("hasRole('USER')")
     public IndicatorResponse getIndicatorById(@CurrentUser UserPrincipal currentUser,
                                               @PathVariable Long indicatorId) {
-        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
         // Retrieve indicator creator details
-        User creator = userRepository.findById(indicator.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", indicator.getCreatedBy()));
+        User creator = getIndicatorCreator(indicator.getCreatedBy());
 
 
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('USER')")
+    public IndicatorResponse editIndicator(@CurrentUser UserPrincipal currentUser,
+                                           @Valid @RequestBody IndicatorRequest indicatorRequest) {
+        Long indicatorId = indicatorRequest.getId();
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
+
+        indicator = indicatorService.updateIndicator(indicator, indicatorRequest);
+
+        Indicator result = indicatorRepository.save(indicator);
+
+        // Retrieve indicator creator details
+        User creator = getIndicatorCreator(indicator.getCreatedBy());
+        return ModelMapper.mapIndicatorToIndicatorResponse(result, creator);
     }
 
     @DeleteMapping("/{indicatorId}")
     @PreAuthorize("hasRole('USER')")
     public ApiResponse deleteIndicatorById(@CurrentUser UserPrincipal currentUser,
                                            @PathVariable Long indicatorId) {
-        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
 
         indicatorRepository.deleteById(indicator.getId());
 
@@ -134,11 +113,8 @@ public class IndicatorController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Resource> downloadIndicatorById(@CurrentUser UserPrincipal currentUser,
                                                           @PathVariable Long indicatorId) {
-        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
         InputStream input = fileService.getIndicatorJson(indicator);
 
         InputStreamResource resource = new InputStreamResource(input);
@@ -153,17 +129,13 @@ public class IndicatorController {
     public IndicatorResponse uploadIndicatorById(@CurrentUser UserPrincipal currentUser,
                                                  @PathVariable Long indicatorId,
                                                  @RequestParam("file") MultipartFile file) {
-        Indicator indicator = indicatorRepository.findById(indicatorId).orElseThrow(
-                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
 
         final Indicator[] updateIndicator = {indicator};
         fileService.storeFile(file).ifPresent(rawIndicator -> updateIndicator[0] = indicatorService.updateIndicator(indicator, rawIndicator));
 
-        User creator = userRepository.findById(updateIndicator[0].getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", updateIndicator[0].getCreatedBy()));
+        User creator = getIndicatorCreator(updateIndicator[0].getCreatedBy());
 
         return ModelMapper.mapIndicatorToIndicatorResponse(updateIndicator[0], creator);
     }
@@ -175,11 +147,8 @@ public class IndicatorController {
                                        @PathVariable Long indicatorId,
                                        @Valid @RequestBody RecordRequest recordRequest) {
 
-        Indicator indicator = indicatorRepository.findById(indicatorId)
-                .orElseThrow(() -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (!indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
 
         Preconditions.checkNotNull(recordRequest.getValue());
         Preconditions.checkNotNull(recordRequest.getDate());
@@ -190,8 +159,7 @@ public class IndicatorController {
         indicator = indicatorRepository.save(indicator);
 
         Long createdBy = indicator.getCreatedBy();
-        User creator = userRepository.findById(createdBy)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", createdBy));
+        User creator = getIndicatorCreator(createdBy);
         logger.debug("Added record: {} - {} for indicator {}", record.getDate(), record.getValue(), indicator.getId());
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
     }
@@ -202,11 +170,8 @@ public class IndicatorController {
                                           @PathVariable Long indicatorId,
                                           @Valid @RequestBody RecordRequest recordRequest) {
 
-        Indicator indicator = indicatorRepository.findById(indicatorId)
-                .orElseThrow(() -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
-        if (!indicator.getCreatedBy().equals(currentUser.getId())) {
-            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
-        }
+        Indicator indicator = findIndicator(indicatorId);
+        checkUserAccessForIndicator(currentUser, indicator);
 
         Preconditions.checkNotNull(recordRequest.getDate());
 
@@ -214,10 +179,25 @@ public class IndicatorController {
         indicator = indicatorRepository.save(indicator);
 
         Long createdBy = indicator.getCreatedBy();
-        User creator = userRepository.findById(createdBy)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", createdBy));
+        User creator = getIndicatorCreator(createdBy);
 
         return ModelMapper.mapIndicatorToIndicatorResponse(indicator, creator);
     }
 
+
+    private Indicator findIndicator(@PathVariable Long indicatorId) {
+        return indicatorRepository.findById(indicatorId).orElseThrow(
+                () -> new ResourceNotFoundException(INDICATOR, "id", indicatorId));
+    }
+
+    private void checkUserAccessForIndicator(@CurrentUser UserPrincipal currentUser, Indicator indicator) {
+        if (currentUser == null || !indicator.getCreatedBy().equals(currentUser.getId())) {
+            throw new ForbiddenException(YOU_HAVE_NO_ACCESS);
+        }
+    }
+
+    private User getIndicatorCreator(Long createdBy) {
+        return userRepository.findById(createdBy)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", createdBy));
+    }
 }
