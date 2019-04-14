@@ -1,5 +1,6 @@
 package ru.valaz.grafeo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -17,10 +18,13 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    @Value("${origin:*}")
+    private String origin;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOrigins(origin)
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 
