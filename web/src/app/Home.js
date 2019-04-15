@@ -79,15 +79,15 @@ class Home extends Component {
         const {classes} = this.props;
         if (this.state.isLoading) {
             return (
-                <div className={classes.root}>
+                <div key='loader' className={classes.root}>
                     <LinearDeterminate timeout={5000}/>
                 </div>)
         }
         if (this.props.isAuthenticated) {
-            return <IndicatorList {...this.props}/>
+            return <IndicatorList key='list' {...this.props}/>
         } else {
             return (
-                <div style={{padding: 24, background: '#f1f1f1'}}>
+                <div key='demo' style={{padding: 24, background: '#f1f1f1'}}>
                     <Grid item xs={12}>
                         <Grid container
                               justify="center"
