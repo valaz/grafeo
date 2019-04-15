@@ -4,9 +4,9 @@ import {withRouter} from "react-router-dom";
 import {Button, Grid, withStyles} from "material-ui";
 import {demoLogin} from "../util/APIUtils";
 import {ACCESS_TOKEN} from "../constants";
+import LoadingIndicator from "../common/LoadingIndicator";
 import ReactGA from 'react-ga';
 import {FormattedMessage} from "react-intl";
-import LinearDeterminate from "../common/LinearDeterminate";
 
 const styles = theme => ({
     button: {
@@ -79,15 +79,15 @@ class Home extends Component {
         const {classes} = this.props;
         if (this.state.isLoading) {
             return (
-                <div key='loader' className={classes.root}>
-                    <LinearDeterminate timeout={5000}/>
+                <div className={classes.root}>
+                    <LoadingIndicator/>
                 </div>)
         }
         if (this.props.isAuthenticated) {
-            return <IndicatorList key='list' {...this.props}/>
+            return <IndicatorList {...this.props}/>
         } else {
             return (
-                <div key='demo' style={{padding: 24, background: '#f1f1f1'}}>
+                <div style={{padding: 24, background: '#f1f1f1'}}>
                     <Grid item xs={12}>
                         <Grid container
                               justify="center"
