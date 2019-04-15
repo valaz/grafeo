@@ -2,14 +2,7 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const styles = {
-    root: {
-        flexGrow: 1,
-    },
-    placeholder: {
-        height: 40,
-    },
-};
+const styles = {};
 const interval = 500;
 
 class LinearDeterminate extends React.Component {
@@ -36,13 +29,8 @@ class LinearDeterminate extends React.Component {
     };
 
     render() {
-        const {classes} = this.props;
         return (
-            <div className={classes.root}>
-                <div className={classes.placeholder}>
-                    <LinearProgress color="secondary" variant="determinate" value={this.state.completed}/>
-                </div>
-            </div>
+            <LinearProgress color="secondary" variant="determinate" value={this.state.completed}/>
         );
     }
 }
