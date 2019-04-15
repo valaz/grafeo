@@ -10,11 +10,11 @@ script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm s
   -Dalpha_api_key='$ALPHA_API_KEY'"
 deploy:
   - provider: script
-    script: bash /.travis/deploy.sh
+    script: bash .travis/deploy.sh
     on:
       branch: master
   - provider: script
-    script: bash /.travis/deploy-dev.sh
+    script: bash .travis/deploy-dev.sh
     on:
       branch: dev
 cache:
