@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {facebookLogin, login} from '../../util/APIUtils';
 import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField, withStyles} from "material-ui";
+import {Button, Grid, TextField, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import FBLoginButton from "./FBLoginButton";

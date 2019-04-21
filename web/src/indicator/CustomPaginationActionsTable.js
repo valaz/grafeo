@@ -1,8 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
-import Table, {TableBody, TableCell, TableFooter, TablePagination, TableRow,} from 'material-ui/Table';
-import IconButton from 'material-ui/IconButton';
+import {
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    withStyles
+} from '@material-ui/core';
 import {Delete, Edit, KeyboardArrowLeft, KeyboardArrowRight} from "@material-ui/icons";
 import {injectIntl} from "react-intl";
 import moment from "moment/moment";

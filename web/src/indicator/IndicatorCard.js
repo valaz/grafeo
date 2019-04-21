@@ -1,18 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
-import Card, {CardHeader} from 'material-ui/Card';
-import IconButton from 'material-ui/IconButton';
-import {Delete, Edit, ExpandMore, FileDownload, FileUpload, MoreVert} from "@material-ui/icons";
-import {Button, CardActions, CardContent, Collapse, ListItemIcon, ListItemText, Menu, MenuItem} from "material-ui";
-import {withRouter} from "react-router-dom";
-import Dialog, {
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Collapse,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
+    IconButton,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
     withMobileDialog,
-} from 'material-ui/Dialog';
+    withStyles
+} from '@material-ui/core';
+import {Delete, Edit, ExpandMore, FileDownload, FileUpload, MoreVert} from "@material-ui/icons";
+import {withRouter} from "react-router-dom";
 import {injectIntl} from "react-intl";
 import classnames from 'classnames';
 import {downloadIndicator} from './../util/APIFileUtils'

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import IndicatorList from "../indicator/IndicatorList";
 import {withRouter} from "react-router-dom";
-import {Button, Grid, withStyles} from "material-ui";
+import {Button, Grid, withStyles} from '@material-ui/core';
 import {demoLogin} from "../util/APIUtils";
 import {ACCESS_TOKEN} from "../constants";
 import LoadingIndicator from "../common/LoadingIndicator";

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH, UNIT_NAME_MAX_LENGTH} from '../constants';
 import {FormattedMessage, injectIntl} from 'react-intl';
-import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
+import {Button, Grid, Icon, TextField, withStyles} from '@material-ui/core';
 import Notification from "../common/Notification";
 import ReactGA from 'react-ga';
 import LoadingIndicator from "./IndicatorPage";

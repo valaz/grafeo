@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './ServerError.css';
 import {Link} from 'react-router-dom';
-import {Button, withStyles} from "material-ui";
+import {Button, withStyles} from '@material-ui/core';
 import {injectIntl} from "react-intl";
 
 const styles = theme => ({

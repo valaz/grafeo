@@ -13,7 +13,7 @@ import Home from "./Home";
 import {injectIntl} from "react-intl";
 import NavigationTopBar from "../common/NavigationTopBar";
 import Notification from "../common/Notification";
-import {withStyles} from "material-ui";
+import {withStyles} from '@material-ui/core';
 import ReactGA from 'react-ga';
 import {isDemo} from "../constants";
 

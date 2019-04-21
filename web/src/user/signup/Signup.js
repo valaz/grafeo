@@ -12,7 +12,7 @@ import {
 } from '../../constants';
 
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField, withStyles} from "material-ui";
+import {Button, Grid, TextField, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
 import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';

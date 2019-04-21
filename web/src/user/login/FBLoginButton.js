@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, withStyles} from "material-ui";
+import {Button, withStyles} from '@material-ui/core';
 import {FormattedMessage, injectIntl} from "react-intl";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faFacebookF} from "@fortawesome/free-brands-svg-icons"

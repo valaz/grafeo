@@ -14,9 +14,9 @@ import {addLocaleData, IntlProvider} from 'react-intl';
 import en from "react-intl/locale-data/en";
 import ru from "react-intl/locale-data/ru";
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import createHistory from 'history/createBrowserHistory'
 import {getGaUid} from './util/APIUtils'
+import {MuiPickersUtilsProvider} from "material-ui-pickers";
 
 addLocaleData([...en, ...ru]);
 

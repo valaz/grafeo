@@ -3,7 +3,7 @@ import './Indicator.css';
 import {NavLink, withRouter} from "react-router-dom";
 import {EventNote, Timeline} from '@material-ui/icons';
 import StatsCard from "../components/Cards/StatsCard";
-import {Grid, withStyles} from "material-ui";
+import {Grid, withStyles} from '@material-ui/core';
 import moment from "moment";
 import {injectIntl} from "react-intl";
 import {getRandomColorName} from "../util/Colors";
