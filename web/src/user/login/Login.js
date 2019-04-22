@@ -195,7 +195,7 @@ class LoginForm extends Component {
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
                                     <FacebookLogin
-                                        appId="258829245004957"
+                                        appId={process.env.REACT_APP_FB_APP_ID}
                                         isMobile={false}
                                         autoLoad={false}
                                         fields="name,email"
