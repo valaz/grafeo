@@ -8,7 +8,7 @@ import NotFound from "../common/NotFound";
 import ServerError from "../common/ServerError";
 import {injectIntl} from "react-intl";
 import CustomPaginationActionsTable from "./CustomPaginationActionsTable";
-import {Grid, withStyles} from "material-ui";
+import {Grid, withStyles} from '@material-ui/core';
 import IndicatorChart from "./IndicatorChart";
 import IndicatorCard from "./IndicatorCard";
 import Notification from "../common/Notification";

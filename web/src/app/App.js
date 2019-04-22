@@ -13,9 +13,11 @@ import Home from "./Home";
 import {injectIntl} from "react-intl";
 import NavigationTopBar from "../common/NavigationTopBar";
 import Notification from "../common/Notification";
-import {withStyles} from "material-ui";
+import {withStyles} from '@material-ui/core';
 import ReactGA from 'react-ga';
 import {isDemo} from "../constants";
+import Policy from "./Policy";
+import Rules from "./Rules";
 
 const styles = theme => ({
     root: {
@@ -185,6 +187,10 @@ class App extends React.Component {
                                                                  currentUser={this.state.currentUser}/>}/>
                                 <Route exact path="/signup"
                                        render={(props) => <Signup onSignup={this.handleSignup}/>}/>
+                                <Route exact path="/policy"
+                                       render={(props) => <Policy/>}/>
+                                <Route exact path="/rules"
+                                       render={(props) => <Rules/>}/>
                                 <PrivateRoute exact authenticated={this.state.isAuthenticated} path="/profile"
                                               component={Profile} currentUser={this.state.currentUser}
                                               isAuthenticated={this.state.isAuthenticated}/>

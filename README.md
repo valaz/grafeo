@@ -21,4 +21,4 @@ https://grafeo.pro/
 ## CI/CD
 * Travis-ci
 * Sonarcloud
-* Heroku
+* Dokku

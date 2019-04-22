@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {createIndicator, editIndicator, getIndicator} from '../util/APIUtils';
 import {INDICATOR_NAME_MAX_LENGTH, UNIT_NAME_MAX_LENGTH} from '../constants';
 import {FormattedMessage, injectIntl} from 'react-intl';
-import {Button, Grid, Icon, TextField, withStyles} from "material-ui";
+import {Button, Grid, Icon, TextField, withStyles} from '@material-ui/core';
 import Notification from "../common/Notification";
 import ReactGA from 'react-ga';
 import LoadingIndicator from "./IndicatorPage";
@@ -314,7 +314,7 @@ class IndicatorConfig extends Component {
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <Icon type="plus"/>
                                         {this.getSubmitButton()}
@@ -331,7 +331,7 @@ class IndicatorConfig extends Component {
                           spacing={16}>
                         <Grid container item spacing={0} justify="center" margin='dense'>
                             <Grid item {...gridSize}>
-                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                <Button fullWidth variant="contained" color="secondary" size="large"
                                         onClick={this.handleCancel}>
                                     <Icon type="plus"/>
                                     {this.getCancelButton()}

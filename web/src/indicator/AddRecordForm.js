@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import ReactDOM from "react-dom";
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, IconButton, InputAdornment, TextField, withStyles} from "material-ui";
+import {Button, Grid, IconButton, InputAdornment, TextField, withStyles} from '@material-ui/core';
 import {DatePicker} from "material-ui-pickers";
 import moment from "moment";
 import PropTypes from "prop-types";
 import NumberFormat from 'react-number-format';
 import classNames from 'classnames';
-import indigo from 'material-ui/colors/indigo';
+import {indigo} from "@material-ui/core/colors";
 
 const dateFormat = 'YYYY-MM-DD';
 const datePickerFormat = "LL";
@@ -375,7 +375,7 @@ class AddRecordForm extends Component {
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} align="center">
-                        <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                        <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                 disabled={this.isFormInvalid()} className={classes.button}>
                             <FormattedMessage id="indicator.view.form.submit"/>
                         </Button>
