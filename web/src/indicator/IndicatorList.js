@@ -6,7 +6,7 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import {INDICATOR_LIST_SIZE} from '../constants';
 import {withRouter} from 'react-router-dom';
 import {FormattedMessage} from "react-intl";
-import {Grid, withStyles} from "material-ui";
+import {Grid, withStyles} from '@material-ui/core';
 
 const styles = theme => ({
     button: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Snackbar} from "material-ui";
+import {Snackbar} from '@material-ui/core';
 
 
 class Notification extends React.Component {

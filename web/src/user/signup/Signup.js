@@ -12,7 +12,7 @@ import {
 } from '../../constants';
 
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField, withStyles} from "material-ui";
+import {Button, Grid, TextField, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
 import ReCAPTCHA from "react-google-recaptcha";
 import ReactGA from 'react-ga';
@@ -367,7 +367,7 @@ class Signup extends Component {
                             }
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid() || this.state.isLoading}>
                                         {this.getSubmitButton()}
                                     </Button>
@@ -391,7 +391,7 @@ class Signup extends Component {
                           spacing={16}>
                         <Grid container item spacing={0} justify="center">
                             <Grid item {...gridSize}>
-                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                <Button fullWidth variant="contained" color="secondary" size="large"
                                         onClick={this.handleCancel}>
                                     {this.getCancelButton()}
                                 </Button>

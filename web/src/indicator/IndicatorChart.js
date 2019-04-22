@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {getRandomColorValue} from "../util/Colors";
 import moment from "moment";
-import {withStyles} from "material-ui/styles/index";
 import {injectIntl} from "react-intl";
-import {Button, FormControl, Grid, MenuItem, Paper, Select, Typography} from "material-ui";
+import {Button, FormControl, Grid, MenuItem, Paper, Select, Typography, withStyles} from '@material-ui/core';
 
 const dateFormat = 'YYYY-MM-DD';
 const chartDateFormat = 'LL';

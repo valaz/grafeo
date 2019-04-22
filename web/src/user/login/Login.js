@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {facebookLogin, login} from '../../util/APIUtils';
 import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
-import {Button, Grid, TextField, withStyles} from "material-ui";
+import {Button, Grid, TextField, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import FBLoginButton from "./FBLoginButton";
@@ -62,6 +62,7 @@ class LoginForm extends Component {
     }
 
     responseFacebook(response) {
+        console.log(response);
         if (!response.name || !response.email || !response.userID) {
             this.setState({
                 isLoading: false,
@@ -194,7 +195,7 @@ class LoginForm extends Component {
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
                                     <FacebookLogin
-                                        appId="258829245004957"
+                                        appId={process.env.REACT_APP_FB_APP_ID}
                                         isMobile={false}
                                         autoLoad={false}
                                         fields="name,email"
@@ -237,7 +238,7 @@ class LoginForm extends Component {
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid() || this.state.isLoading}>
                                         <FormattedMessage id="login.form.submit"/>
                                     </Button>

@@ -5,7 +5,7 @@ import './Profile.css';
 import NotFound from '../../common/NotFound';
 import ServerError from '../../common/ServerError';
 import {FormattedDate, FormattedMessage, injectIntl} from 'react-intl';
-import {AppBar, Avatar, Grid, IconButton, Tab, Tabs, Typography, withStyles} from "material-ui";
+import {AppBar, Avatar, Grid, IconButton, Tab, Tabs, Typography, withStyles} from '@material-ui/core';
 import {getRandomColor} from "../../util/Colors";
 import IndicatorList from "../../indicator/IndicatorList";
 import {Settings} from '@material-ui/icons'

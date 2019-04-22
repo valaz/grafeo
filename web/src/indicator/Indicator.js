@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import './Indicator.css';
 import {NavLink, withRouter} from "react-router-dom";
 import {EventNote, Timeline} from '@material-ui/icons';
-import StatsCard from "../components/Cards/StatsCard";
-import {Grid, withStyles} from "material-ui";
+import {Grid, withStyles} from '@material-ui/core';
 import moment from "moment";
 import {injectIntl} from "react-intl";
 import {getRandomColorName} from "../util/Colors";
+import IndicatorStatCard from "./IndicatorStatCard";
 
 const styles = {
     link: {
@@ -95,16 +95,16 @@ class Indicator extends Component {
             <Grid item xs={12} sm={6} lg={4}>
                 <NavLink to={"/indicators/" + this.props.indicator.id}
                          className={classes.link}>
-                    <StatsCard item
-                               icon={Timeline}
-                               iconColor={getRandomColorName(indicator.name)}
-                               title={this.props.indicator.name}
-                               description={valueDescription}
-                               small={unit}
-                               statIcon={EventNote}
-                               statIconColor="gray"
-                               statText={dateDescription}
-                               className={classes.card}
+                    <IndicatorStatCard item
+                                       icon={Timeline}
+                                       iconColor={getRandomColorName(indicator.name)}
+                                       title={this.props.indicator.name}
+                                       description={valueDescription}
+                                       small={unit}
+                                       statIcon={EventNote}
+                                       statIconColor="gray"
+                                       statText={dateDescription}
+                                       className={classes.card}
                     />
                 </NavLink>
             </Grid>

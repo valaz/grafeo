@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './NotFound.css';
 import {Link} from 'react-router-dom';
-import {Button, withStyles} from "material-ui";
+import {Button, withStyles} from '@material-ui/core';
 import {injectIntl} from "react-intl";
 
 const styles = theme => ({
@@ -30,7 +30,7 @@ class NotFound extends Component {
                     {this.props.intl.formatMessage({id: 'error.notFound'})}
                 </div>
                 <Link to="/" className={classes.link}>
-                    <Button variant="raised" className={classes.button}>
+                    <Button variant="contained" className={classes.button}>
                         {this.props.intl.formatMessage({id: 'error.goBack'})}
                     </Button>
                 </Link>

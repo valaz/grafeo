@@ -1,7 +1,9 @@
 export default {
     'en': {
         common: {
-            demo: 'Demo'
+            demo: 'Demo',
+            policy: 'Privacy Policy',
+            rules: 'User Agreement',
         },
         error: {
             notFound: 'The Page you\'re looking for was not found.',
@@ -240,7 +242,9 @@ export default {
     },
     'ru': {
         common: {
-            demo: 'Демонстрация'
+            demo: 'Демонстрация',
+            policy: 'Политика конфиденциальности',
+            rules: 'Пользовательское соглашение',
         },
         error: {
             notFound: 'Страница, которую Вы ищете не существует',

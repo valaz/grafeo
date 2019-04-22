@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import IndicatorList from "../indicator/IndicatorList";
 import {withRouter} from "react-router-dom";
-import {Button, Grid, withStyles} from "material-ui";
+import {Button, Grid, withStyles} from '@material-ui/core';
 import {demoLogin} from "../util/APIUtils";
 import {ACCESS_TOKEN} from "../constants";
 import LoadingIndicator from "../common/LoadingIndicator";
@@ -95,7 +95,7 @@ class Home extends Component {
                               spacing={16}>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth variant="raised" size="large" color="secondary"
+                                    <Button fullWidth variant="contained" size="large" color="secondary"
                                             className={classes.button}
                                             onClick={this.handleDemo}>
                                         <FormattedMessage id="common.demo"/>
