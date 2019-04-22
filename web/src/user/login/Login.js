@@ -62,6 +62,7 @@ class LoginForm extends Component {
     }
 
     responseFacebook(response) {
+        console.log(response);
         if (!response.name || !response.email || !response.userID) {
             this.setState({
                 isLoading: false,
@@ -237,7 +238,7 @@ class LoginForm extends Component {
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid() || this.state.isLoading}>
                                         <FormattedMessage id="login.form.submit"/>
                                     </Button>

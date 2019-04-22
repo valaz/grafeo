@@ -314,7 +314,7 @@ class IndicatorConfig extends Component {
                             </Grid>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid()}>
                                         <Icon type="plus"/>
                                         {this.getSubmitButton()}
@@ -331,7 +331,7 @@ class IndicatorConfig extends Component {
                           spacing={16}>
                         <Grid container item spacing={0} justify="center" margin='dense'>
                             <Grid item {...gridSize}>
-                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                <Button fullWidth variant="contained" color="secondary" size="large"
                                         onClick={this.handleCancel}>
                                     <Icon type="plus"/>
                                     {this.getCancelButton()}

@@ -22,7 +22,7 @@ class FBLoginButton extends Component {
     render() {
         const {classes} = this.props;
 
-        return <Button fullWidth variant="raised" className={classes.fbButton} size="large"
+        return <Button fullWidth variant="contained" className={classes.fbButton} size="large"
                        onClick={this.props.onClick}>
             <FontAwesomeIcon icon={faFacebookF} className={classes.leftIcon}/>
             <FormattedMessage id="login.form.facebook"/>

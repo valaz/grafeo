@@ -367,7 +367,7 @@ class Signup extends Component {
                             }
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="raised" color="primary" size="large"
+                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                             disabled={this.isFormInvalid() || this.state.isLoading}>
                                         {this.getSubmitButton()}
                                     </Button>
@@ -391,7 +391,7 @@ class Signup extends Component {
                           spacing={16}>
                         <Grid container item spacing={0} justify="center">
                             <Grid item {...gridSize}>
-                                <Button fullWidth variant="raised" color="secondary" size="large"
+                                <Button fullWidth variant="contained" color="secondary" size="large"
                                         onClick={this.handleCancel}>
                                     {this.getCancelButton()}
                                 </Button>

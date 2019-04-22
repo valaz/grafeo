@@ -30,7 +30,7 @@ class NotFound extends Component {
                     {this.props.intl.formatMessage({id: 'error.notFound'})}
                 </div>
                 <Link to="/" className={classes.link}>
-                    <Button variant="raised" className={classes.button}>
+                    <Button variant="contained" className={classes.button}>
                         {this.props.intl.formatMessage({id: 'error.goBack'})}
                     </Button>
                 </Link>

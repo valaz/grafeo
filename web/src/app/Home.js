@@ -95,7 +95,7 @@ class Home extends Component {
                               spacing={16}>
                             <Grid container item spacing={0} justify="center" margin='dense'>
                                 <Grid item {...gridSize}>
-                                    <Button fullWidth variant="raised" size="large" color="secondary"
+                                    <Button fullWidth variant="contained" size="large" color="secondary"
                                             className={classes.button}
                                             onClick={this.handleDemo}>
                                         <FormattedMessage id="common.demo"/>
