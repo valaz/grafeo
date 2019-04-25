@@ -6,6 +6,7 @@ import {Button, Grid, TextField, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import FBLoginButton from "./FBLoginButton";
+import LoadingIndicator from "../../common/LoadingIndicator";
 
 const gridSize = {
     xs: 12,
@@ -17,12 +18,16 @@ const gridSize = {
 const styles = theme => ({
     header: {
         textAlign: 'center'
+    },
+    root: {
+        padding: '16px',
+        background: '#f1f1f1'
     }
 });
 
 class Login extends Component {
     render() {
-        const AntWrappedLoginForm = injectIntl(LoginForm);
+        const AntWrappedLoginForm = injectIntl(withStyles(styles)(LoginForm));
         const {classes} = this.props;
         return (
             <div style={{padding: 24, background: '#f1f1f1'}}>
@@ -63,7 +68,7 @@ class LoginForm extends Component {
 
     responseFacebook(response) {
         console.log(response);
-        if (!response.name || !response.email || !response.userID) {
+        if (!response.name || !response.email || !response.userID || !response.accessToken) {
             this.setState({
                 isLoading: false,
                 notification: {
@@ -72,10 +77,14 @@ class LoginForm extends Component {
                 }
             });
         } else {
+            this.setState({
+                isLoading: true,
+            });
             const fbLoginRequest = {
                 name: response.name,
                 email: response.email,
-                userId: response.userID
+                userId: response.userID,
+                token: response.accessToken,
             };
             facebookLogin(fbLoginRequest)
                 .then(response => {
@@ -180,75 +189,83 @@ class LoginForm extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         let usernamePlaceholder = this.props.intl.formatMessage({id: 'login.form.username.placeholder'});
         let passwordPlaceholder = this.props.intl.formatMessage({id: 'login.form.password.placeholder'});
-        return (
-            <div>
-                <Notification open={this.state.notification.open} message={this.state.notification.message}
-                              cleanup={this.clearNotification}/>
-                <form onSubmit={this.handleSubmit}>
-                    <Grid item xs={12}>
-                        <Grid container
-                              justify="center"
-                              direction='column'
-                              spacing={16}>
-                            <Grid container item spacing={0} justify="center" margin='dense'>
-                                <Grid item {...gridSize}>
-                                    <FacebookLogin
-                                        appId={process.env.REACT_APP_FB_APP_ID}
-                                        isMobile={false}
-                                        autoLoad={false}
-                                        fields="name,email"
-                                        callback={this.responseFacebook}
-                                        render={renderProps => (
-                                            <FBLoginButton onClick={renderProps.onClick}/>
-                                        )}
-                                    />
+        if (this.state.isLoading) {
+            return (
+                <div className={classes.root}>
+                    <LoadingIndicator/>
+                </div>)
+        } else {
+            return (
+                <div>
+                    <Notification open={this.state.notification.open} message={this.state.notification.message}
+                                  cleanup={this.clearNotification}/>
+                    <form onSubmit={this.handleSubmit}>
+                        <Grid item xs={12}>
+                            <Grid container
+                                  justify="center"
+                                  direction='column'
+                                  spacing={16}>
+                                <Grid container item spacing={0} justify="center" margin='dense'>
+                                    <Grid item {...gridSize}>
+                                        <FacebookLogin
+                                            appId={process.env.REACT_APP_FB_APP_ID}
+                                            isMobile={false}
+                                            autoLoad={false}
+                                            fields="name,email"
+                                            callback={this.responseFacebook}
+                                            render={renderProps => (
+                                                <FBLoginButton onClick={renderProps.onClick}/>
+                                            )}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid container item spacing={0} justify="center">
-                                <Grid item {...gridSize}>
-                                    <TextField fullWidth autoFocus
-                                               disabled={this.state.isLoading}
-                                               error={this.state.username.hasError}
-                                               helperText={this.state.username.errorMsg}
-                                               id="username"
-                                               name="username"
-                                               label={usernamePlaceholder}
-                                               value={this.state.username.value}
-                                               onChange={(event) => this.handleInputChange(event, this.validateUsername)}
-                                    />
+                                <Grid container item spacing={0} justify="center">
+                                    <Grid item {...gridSize}>
+                                        <TextField fullWidth autoFocus
+                                                   disabled={this.state.isLoading}
+                                                   error={this.state.username.hasError}
+                                                   helperText={this.state.username.errorMsg}
+                                                   id="username"
+                                                   name="username"
+                                                   label={usernamePlaceholder}
+                                                   value={this.state.username.value}
+                                                   onChange={(event) => this.handleInputChange(event, this.validateUsername)}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid container item spacing={0} justify="center">
-                                <Grid item {...gridSize}>
-                                    <TextField fullWidth
-                                               disabled={this.state.isLoading}
-                                               error={this.state.password.hasError}
-                                               helperText={this.state.password.errorMsg}
-                                               id="password"
-                                               name="password"
-                                               label={passwordPlaceholder}
-                                               type="password"
-                                               autoComplete="current-password"
-                                               value={this.state.password.value}
-                                               onChange={(event) => this.handleInputChange(event, this.validatePassword)}
-                                    />
+                                <Grid container item spacing={0} justify="center">
+                                    <Grid item {...gridSize}>
+                                        <TextField fullWidth
+                                                   disabled={this.state.isLoading}
+                                                   error={this.state.password.hasError}
+                                                   helperText={this.state.password.errorMsg}
+                                                   id="password"
+                                                   name="password"
+                                                   label={passwordPlaceholder}
+                                                   type="password"
+                                                   autoComplete="current-password"
+                                                   value={this.state.password.value}
+                                                   onChange={(event) => this.handleInputChange(event, this.validatePassword)}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid container item spacing={0} justify="center" margin='dense'>
-                                <Grid item {...gridSize}>
-                                    <Button fullWidth type="submit" variant="contained" color="primary" size="large"
-                                            disabled={this.isFormInvalid() || this.state.isLoading}>
-                                        <FormattedMessage id="login.form.submit"/>
-                                    </Button>
+                                <Grid container item spacing={0} justify="center" margin='dense'>
+                                    <Grid item {...gridSize}>
+                                        <Button fullWidth type="submit" variant="contained" color="primary" size="large"
+                                                disabled={this.isFormInvalid() || this.state.isLoading}>
+                                            <FormattedMessage id="login.form.submit"/>
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-            </div>
-        )
+                    </form>
+                </div>
+            )
+        }
     }
 
     validateUsername = (username) => {

@@ -1,8 +1,12 @@
 package ru.valaz.grafeo.controller;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -11,11 +15,13 @@ import ru.valaz.grafeo.model.User;
 import ru.valaz.grafeo.payload.FBLoginRequest;
 import ru.valaz.grafeo.payload.LoginRequest;
 import ru.valaz.grafeo.payload.SignUpRequest;
+import ru.valaz.grafeo.service.FacebookService;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +35,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTest extends AbstractControllerTest {
 
     static final String API_AUTH_PREFIX = "/api/auth";
+
+    @MockBean
+    FacebookService facebookService;
+
+    @Autowired
+    ApplicationContext context;
+
+    @Before
+    public void setup() {
+        doReturn(true).when(facebookService).isValidUserToken(anyString(), anyString());
+    }
 
     @Test
     public void loginTest() throws Exception {
@@ -70,6 +87,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         fbSignUpRequest.setName("Facebook Signup");
         fbSignUpRequest.setEmail("fb_signup@grafeo.pro");
         fbSignUpRequest.setUserId("12345");
+        fbSignUpRequest.setToken("sometoken");
 
         mockMvc.perform(post(API_AUTH_PREFIX + "/fb/login")
                 .content(json(fbSignUpRequest))
@@ -84,6 +102,25 @@ public class AuthControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void fbInvalidSignupTest() throws Exception {
+        FBLoginRequest fbSignUpRequest = new FBLoginRequest();
+        fbSignUpRequest.setName("Facebook Incorrect");
+        fbSignUpRequest.setEmail("fb_incorrect@grafeo.pro");
+        fbSignUpRequest.setUserId("123789");
+        fbSignUpRequest.setToken("sometoken");
+
+        doReturn(false).when(facebookService).isValidUserToken(anyString(), anyString());
+
+        mockMvc.perform(post(API_AUTH_PREFIX + "/fb/login")
+                .content(json(fbSignUpRequest))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+
+        Optional<User> signupUser = userRepository.findByUsername("fb_incorrect@grafeo.pro");
+        assertFalse(signupUser.isPresent());
+    }
+
+    @Test
     public void fbLoginTest() throws Exception {
         User facebook_login = userService.createUser("Facebook Login", "fb_signin@grafeo.pro",
                 "fb_signin@grafeo.pro", "123456");
@@ -94,6 +131,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         fbSignUpRequest.setName("Facebook Login");
         fbSignUpRequest.setEmail("fb_signin_new@grafeo.pro");
         fbSignUpRequest.setUserId("123456");
+        fbSignUpRequest.setToken("sometoken");
 
         long before = userRepository.count();
 
