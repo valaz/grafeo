@@ -22,6 +22,7 @@ import ru.valaz.grafeo.repository.RoleRepository;
 import ru.valaz.grafeo.repository.UserRepository;
 import ru.valaz.grafeo.security.JwtTokenProvider;
 import ru.valaz.grafeo.service.DemoService;
+import ru.valaz.grafeo.service.FacebookService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -51,6 +52,9 @@ public class AuthController {
     @Autowired
     private DemoService demoService;
 
+    @Autowired
+    private FacebookService facebookService;
+
     @PostMapping("/signin")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -70,6 +74,9 @@ public class AuthController {
     @PostMapping("/fb/login")
     public ResponseEntity authenticateFacebookUser(@Valid @RequestBody FBLoginRequest fbLoginRequest) {
 
+        if (!facebookService.isValidUserToken(fbLoginRequest.getToken(), fbLoginRequest.getUserId())) {
+            return ResponseEntity.badRequest().build();
+        }
         @NotBlank String fbUserId = fbLoginRequest.getUserId();
         @NotBlank String fbEmail = fbLoginRequest.getEmail();
         @NotBlank String fbName = fbLoginRequest.getName();

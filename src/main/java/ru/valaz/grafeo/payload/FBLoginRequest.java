@@ -14,4 +14,7 @@ public class FBLoginRequest {
 
     @NotBlank
     private String userId;
+
+    @NotBlank
+    private String token;
 }
