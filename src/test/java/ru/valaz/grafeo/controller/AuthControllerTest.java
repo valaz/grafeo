@@ -19,8 +19,7 @@ import ru.valaz.grafeo.service.FacebookService;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,7 +45,6 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Before
     public void setup() {
         doReturn(true).when(facebookService).isValidUserToken(anyString(), anyString());
-
     }
 
     @Test
@@ -101,6 +99,25 @@ public class AuthControllerTest extends AbstractControllerTest {
         assertEquals("Facebook Signup", signupUser.get().getName());
         assertEquals("fb_signup@grafeo.pro", signupUser.get().getEmail());
         assertEquals("12345", signupUser.get().getFacebookUserId());
+    }
+
+    @Test
+    public void fbInvalidSignupTest() throws Exception {
+        FBLoginRequest fbSignUpRequest = new FBLoginRequest();
+        fbSignUpRequest.setName("Facebook Incorrect");
+        fbSignUpRequest.setEmail("fb_incorrect@grafeo.pro");
+        fbSignUpRequest.setUserId("123789");
+        fbSignUpRequest.setToken("sometoken");
+
+        doReturn(false).when(facebookService).isValidUserToken(anyString(), anyString());
+
+        mockMvc.perform(post(API_AUTH_PREFIX + "/fb/login")
+                .content(json(fbSignUpRequest))
+                .contentType(contentType))
+                .andExpect(status().isBadRequest());
+
+        Optional<User> signupUser = userRepository.findByUsername("fb_incorrect@grafeo.pro");
+        assertFalse(signupUser.isPresent());
     }
 
     @Test
