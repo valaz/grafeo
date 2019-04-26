@@ -18,6 +18,11 @@ public class FacebookService extends AbstractService {
 
     private static final String APP_TOKEN_LINK_TEMPLATE = "https://graph.facebook.com/oauth/access_token?client_id={0}&client_secret={1}&grant_type=client_credentials";
     private static final String USER_TOKEN_LINK_TEMPLATE = "https://graph.facebook.com/debug_token?input_token={0}&access_token={1}";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String DATA = "data";
+    private static final String IS_VALID = "is_valid";
+    private static final String APP_ID = "app_id";
+    private static final String USER_ID = "user_id";
 
     @Value("${fb.app.id}")
     private String appId;
@@ -36,13 +41,13 @@ public class FacebookService extends AbstractService {
                     .url(link)
                     .build();
             JSONObject tokenResponse = sendRequest(tokenRequest);
-            boolean responseIsValid = tokenResponse.getJSONObject("data").getBoolean("is_valid");
+            boolean responseIsValid = tokenResponse.getJSONObject(DATA).getBoolean(IS_VALID);
             if (!responseIsValid) {
                 LOGGER.info("Incorrect token for {}", userId);
                 return false;
             }
-            String responseAppId = tokenResponse.getJSONObject("data").getString("app_id");
-            String responseUserId = tokenResponse.getJSONObject("data").getString("user_id");
+            String responseAppId = tokenResponse.getJSONObject(DATA).getString(APP_ID);
+            String responseUserId = tokenResponse.getJSONObject(DATA).getString(USER_ID);
             if (this.appId.equals(responseAppId) && userId.equals(responseUserId)) {
                 LOGGER.info("Correct token for {}", userId);
                 return true;
@@ -63,7 +68,9 @@ public class FacebookService extends AbstractService {
                     .url(appLink)
                     .build();
             JSONObject appResponse = sendRequest(appRequest);
-            this.accessToken = appResponse.getString("access_token");
+            if (appResponse.has(ACCESS_TOKEN)) {
+                this.accessToken = appResponse.getString(ACCESS_TOKEN);
+            }
         }
         return this.accessToken;
     }
