@@ -1,12 +1,14 @@
 package ru.valaz.grafeo.service;
 
 import okhttp3.Request;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 
 @Service
@@ -23,17 +25,13 @@ public class FacebookService extends AbstractService {
     @Value("${fb.app.secret}")
     private String secret;
 
+    private String accessToken;
+
 
     public boolean isValidUserToken(String userToken, String userId) {
         try {
-            String appLink = MessageFormat.format(APP_TOKEN_LINK_TEMPLATE, appId, secret);
-
-            Request appRequest = new Request.Builder()
-                    .url(appLink)
-                    .build();
-            JSONObject appResponse = sendRequest(appRequest);
-            String accessToken = appResponse.getString("access_token");
-            String link = MessageFormat.format(USER_TOKEN_LINK_TEMPLATE, userToken, accessToken);
+            String appToken = getAccessToken();
+            String link = MessageFormat.format(USER_TOKEN_LINK_TEMPLATE, userToken, appToken);
             Request tokenRequest = new Request.Builder()
                     .url(link)
                     .build();
@@ -55,5 +53,23 @@ public class FacebookService extends AbstractService {
 
         LOGGER.info("Incorrect token for {}", userId);
         return false;
+    }
+
+    private String getAccessToken() {
+        if (StringUtils.isBlank(this.accessToken)) {
+            String appLink = MessageFormat.format(APP_TOKEN_LINK_TEMPLATE, appId, secret);
+
+            Request appRequest = new Request.Builder()
+                    .url(appLink)
+                    .build();
+            JSONObject appResponse = sendRequest(appRequest);
+            this.accessToken = appResponse.getString("access_token");
+        }
+        return this.accessToken;
+    }
+
+    @PostConstruct
+    private void after() {
+        getAccessToken();
     }
 }
