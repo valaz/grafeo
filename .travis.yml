@@ -28,6 +28,6 @@ before_install:
 - chmod 600 .travis/deploy.key
 - ssh-add .travis/deploy.key
 - ssh-keyscan dokku.valaz.ru >> ~/.ssh/known_hosts
-- git remote add deploy dokku@dokku.valaz.ru:grafeo
-- git remote add deploy-dev dokku@dokku.valaz.ru:grafeo-dev
+- git remote add deploy dokku@dokku.valiev.top:grafeo
+- git remote add deploy-dev dokku@dokku.valiev.top:grafeo-dev
 - git config --global push.default simple
