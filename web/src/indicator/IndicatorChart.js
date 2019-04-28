@@ -109,6 +109,10 @@ class IndicatorChart extends Component {
             periodLength = 30;
         } else if (period === 'year') {
             periodLength = 365;
+        } else if (period === '3m') {
+            periodLength = 91;
+        } else if (period === '6m') {
+            periodLength = 183;
         }
         let data = this.props.data.map(r => ({...r}));
         let dates = data.map(d => d['date']);
@@ -281,6 +285,10 @@ class IndicatorChart extends Component {
                                     value={'all'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.all'})}</MenuItem>
                                 <MenuItem
                                     value={'year'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.year'})}</MenuItem>
+                                <MenuItem
+                                    value={'6m'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.m6'})}</MenuItem>
+                                <MenuItem
+                                    value={'3m'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.m3'})}</MenuItem>
                                 <MenuItem
                                     value={'month'}>{this.props.intl.formatMessage({id: 'indicator.view.chart.form.select.month'})}</MenuItem>
                                 <MenuItem
