@@ -88,7 +88,7 @@ public class DemoService {
     @Value("${demoSessionDurationSeconds:600}")
     private long demoSessionDurationSeconds;
 
-    @Value("${alpha_api_key}")
+    @Value("${alphavantage.api.key}")
     private String apiKey;
 
     @Autowired
