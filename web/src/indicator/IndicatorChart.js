@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {Area, AreaChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {getRandomColorValue} from "../util/Colors";
 import moment from "moment";
 import {injectIntl} from "react-intl";
@@ -243,6 +243,7 @@ class IndicatorChart extends Component {
                 }
             }
         }
+        let lastValue = chartData[chartData.length - 1].value;
         return (
             <div className={classes.root}>
                 <div className={classes.chart} style={{background: chartBackColor}}>
@@ -259,6 +260,7 @@ class IndicatorChart extends Component {
                             <Tooltip content={<CustomTooltipWrapped unit={this.props.unit}/>}
                                      offset={0} wrapperStyle={tooltipStyle}
                                      cursor={{stroke: '#3949AB', strokeWidth: 2, strokeDasharray: "2 2"}}/>
+                            <ReferenceLine y={lastValue} strokeDasharray="3 3" stroke="white"/>
                             <Area type="monotone"
                                   dataKey="value"
                                   stroke={chartColor}
