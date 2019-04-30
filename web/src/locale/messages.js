@@ -222,6 +222,8 @@ export default {
                             year: 'Year',
                             month: 'Month',
                             week: 'Week',
+                            m3: '3 Months',
+                            m6: 'Half-year',
                         },
                         control: {
                             left: 'From period start',
@@ -462,6 +464,8 @@ export default {
                             year: 'Год',
                             month: 'Месяц',
                             week: 'Неделя',
+                            m3: '3 Месяца',
+                            m6: 'Полгода',
                         },
                         control: {
                             left: 'От начала периода',
