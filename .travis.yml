@@ -1,27 +1,26 @@
+cache:
+  directories:
+    - "$HOME/.m2/repository"
+    - "$HOME/.sonar/cache"
 jobs:
   include:
-    - stage: build
-      matrix:
-        include:
-          - language: java
-            jdk: oraclejdk8
-            before_install:
-              - cd grafeo-server
-            install:
-              - mvn install -DskipTests=true -B
-            script:
-              - mvn test -B
-            cache:
-              directories:
-                - "$HOME/.m2/repository"
-                - "$HOME/.sonar/cache"
-          - language: node_js
-            node_js: "10"
-            before_install:
-              - cd grafeo-web
-            install:
-              - npm install
-            script:
-              - npm run-script build
+    - stage: server build
+      language: java
+      jdk: oraclejdk8
+      before_install:
+        - cd grafeo-server
+      install:
+        - mvn install -DskipTests=true -B
+      script:
+        - mvn test -B
+    - stage: UI build
+      language: node_js
+      node_js: "10"
+      before_install:
+        - cd grafeo-web
+      install:
+        - npm install
+      script:
+        - npm run-script build
     - stage: deploy
       script: "deploying server and web"
