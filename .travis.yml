@@ -1,0 +1,18 @@
+matrix:
+  include:
+    - language: java
+      jdk: oraclejdk8
+      before_script:
+        - cd grafeo-server
+      script:
+        - mvn clean package
+    - language: node_js
+      node_js: "10"
+      before_script:
+        - cd grafeo-web
+      install:
+        - npm install
+      script:
+        - npm build
+
+
