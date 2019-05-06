@@ -30,7 +30,7 @@ jobs:
       cache:
         npm: true
         directories:
-          - node_modules
+          - grafeo-web/node_modules
     - stage: deploy
       script: skip
       language: bash
