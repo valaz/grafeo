@@ -12,7 +12,7 @@ const requestFile = (options) => {
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
 
-    return fetch(options.url, options)
+    return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
         .then(response =>
             response.blob().then(blob => {
                 if (!response.ok) {
