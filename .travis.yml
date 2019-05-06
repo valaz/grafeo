@@ -12,7 +12,7 @@ matrix:
       install:
         - mvn install -DskipTests=true -B
       script:
-        - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test -B sonar:sonar
+        - mvn test -B
       cache:
         directories:
           - "$HOME/.m2/repository"
