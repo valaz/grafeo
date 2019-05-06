@@ -1,6 +1,7 @@
-matrix:
+jobs:
   include:
-    - language: java
+    - stage: server build
+      language: java
       jdk: oraclejdk8
       addons:
         sonarcloud:
@@ -17,7 +18,8 @@ matrix:
         directories:
           - "$HOME/.m2/repository"
           - "$HOME/.sonar/cache"
-    - language: node_js
+    - stage: web build
+      language: node_js
       node_js: "10"
       before_install:
         - cd grafeo-web
@@ -29,8 +31,8 @@ matrix:
         npm: true
         directories:
           - node_modules
-
-jobs:
-  include:
     - stage: deploy
-      script: "deploy server and UI"
+      script: skip
+      deploy:
+        provider: script
+        script: bash .travis/deploy-mock.sh
