@@ -33,6 +33,7 @@ jobs:
           - node_modules
     - stage: deploy
       script: skip
+      language: bash
       deploy:
         provider: script
         script: bash .travis/deploy-mock.sh
