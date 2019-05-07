@@ -31,19 +31,14 @@ jobs:
         npm: true
         directories:
           - grafeo-web/node_modules
-    - stage: deploy dev
+    - stage: deploy ui to dev
       if: branch IN (dev, master, monorepo)
-      script: skip
+      script: bash .travis/deploy-dev-mock.sh
       language: bash
-      deploy:
-        provider: script
-        script: bash .travis/deploy-dev-mock.sh
-        on:
-          braches:
-            only:
-              - monorepo
-              - dev
-              - master
+    - stage: deploy server to dev
+      if: branch IN (dev, master, monorepo)
+      script: bash .travis/deploy-dev-mock.sh
+      language: bash
     - stage: test dev
       if: branch IN (dev, master, monorepo)
       language: bash
