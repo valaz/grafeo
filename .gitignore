@@ -36,3 +36,4 @@ nbdist/
 /grafeo-web/node
 /grafeo-web/yarn-error.log
 /grafeo-web/.env.production.local
+/grafeo-web/.env.development.local
