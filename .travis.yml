@@ -32,14 +32,14 @@ jobs:
         directories:
           - grafeo-web/node_modules
     - stage: deploy dev
-      if: branch = dev
+      if: branch IN (dev, master, monorepo)
       script: skip
       language: bash
       deploy:
         provider: script
         script: bash .travis/deploy-dev-mock.sh
     - stage: test dev
-      if: branch = dev
+      if: branch IN (dev, master, monorepo)
       script: 'curl https://dev.grafeo.pro'
     - stage: deploy prod
       if: branch = master
