@@ -40,6 +40,7 @@ jobs:
         script: bash .travis/deploy-dev-mock.sh
     - stage: test dev
       if: branch IN (dev, master, monorepo)
+      language: bash
       script: 'curl https://dev.grafeo.pro'
     - stage: deploy prod
       if: branch = master
@@ -50,4 +51,5 @@ jobs:
         script: bash .travis/deploy-mock.sh
     - stage: test prod
       if: branch = master
+      language: bash
       script: 'curl https://grafeo.pro'
