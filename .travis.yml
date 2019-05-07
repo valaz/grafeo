@@ -65,9 +65,8 @@ jobs:
     - stage: test dev
       if: branch IN (dev, monorepo)
       language: bash
-      script:
-        - 'curl https://dev.grafeo.pro'
-        - 'curl https://api.dev.grafeo.pro/api/common/fresh'
+      script: 'curl https://dev.grafeo.pro'
+    - script: 'curl https://api.dev.grafeo.pro/api/common/fresh'
     # Deploy Web to Prod environment
     - stage: deploy Web to prod
       if: branch = master
@@ -100,6 +99,5 @@ jobs:
     - stage: test prod
       if: branch = master
       language: bash
-      script:
-        - 'curl https://grafeo.pro'
-        - 'curl https://api.grafeo.pro/api/common/fresh'
+      script: 'curl https://grafeo.pro'
+    - script: 'curl https://api.grafeo.pro/api/common/fresh'
