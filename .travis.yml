@@ -32,20 +32,6 @@ jobs:
         npm: true
         directories:
           - grafeo-web/node_modules
-    # Build NPM Web
-    - stage: web build
-      language: node_js
-      node_js: "10"
-      before_install:
-        - cd grafeo-web
-      install:
-        - npm install
-      script:
-        - npm run-script build
-      cache:
-        npm: true
-        directories:
-          - grafeo-web/node_modules
     # Deploy Web to Dev environment
     - stage: deploy Web to dev
       if: branch IN (dev, monorepo)
@@ -76,12 +62,13 @@ jobs:
       language: bash
     # Test availability on Dev environment
     - stage: test dev
+      script: 'curl https://dev.grafeo.pro'
+      name: "Dev Web availability"
       if: branch IN (dev, monorepo)
       language: bash
-      script: 'curl https://dev.grafeo.pro'
-      name: "Web availability"
     - script: 'curl https://api.dev.grafeo.pro/api/common/fresh'
-      name: "Server availability"
+      name: "Dev Server availability"
+      if: branch IN (dev, monorepo)
       language: bash
     # Deploy Web to Prod environment
     - stage: deploy Web to prod
@@ -113,7 +100,11 @@ jobs:
       language: bash
     # Test availability on Prod environment
     - stage: test prod
+      script: 'curl https://grafeo.pro'
+      name: "Prod Web availability"
       if: branch = master
       language: bash
-      script: 'curl https://grafeo.pro'
     - script: 'curl https://api.grafeo.pro/api/common/fresh'
+      name: "Prod Server availability"
+      if: branch = master
+      language: bash
