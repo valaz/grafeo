@@ -41,9 +41,9 @@ jobs:
         on:
           braches:
             only:
+              - monorepo
               - dev
               - master
-              - monorepo
     - stage: test dev
       if: branch IN (dev, master, monorepo)
       language: bash
