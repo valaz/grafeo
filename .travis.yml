@@ -31,9 +31,23 @@ jobs:
         npm: true
         directories:
           - grafeo-web/node_modules
-    - stage: deploy
+    - stage: deploy dev
+      if: branch = dev
+      script: skip
+      language: bash
+      deploy:
+        provider: script
+        script: bash .travis/deploy-dev-mock.sh
+    - stage: test dev
+      if: branch = dev
+      script: 'curl https://dev.grafeo.pro'
+    - stage: deploy prod
+      if: branch = master
       script: skip
       language: bash
       deploy:
         provider: script
         script: bash .travis/deploy-mock.sh
+    - stage: test prod
+      if: branch = master
+      script: 'curl https://grafeo.pro'
