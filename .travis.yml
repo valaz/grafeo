@@ -61,7 +61,7 @@ jobs:
       script: bash .travis/deploy_grafeo-dev.sh
       language: bash
     # Test availability on Dev environment
-    - stage: test dev
+    - stage: check dev environment
       script: 'curl https://dev.grafeo.pro'
       name: "Dev Web availability"
       if: branch IN (dev, monorepo)
@@ -99,7 +99,7 @@ jobs:
       script: bash .travis/deploy_grafeo.sh
       language: bash
     # Test availability on Prod environment
-    - stage: test prod
+    - stage: check prod environment
       script: 'curl https://grafeo.pro'
       name: "Prod Web availability"
       if: branch = master
