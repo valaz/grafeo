@@ -1,7 +1,7 @@
 jobs:
   include:
     # Build Java Server
-    - stage: server build
+    - stage: Build
       language: java
       jdk: oraclejdk8
       addons:
@@ -15,10 +15,23 @@ jobs:
         - mvn install -DskipTests=true -B
       script:
         - mvn test -B
+      name: "Server build"
       cache:
         directories:
           - "$HOME/.m2/repository"
           - "$HOME/.sonar/cache"
+    - script: npm run-script build
+      name: "Web build"
+      language: node_js
+      node_js: "10"
+      before_install:
+        - cd grafeo-web
+      install:
+        - npm install
+      cache:
+        npm: true
+        directories:
+          - grafeo-web/node_modules
     # Build NPM Web
     - stage: web build
       language: node_js
