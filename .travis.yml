@@ -38,6 +38,12 @@ jobs:
       deploy:
         provider: script
         script: bash .travis/deploy-dev-mock.sh
+        on:
+          braches:
+            only:
+              - dev
+              - maser
+              - monorepo
     - stage: test dev
       if: branch IN (dev, master, monorepo)
       language: bash
@@ -49,6 +55,10 @@ jobs:
       deploy:
         provider: script
         script: bash .travis/deploy-mock.sh
+        on:
+          braches:
+            only:
+              - maser
     - stage: test prod
       if: branch = master
       language: bash
