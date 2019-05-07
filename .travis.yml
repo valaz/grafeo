@@ -42,7 +42,7 @@ jobs:
           braches:
             only:
               - dev
-              - maser
+              - master
               - monorepo
     - stage: test dev
       if: branch IN (dev, master, monorepo)
@@ -58,7 +58,7 @@ jobs:
         on:
           braches:
             only:
-              - maser
+              - master
     - stage: test prod
       if: branch = master
       language: bash
