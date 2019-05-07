@@ -1,5 +1,6 @@
 jobs:
   include:
+    # Build Java Server
     - stage: server build
       language: java
       jdk: oraclejdk8
@@ -18,6 +19,7 @@ jobs:
         directories:
           - "$HOME/.m2/repository"
           - "$HOME/.sonar/cache"
+    # Build NPM Web
     - stage: web build
       language: node_js
       node_js: "10"
@@ -31,6 +33,7 @@ jobs:
         npm: true
         directories:
           - grafeo-web/node_modules
+    # Deploy Web to Dev environment
     - stage: deploy Web to dev
       if: branch IN (dev, monorepo)
       before_script:
@@ -44,6 +47,7 @@ jobs:
         - git config --global push.default simple
       script: bash .travis/deploy_grafeo-dev-web.sh
       language: bash
+    # Deploy Server to Dev environment
     - stage: deploy Server to dev
       if: branch IN (dev, monorepo)
       before_script:
@@ -57,24 +61,45 @@ jobs:
         - git config --global push.default simple
       script: bash .travis/deploy_grafeo-dev.sh
       language: bash
+    # Test availability on Dev environment
     - stage: test dev
       if: branch IN (dev, monorepo)
       language: bash
       script:
         - 'curl https://dev.grafeo.pro'
         - 'curl https://api.dev.grafeo.pro/api/common/fresh'
-    - stage: deploy prod
+    # Deploy Web to Prod environment
+    - stage: deploy Web to prod
       if: branch = master
-      script: skip
+      before_script:
+        - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
+          -in .travis/deploy.key.enc -out .travis/deploy.key -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 .travis/deploy.key
+        - ssh-add .travis/deploy.key
+        - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
+        - git remote add grafeo-web dokku@dokku.valiev.top:grafeo-web
+        - git config --global push.default simple
+      script: bash .travis/deploy_grafeo-web.sh
       language: bash
-      deploy:
-        provider: script
-        script: bash .travis/deploy-mock.sh
-        on:
-          braches:
-            only:
-              - master
+    # Deploy Server to Prod environment
+    - stage: deploy Server to prod
+    if: branch = master
+    before_script:
+      - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
+        -in .travis/deploy.key.enc -out .travis/deploy.key -d
+      - eval "$(ssh-agent -s)"
+      - chmod 600 .travis/deploy.key
+      - ssh-add .travis/deploy.key
+      - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
+      - git remote add grafeo dokku@dokku.valiev.top:grafeo
+      - git config --global push.default simple
+    script: bash .travis/deploy_grafeo.sh
+    language: bash
+    # Test availability on Prod environment
     - stage: test prod
       if: branch = master
       language: bash
-      script: 'curl https://grafeo.pro'
+      script:
+        - 'curl https://grafeo.pro'
+        - 'curl https://api.grafeo.pro/api/common/fresh'
