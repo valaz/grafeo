@@ -66,7 +66,7 @@ jobs:
       name: "Dev Web availability"
       if: branch IN (dev, monorepo)
       language: bash
-    - script: 'curl https://api.dev.grafeo.pro/api/common/fresh'
+    - script: 'curl https://dpi.grafeo.pro/api/common/fresh'
       name: "Dev Server availability"
       if: branch IN (dev, monorepo)
       language: bash
