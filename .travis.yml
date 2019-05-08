@@ -83,7 +83,7 @@ jobs:
     # Deploy Web to Prod environment
     - stage: deploy Web to prod
       if: branch = master
-      before_script:
+      before_deploy:
         - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
           -in .travis/deploy.key.enc -out .travis/deploy.key -d
         - eval "$(ssh-agent -s)"
@@ -92,12 +92,17 @@ jobs:
         - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
         - git remote add grafeo-web dokku@dokku.valiev.top:grafeo-web
         - git config --global push.default simple
-      script: bash .travis/deploy_grafeo-web.sh
+      script: skip
+      deploy:
+          - provider: script
+            script: bash .travis/deploy_grafeo-web.sh
+            on:
+              branch: master
       language: bash
     # Deploy Server to Prod environment
     - stage: deploy Server to prod
       if: branch = master
-      before_script:
+      before_deploy:
         - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
           -in .travis/deploy.key.enc -out .travis/deploy.key -d
         - eval "$(ssh-agent -s)"
@@ -106,7 +111,12 @@ jobs:
         - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
         - git remote add grafeo dokku@dokku.valiev.top:grafeo
         - git config --global push.default simple
-      script: bash .travis/deploy_grafeo.sh
+      script: skip
+      deploy:
+          - provider: script
+            script: bash .travis/deploy_grafeo.sh
+            on:
+              branch: master
       language: bash
     # Test availability on Prod environment
     - stage: check prod environment
