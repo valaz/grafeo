@@ -35,7 +35,7 @@ jobs:
     # Deploy Web to Dev environment
     - stage: deploy Web to dev
       if: branch IN (dev, monorepo)
-      before_script:
+      before_deploy:
         - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
           -in .travis/deploy.key.enc -out .travis/deploy.key -d
         - eval "$(ssh-agent -s)"
@@ -44,7 +44,12 @@ jobs:
         - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
         - git remote add grafeo-dev-web dokku@dokku.valiev.top:grafeo-dev-web
         - git config --global push.default simple
-      script: bash .travis/deploy_grafeo-dev-web.sh
+      script: skip
+      deploy:
+        - provider: script
+          script: bash .travis/deploy_grafeo-dev-web.sh
+          on:
+            branch: monorepo
       language: bash
     # Deploy Server to Dev environment
     - stage: deploy Server to dev
