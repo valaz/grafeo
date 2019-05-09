@@ -1,33 +1,76 @@
-language: java
-jdk: oraclejdk8
-addons:
-  sonarcloud:
-    organization: valaz-github
-    token:
-      secure: "$SONAR_TOKEN"
-install: "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
-script: "./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test -B -PskipNpm sonar:sonar
-  -Dalpha_api_key='$ALPHA_API_KEY'"
-deploy:
-  - provider: script
-    script: bash .travis/deploy.sh
-    on:
-      branch: master
-  - provider: script
-    script: bash .travis/deploy-dev.sh
-    on:
-      branch: dev
-cache:
-  directories:
-  - "$HOME/.m2/repository"
-  - "$HOME/.sonar/cache"
-before_install:
-- openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
-  -in .travis/deploy.key.enc -out .travis/deploy.key -d
-- eval "$(ssh-agent -s)"
-- chmod 600 .travis/deploy.key
-- ssh-add .travis/deploy.key
-- ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
-- git remote add deploy dokku@dokku.valiev.top:grafeo
-- git remote add deploy-dev dokku@dokku.valiev.top:grafeo-dev
-- git config --global push.default simple
+jobs:
+  include:
+    # Build Java Server
+    - stage: build
+      language: java
+      jdk: oraclejdk8
+      addons:
+        sonarcloud:
+          organization: valaz-github
+          token:
+            secure: "$SONAR_TOKEN"
+      before_install:
+        - cd grafeo-server
+      install:
+        - mvn install -DskipTests=true -B
+      script:
+        - mvn test -B
+      name: "Server build"
+      cache:
+        directories:
+          - "$HOME/.m2/repository"
+          - "$HOME/.sonar/cache"
+    - script: npm run-script build
+      name: "Web build"
+      language: node_js
+      node_js: "10"
+      before_install:
+        - cd grafeo-web
+      install:
+        - npm install
+      cache:
+        npm: true
+        directories:
+          - grafeo-web/node_modules
+    # Deploy to Dev environment
+    - stage: deploy to dev environment
+      name: Deploing to dokku
+      if: branch IN (dev, monorepo) AND type IN (push)
+      script: skip
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
+          -in .travis/deploy.key.enc -out .travis/deploy.key -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 .travis/deploy.key
+        - ssh-add .travis/deploy.key
+        - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
+      deploy:
+        - provider: script
+          script: bash .travis/deploy_grafeo-dev_all.sh
+          on:
+            branch: monorepo
+      after_deploy:
+        - curl https://dev.grafeo.pro
+        - curl https://dpi.grafeo.pro/api/common/fresh
+      language: bash
+    # Deploy to Prod environment
+    - stage: deploy to prod environment
+      name: Deploing to dokku
+      if: branch = master AND type IN (push)
+      script: skip
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_fb8c75fa2d2a_key -iv $encrypted_fb8c75fa2d2a_iv
+          -in .travis/deploy.key.enc -out .travis/deploy.key -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 .travis/deploy.key
+        - ssh-add .travis/deploy.key
+        - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
+      deploy:
+        - provider: script
+          script: bash .travis/deploy_grafeo_all.sh
+          on:
+            branch: master
+      after_deploy:
+        - curl https://grafeo.pro
+        - curl https://api.grafeo.pro/api/common/fresh
+      language: bash
