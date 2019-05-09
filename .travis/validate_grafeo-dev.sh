@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#response=$(curl https://dpi.grafeo.pro/api/common/fresh);
-response=$(curl http://localhost:8090/api/common/fresh);
+response=$(curl https://dpi.grafeo.pro/api/common/fresh);
 
 if [ "Started recently" == "${response}" ]; then
     echo "Success: server was started recently"
