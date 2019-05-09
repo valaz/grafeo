@@ -50,6 +50,7 @@ jobs:
           on:
             branch: dev
       after_deploy:
+        - sleep 15
         - curl https://dev.grafeo.pro
         - bash .travis/validate_grafeo-dev.sh || travis_terminate 1;
       language: bash
@@ -71,7 +72,7 @@ jobs:
           on:
             branch: master
       after_deploy:
-        - sleep 10
+        - sleep 15
         - curl https://grafeo.pro
         - bash .travis/validate_grafeo.sh || travis_terminate 1;
       language: bash
