@@ -51,7 +51,7 @@ jobs:
             branch: dev
       after_deploy:
         - curl https://dev.grafeo.pro
-        - bash .travis/validate_grafeo-dev.sh
+        - bash .travis/validate_grafeo-dev.sh || travis_terminate 1;
       language: bash
     # Deploy to Prod environment
     - stage: deploy to prod environment
@@ -71,6 +71,7 @@ jobs:
           on:
             branch: master
       after_deploy:
+        - sleep 10
         - curl https://grafeo.pro
-        - curl https://api.grafeo.pro/api/common/fresh
+        - bash .travis/validate_grafeo.sh || travis_terminate 1;
       language: bash
