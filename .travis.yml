@@ -59,6 +59,7 @@ jobs:
       name: Deploing to dokku
       if: branch = master AND type IN (push)
       script: skip
+      before_deploy:
         - <<: *predeploy
       deploy:
         - provider: script
