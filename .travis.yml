@@ -59,7 +59,7 @@ jobs:
       name: Deploing to dokku
       if: branch = master AND type IN (push)
       script: skip
-    - <<: *predeploy
+        - <<: *predeploy
       deploy:
         - provider: script
           script: bash .travis/deploy_grafeo_all.sh
