@@ -1,0 +1,4 @@
+grafeo-web=grafeo-web
+grafeo-dev-web=grafeo-web
+grafeo-dev=grafeo-server
+grafeo=grafeo-server
