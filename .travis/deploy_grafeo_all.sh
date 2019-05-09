@@ -1,4 +1,5 @@
 #!/bin/bash
+git config --global push.default simple
 git remote add grafeo-web dokku@dokku.valiev.top:grafeo-web
 git remote add grafeo dokku@dokku.valiev.top:grafeo
 git status
