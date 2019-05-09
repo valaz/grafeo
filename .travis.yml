@@ -44,8 +44,6 @@ jobs:
         - chmod 600 .travis/deploy.key
         - ssh-add .travis/deploy.key
         - ssh-keyscan dokku.valiev.top >> ~/.ssh/known_hosts
-        - git remote add grafeo-dev-web dokku@dokku.valiev.top:grafeo-dev-web
-        - git remote add grafeo-dev dokku@dokku.valiev.top:grafeo-dev
         - git config --global push.default simple
       deploy:
         - provider: script
