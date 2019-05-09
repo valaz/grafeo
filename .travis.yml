@@ -51,7 +51,7 @@ jobs:
             branch: dev
       after_deploy:
         - curl https://dev.grafeo.pro
-        - curl https://dpi.grafeo.pro/api/common/fresh
+        - bash .travis/validate_grafeo-dev.sh
       language: bash
     # Deploy to Prod environment
     - stage: deploy to prod environment

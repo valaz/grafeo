@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.valiev.grafeo.payload.GaUid;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping("/api/common")
@@ -16,7 +17,7 @@ public class CommonController {
     @Value("${ga:GAUID}")
     private String gaUid;
 
-    private LocalDate startDate = LocalDate.now();
+    private static final LocalDateTime startDate = LocalDateTime.now();
 
     @GetMapping("/ga")
     public GaUid getGaUid() {
@@ -25,10 +26,12 @@ public class CommonController {
 
     @GetMapping("/fresh")
     public ResponseEntity isFresh() {
-        if (LocalDate.now().equals(startDate)) {
-            return ResponseEntity.ok().body("Started today");
+        LocalDateTime now = LocalDateTime.now();
+        long periodAfterStart = ChronoUnit.MINUTES.between(startDate, now);
+        if (periodAfterStart < 10) {
+            return ResponseEntity.ok().body("Started recently");
         } else {
-            return ResponseEntity.badRequest().body("Started on " + startDate);
+            return ResponseEntity.badRequest().body("Started not recently:" + startDate);
         }
     }
 }
