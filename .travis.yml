@@ -47,11 +47,7 @@ jobs:
         - git config --global push.default simple
       deploy:
         - provider: script
-          script: bash .travis/deploy_grafeo-dev-web.sh
-          on:
-            branch: monorepo
-        - provider: script
-          script: bash .travis/deploy_grafeo-dev.sh
+          script: bash .travis/deploy_grafeo-dev_all.sh
           on:
             branch: monorepo
       after_deploy:
