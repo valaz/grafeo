@@ -14,7 +14,7 @@ jobs:
       install:
         - mvn install -DskipTests=true -B
       script:
-        - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test -B sonar:sonar
+        - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test -B sonar:sonar -Dsonar.projectKey=grafeo-server
       name: "Server build"
       cache:
         directories:
