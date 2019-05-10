@@ -8,13 +8,13 @@ jobs:
         sonarcloud:
           organization: valaz-github
           token:
-            secure: "$SONAR_TOKEN"
+            secure: "$SONAR_SERVER_TOKEN"
       before_install:
         - cd grafeo-server
       install:
         - mvn install -DskipTests=true -B
       script:
-        - mvn test -B
+        - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test -B sonar:sonar -Dsonar.projectKey=grafeo-server
       name: "Server build"
       cache:
         directories:
