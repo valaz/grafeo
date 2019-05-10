@@ -38,6 +38,7 @@ jobs:
         npm: true
         directories:
           - grafeo-web/node_modules
+          - "$HOME/.sonar/cache"
     # Deploy to Dev environment
     - stage: deploy to dev environment
       name: Deploing to dokku
