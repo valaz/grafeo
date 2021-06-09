@@ -3,7 +3,7 @@ jobs:
     # Build Java Server
     - stage: build
       language: java
-      jdk: oraclejdk8
+      jdk: openjdk11
       addons:
         sonarcloud:
           organization: valaz-github
@@ -28,7 +28,7 @@ jobs:
             secure: "$SONAR_WEB_TOKEN"
       name: "Web build"
       language: node_js
-      node_js: "10"
+      node_js: "15"
       before_script: sonar-scanner -Dsonar.projectKey=grafeo-web -Dsonar.login=04276e2ebc740db9bcea3ef3b1c5f3dadf3a2cda
       before_install:
         - cd grafeo-web
