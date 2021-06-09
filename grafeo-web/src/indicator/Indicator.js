@@ -110,6 +110,6 @@ class Indicator extends Component {
             </Grid>
         )
     }
-}
+};
 
 export default injectIntl(withRouter(withStyles(styles)(Indicator)));

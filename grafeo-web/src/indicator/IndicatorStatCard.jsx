@@ -8,7 +8,7 @@ import DateRange from "@material-ui/icons/DateRange";
 import {withStyles} from "@material-ui/core";
 
 
-import dashboardStyle from "../custom_components/assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
+import dashboardStyle from "../custom_components/assets/jss/material-dashboard-react/views/dashboardStyle";
 
 function IndicatorStatCard({...props}) {
     const {

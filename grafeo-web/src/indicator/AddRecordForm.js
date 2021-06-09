@@ -327,7 +327,7 @@ class AddRecordForm extends Component {
         return (
             <form onSubmit={this.handleSubmit} style={{textAlign: 'center'}} className={classes.root}>
                 <Grid container
-                      spacing={16} justify="center">
+                      spacing={3} justify="center">
                     <Grid item xs={12} sm={6} md={4} align="center">
                         <DatePicker fullWidth
                                     inputRef={(node) => {

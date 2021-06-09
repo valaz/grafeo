@@ -7,6 +7,7 @@ import {ACCESS_TOKEN} from "../constants";
 import ReactGA from 'react-ga';
 import {FormattedMessage} from "react-intl";
 import LinearDeterminate from "../common/LinearDeterminate";
+import LoginForm from "../user/login/Login";
 
 const styles = theme => ({
     button: {
@@ -87,23 +88,26 @@ class Home extends Component {
             return <IndicatorList {...this.props}/>
         } else {
             return (
-                <div style={{padding: 24, background: '#f1f1f1'}}>
-                    <Grid item xs={12}>
-                        <Grid container
-                              justify="center"
-                              direction='column'
-                              spacing={16}>
-                            <Grid container item spacing={0} justify="center" margin='dense'>
-                                <Grid item {...gridSize}>
-                                    <Button fullWidth variant="contained" size="large" color="secondary"
-                                            className={classes.button}
-                                            onClick={this.handleDemo}>
-                                        <FormattedMessage id="common.demo"/>
-                                    </Button>
+                <div>
+                    <LoginForm/>
+                    <div style={{padding: 24, background: '#f1f1f1'}}>
+                        <Grid item xs={12}>
+                            <Grid container
+                                  justify="center"
+                                  direction='column'
+                                  spacing={16}>
+                                <Grid container item spacing={0} justify="center" margin='dense'>
+                                    <Grid item {...gridSize}>
+                                        <Button fullWidth variant="contained" size="large" color="secondary"
+                                                className={classes.button}
+                                                onClick={this.handleDemo}>
+                                            <FormattedMessage id="common.demo"/>
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </div>
                 </div>
             )
         }
