@@ -1,0 +1,22 @@
+name: Web Npm Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 15.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.x
+      - name: Install dependencies
+        run: |
+          cd grafeo-web
+          yarn install
+      - name: Generate build
+        run: |
+          cd grafeo-web
+          yarn run build
