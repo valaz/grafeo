@@ -13,6 +13,10 @@ jobs:
         with:
           node-version: 15.x
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd grafeo-web
+          npm install
       - name: Generate build
-        run: npm run build
+        run: |
+          cd grafeo-web
+          npm run build
