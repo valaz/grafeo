@@ -16,8 +16,7 @@ import top.valiev.grafeo.repository.UserRepository;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -47,8 +46,8 @@ public class DemoServiceTest {
         assertTrue(user.isPresent());
         assertEquals(demoUser.getEmail(), user.get().getEmail());
         assertEquals(demoUser.getName(), user.get().getName());
-        assertTrue(!userRepository.findAllByIsDemo(true).isEmpty());
-        assertTrue(!indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
+        assertFalse(userRepository.findAllByIsDemo(true).isEmpty());
+        assertFalse(indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
         // FIXME: 07.05.2018 assertionError during maven test
 //        assertTrue(!recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
     }
@@ -58,7 +57,7 @@ public class DemoServiceTest {
         User demoUser = demoService.generateDemoUser();
 
         TimeUnit.SECONDS.sleep(6);
-        assertTrue(!userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
+        assertFalse(userRepository.existsByUsernameIgnoreCase(demoUser.getUsername()));
         assertTrue(userRepository.findAllByIsDemo(true).isEmpty());
         assertTrue(indicatorRepository.findByCreatedBy(demoUser.getId()).isEmpty());
         assertTrue(recordRepository.findByCreatedBy(demoUser.getId()).isEmpty());
