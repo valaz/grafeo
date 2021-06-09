@@ -1,4 +1,4 @@
-name: Web Npm Build
+name: Web Yarn Build
 
 on: [push]
 
