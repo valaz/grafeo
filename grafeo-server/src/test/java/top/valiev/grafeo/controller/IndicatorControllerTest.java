@@ -2,9 +2,9 @@ package top.valiev.grafeo.controller;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
@@ -33,12 +34,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 @TestPropertySource(properties = {
@@ -51,7 +52,7 @@ public class IndicatorControllerTest extends AbstractControllerTest {
     private static final String TEST_EMAIL = "indicator_test@grafeo.pro";
     private static final String TEST_PASSWORD = "123456";
 
-    @Before
+    @BeforeEach
     public void signin() throws Exception {
         if (!userRepository.findByEmail(TEST_EMAIL).isPresent()) {
             userService.createUser(TEST_EMAIL, TEST_EMAIL, TEST_EMAIL, TEST_PASSWORD);
