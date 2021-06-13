@@ -1,9 +1,12 @@
 name: Build and Test
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   server_build:
+    name: Server Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +20,7 @@ jobs:
           cd grafeo-server
           mvn --batch-mode --update-snapshots verify
   web_build:
+    name: Web Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
