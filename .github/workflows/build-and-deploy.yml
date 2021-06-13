@@ -38,9 +38,10 @@ jobs:
           cd grafeo-web
           npm run build
 
-  deploy:
+  dev_deploy:
     needs: [ server_build, web_build ]
-    name: Deploy
+    if: github.ref == 'refs/heads/upgrade'
+    name: Dev Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Cloning repo
@@ -48,14 +49,32 @@ jobs:
         with:
           fetch-depth: 0
       - name: Push Dev Server to dokku
-        if: github.ref == 'refs/heads/upgrade'
         uses: dokku/github-action@master
         with:
           git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-dev-server'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Push Dev Web to dokku
-        if: github.ref == 'refs/heads/upgrade'
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-dev-web'
+          git_remote_u
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+  prod_deploy:
+    needs: [ server_build, web_build ]
+    if: github.ref == 'refs/heads/master'
+    name: Prod Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Push Prod Server to dokku
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-prod-server'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Push Prod Web to dokku
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-prod-web'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
