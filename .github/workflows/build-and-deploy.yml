@@ -41,7 +41,7 @@ jobs:
 
   dev_deploy:
     needs: [ server_build, web_build ]
-    if: github.ref == 'refs/heads/upgrade'
+    if: github.ref == 'refs/heads/dev'
     name: Dev Deploy
     runs-on: ubuntu-latest
     steps:
