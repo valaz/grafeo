@@ -7,7 +7,6 @@ import {ACCESS_TOKEN} from "../constants";
 import ReactGA from 'react-ga';
 import {FormattedMessage} from "react-intl";
 import LinearDeterminate from "../common/LinearDeterminate";
-import LoginForm from "../user/login/Login";
 
 const styles = theme => ({
     button: {
