@@ -1,4 +1,8 @@
 # Grafeo
+[![Build and Test](https://github.com/valaz/grafeo/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/valaz/grafeo/actions/workflows/build-and-test.yml)
+
+[![Build and Deploy](https://github.com/valaz/grafeo/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/valaz/grafeo/actions/workflows/build-and-deploy.yml)
+
 
 https://grafeo.pro/
 
