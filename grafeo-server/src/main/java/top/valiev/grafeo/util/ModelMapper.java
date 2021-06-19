@@ -32,7 +32,7 @@ public class ModelMapper {
 
         indicatorResponse.setRecords(recordResponses);
 
-        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getName(), creator.getIsDemo(), StringUtils.isNotBlank(creator.getFacebookUserId()));
+        UserSummary creatorSummary = new UserSummary(creator.getId(), creator.getUsername(), creator.getEmail(), creator.getName(), creator.getIsDemo(), StringUtils.isNotBlank(creator.getFacebookUserId()), null);
         indicatorResponse.setCreatedBy(creatorSummary);
 
         return indicatorResponse;

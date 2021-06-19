@@ -8,11 +8,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import top.valiev.grafeo.exeption.ResourceNotFoundException;
 import top.valiev.grafeo.model.User;
 import top.valiev.grafeo.payload.*;
-import top.valiev.grafeo.payload.*;
 import top.valiev.grafeo.repository.IndicatorRepository;
 import top.valiev.grafeo.repository.RecordRepository;
 import top.valiev.grafeo.repository.UserRepository;
 import top.valiev.grafeo.security.CurrentUser;
+import top.valiev.grafeo.security.JwtTokenProvider;
 import top.valiev.grafeo.security.UserPrincipal;
 import top.valiev.grafeo.service.IndicatorService;
 import top.valiev.grafeo.service.UserService;
@@ -40,10 +40,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    JwtTokenProvider tokenProvider;
+
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName(), currentUser.getIsDemo(), currentUser.getIsSocialLogin());
+        String newAccessToken = tokenProvider.generateToken(currentUser.getId());
+        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail(), currentUser.getName(), currentUser.getIsDemo(), currentUser.getIsSocialLogin(), newAccessToken);
     }
 
     @GetMapping("/profile")

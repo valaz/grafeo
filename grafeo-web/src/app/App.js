@@ -15,7 +15,7 @@ import NavigationTopBar from "../common/NavigationTopBar";
 import Notification from "../common/Notification";
 import {withStyles} from '@material-ui/core';
 import ReactGA from 'react-ga';
-import {isDemo} from "../constants";
+import {ACCESS_TOKEN, isDemo} from "../constants";
 import Policy from "./Policy";
 import Rules from "./Rules";
 
@@ -68,6 +68,9 @@ class App extends React.Component {
                     isAuthenticated: true,
                     isLoading: false
                 });
+                if (response.newAccessToken) {
+                    localStorage.setItem(ACCESS_TOKEN, response.newAccessToken);
+                }
                 if (response.isDemo) {
                     localStorage.setItem(isDemo, "1");
                 }
