@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - master
+      - prod
 
 jobs:
   server_build:
@@ -61,7 +61,7 @@ jobs:
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
   prod_deploy:
     needs: [ server_build, web_build ]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/prod'
     name: Prod Deploy
     runs-on: ubuntu-latest
     steps:
