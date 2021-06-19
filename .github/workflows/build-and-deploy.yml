@@ -69,13 +69,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Push Prod Server to dokku
-        uses: dokku/github-action@master
-        with:
-          git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-prod-server'
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Push Prod Web to dokku
         uses: dokku/github-action@master
         with:
           git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-prod-web'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Push Prod Server to dokku
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: 'ssh://dokku@dale.valiev.top:22/grafeo-prod-server'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
