@@ -18,7 +18,6 @@ import top.valiev.grafeo.model.Role;
 import top.valiev.grafeo.model.RoleName;
 import top.valiev.grafeo.model.User;
 import top.valiev.grafeo.payload.*;
-import top.valiev.grafeo.payload.*;
 import top.valiev.grafeo.repository.RoleRepository;
 import top.valiev.grafeo.repository.UserRepository;
 import top.valiev.grafeo.security.JwtTokenProvider;
@@ -125,7 +124,7 @@ public class AuthController {
     public ResponseEntity demoAuthenticateUser() {
 
         User demoUser = demoService.generateDemoUser();
-        String jwt = tokenProvider.generateToken(demoUser);
+        String jwt = tokenProvider.generateToken(demoUser.getId());
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 

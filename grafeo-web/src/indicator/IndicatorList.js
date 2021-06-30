@@ -137,12 +137,12 @@ class IndicatorList extends Component {
                     indicator={indicator}
                     handleDelete={this.handleDelete}
                 />)
-            });
+            })
         }
 
         return (
             <div style={{padding: 16, background: '#f1f1f1'}}>
-                <Grid container spacing={16}>
+                <Grid container spacing={2}>
                     {indicatorViews}
                 </Grid>
                 {
@@ -160,7 +160,7 @@ class IndicatorList extends Component {
                 }
             </div>
         );
-    }
+    };
 }
 
 export default withRouter(withStyles(styles)(IndicatorList));

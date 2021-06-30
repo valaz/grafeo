@@ -120,7 +120,7 @@ class Profile extends Component {
                             <div className={classes.root}>
                                 <Grid container style={{paddingTop: 10, paddingBottom: 10, margin: 0}}
                                       className="user-details" align="center"
-                                      spacing={24}>
+                                      spacing={4}>
                                     <Grid item xs={12} sm={4} md={4} align="center">
                                         <Avatar
                                             className={classes.bigAvatar}

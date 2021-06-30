@@ -284,7 +284,7 @@ class IndicatorConfig extends Component {
                         <Grid container
                               justify="center"
                               direction='column'
-                              spacing={16}>
+                              spacing={2}>
                             <Grid container item spacing={0} justify="center">
                                 <Grid item {...gridSize}>
                                     <TextField fullWidth autoFocus
@@ -328,7 +328,7 @@ class IndicatorConfig extends Component {
                     <Grid container
                           justify="center"
                           direction='column'
-                          spacing={16}>
+                          spacing={2}>
                         <Grid container item spacing={0} justify="center" margin='dense'>
                             <Grid item {...gridSize}>
                                 <Button fullWidth variant="contained" color="secondary" size="large"

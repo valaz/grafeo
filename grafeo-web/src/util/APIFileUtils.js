@@ -33,7 +33,7 @@ const storeFile = (options) => {
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
 
-    return fetch(options.url, options)
+    return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
         .then(response =>
             response.json().then(json => {
                 if (!response.ok) {

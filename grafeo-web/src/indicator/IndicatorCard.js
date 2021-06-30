@@ -20,7 +20,7 @@ import {
     withMobileDialog,
     withStyles
 } from '@material-ui/core';
-import {Delete, Edit, ExpandMore, FileDownload, FileUpload, MoreVert} from "@material-ui/icons";
+import {Delete, Edit, ExpandMore, CloudDownload, CloudUpload, MoreVert} from "@material-ui/icons";
 import {withRouter} from "react-router-dom";
 import {injectIntl} from "react-intl";
 import classnames from 'classnames';
@@ -214,7 +214,7 @@ class IndicatorCard extends React.Component {
                     <MenuItem className={classes.menuItem}
                               component="label">
                         <ListItemIcon className={classes.icon}>
-                            <FileUpload/>
+                            <CloudUpload/>
                         </ListItemIcon>
                         <ListItemText classes={{primary: classes.primary}} inset
                                       primary={this.props.intl.formatMessage({id: 'indicator.view.card.upload.menu'})}/>
@@ -227,7 +227,7 @@ class IndicatorCard extends React.Component {
                     </MenuItem>
                     <MenuItem className={classes.menuItem} onClick={this.handleMenuDownload}>
                         <ListItemIcon className={classes.icon}>
-                            <FileDownload/>
+                            <CloudDownload/>
                         </ListItemIcon>
                         <ListItemText classes={{primary: classes.primary}} inset
                                       primary={this.props.intl.formatMessage({id: 'indicator.view.card.download.menu'})}/>

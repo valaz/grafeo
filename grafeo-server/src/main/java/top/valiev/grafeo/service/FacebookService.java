@@ -49,7 +49,7 @@ public class FacebookService extends AbstractService {
             String responseAppId = tokenResponse.getJSONObject(DATA).getString(APP_ID);
             String responseUserId = tokenResponse.getJSONObject(DATA).getString(USER_ID);
             if (this.appId.equals(responseAppId) && userId.equals(responseUserId)) {
-                LOGGER.info("Correct token for {}", userId);
+                LOGGER.info("Token is correct for {}", userId);
                 return true;
             }
         } catch (RuntimeException e) {

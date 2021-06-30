@@ -13,4 +13,5 @@ public class UserSummary {
     private String name;
     private Boolean isDemo;
     private Boolean isSocialLogin;
+    private String newAccessToken;
 }

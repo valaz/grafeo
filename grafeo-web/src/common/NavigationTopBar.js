@@ -88,7 +88,7 @@ class NavigationTopBar extends React.Component {
                     <Toolbar>
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             <NavLink to="/" style={{color: '#FFFFFF', textDecoration: 'none'}}>
-                                {process.env.REACT_APP_TITILE}
+                                {process.env.REACT_APP_TITLE}
                             </NavLink>
                         </Typography>
                         {profileMenu}
