@@ -18,7 +18,9 @@ public abstract class AbstractService {
     protected JSONObject sendRequest(Request request) {
         String jsonData = "";
         try {
+            LOGGER.info("Sending request: {}", request);
             Response response = okHttpClient.newCall(request).execute();
+            LOGGER.info("Received response: {}", response);
             if (response.body() != null) {
                 jsonData = response.body().string();
             }
