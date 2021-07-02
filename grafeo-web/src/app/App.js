@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Switch, withRouter} from 'react-router-dom';
+import {Redirect, Route, Switch, withRouter} from 'react-router-dom';
 import {getCurrentUser} from '../util/APIUtils';
 import LoadingIndicator from "../common/LoadingIndicator";
 import Login from "../user/login/Login";
@@ -178,6 +178,7 @@ class App extends React.Component {
                                           onLogout={this.handleLogout}/>
                         <div className={classes.content}>
                             <Switch>
+                                <Redirect from="/index.html" to="/"/>
                                 <Route exact path="/"
                                        render={(props) => <Home isAuthenticated={this.state.isAuthenticated}
                                                                 currentUser={this.state.currentUser}
