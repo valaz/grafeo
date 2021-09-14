@@ -129,6 +129,12 @@ class AddRecordForm extends Component {
         this.handleValueFocus = this.handleValueFocus.bind(this);
     }
 
+    componentDidMount() {
+        let todayValue = moment().local();
+        this.handleDateChange(todayValue, this.validateDate)
+    }
+
+
     componentWillReceiveProps(nextProps) {
         let valueValue = nextProps.editValue;
         if (valueValue) {
