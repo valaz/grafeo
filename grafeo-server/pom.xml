@@ -23,6 +23,17 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <jacoco.version>0.8.7</jacoco.version>
+        <hibernate-validator.version>7.0.1.Final</hibernate-validator.version>
+        <postgresql.version>42.2.21</postgresql.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <lombok.version>1.18.20</lombok.version>
+        <guava.version>30.1.1-jre</guava.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-text.version>1.9</commons-text.version>
+        <json.version>20210307</json.version>
+        <okhttp.version>4.9.1</okhttp.version>
+        <gson.version>2.8.7</gson.version>
+        <commons-io.version>2.9.0</commons-io.version>
     </properties>
 
     <dependencies>
@@ -47,12 +58,12 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.1.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.21</version>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <dependency>
@@ -63,7 +74,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
 
         <!-- For Java 8 Date/Time Support -->
@@ -87,7 +98,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -106,41 +117,41 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>${commons-text.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20210307</version>
+            <version>${json.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.9.1</version>
+            <version>${okhttp.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.7</version>
+            <version>${gson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.9.0</version>
+            <version>${commons-io.version}</version>
         </dependency>
 
     </dependencies>
