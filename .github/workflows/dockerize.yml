@@ -19,6 +19,7 @@ jobs:
         run: |
           cd grafeo-server
           mvn --batch-mode --update-snapshots verify
+
   web_build:
     name: Web Build
     runs-on: ubuntu-latest
@@ -36,6 +37,7 @@ jobs:
         run: |
           cd grafeo-web
           yarn run build
+
   server_dockerize:
     name: Server Dockerize
     needs: [ server_build ]
@@ -51,7 +53,26 @@ jobs:
           mvn spring-boot:build-image
       - name: Check Docker image
         run: docker image ls
-      - name: Tag AWS image
+      - name: Tag Server image
         run: docker tag grafeo-server:0.6.0 valaz/grafeo-server:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+      - name: Check Docker image
+        run: docker image ls
+
+  web_dockerize:
+    name: Server Dockerize
+    needs: [ web_build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Create Docker Web Image
+        run: |
+          cd grafeo-web
+          docker build . -t grafeo-web:latest
+      - name: Check Docker image
+        run: docker image ls
+      - name: Tag Web image
+        run: docker tag grafeo-web:latest valaz/grafeo-web:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
       - name: Check Docker image
         run: docker image ls
