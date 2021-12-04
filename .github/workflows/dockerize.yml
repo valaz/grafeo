@@ -59,7 +59,7 @@ jobs:
         run: docker image ls
 
   web_dockerize:
-    name: Server Dockerize
+    name: Web Dockerize
     needs: [ web_build ]
     runs-on: ubuntu-latest
     steps:
