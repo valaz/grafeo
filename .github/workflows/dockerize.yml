@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  VERSION: ${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+
 jobs:
   server_build:
     name: Server Build
@@ -54,7 +57,7 @@ jobs:
       - name: Check Docker image
         run: docker image ls
       - name: Tag Server image
-        run: docker tag grafeo-server:0.6.0 valaz/grafeo-server:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        run: docker tag grafeo-server:0.6.0 valaz/grafeo-server:${VERSION}
       - name: Check Docker image
         run: docker image ls
 
@@ -73,6 +76,6 @@ jobs:
       - name: Check Docker image
         run: docker image ls
       - name: Tag Web image
-        run: docker tag grafeo-web:latest valaz/grafeo-web:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        run: docker tag grafeo-web:latest valaz/grafeo-web:${VERSION}
       - name: Check Docker image
         run: docker image ls

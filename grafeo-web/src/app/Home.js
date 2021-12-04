@@ -51,6 +51,7 @@ class Home extends Component {
                 this.setState({
                     isLoading: false
                 });
+                console.log("Clearing Local Storage - new Demo")
                 localStorage.clear();
                 localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                 this.props.onLogin();

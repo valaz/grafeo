@@ -91,6 +91,8 @@ class LoginForm extends Component {
                     this.setState({
                         isLoading: false
                     });
+
+                    console.log("Clearing Local Storage - New Facebook Login")
                     localStorage.clear();
                     localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                     this.props.onLogin();
@@ -145,6 +147,7 @@ class LoginForm extends Component {
                 this.setState({
                     isLoading: false
                 });
+                console.log("Clearing Local Storage - handleSubmit on Login")
                 localStorage.clear();
                 localStorage.setItem(ACCESS_TOKEN, response.accessToken);
                 this.props.onLogin();
