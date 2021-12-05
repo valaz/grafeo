@@ -57,7 +57,9 @@ jobs:
       - name: Check Docker image
         run: docker image ls
       - name: Tag Server image
-        run: docker tag grafeo-server:0.6.0 valaz/grafeo-server:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        env:
+          VERSION: ${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        run: docker tag grafeo-server:0.6.0 valaz/grafeo-server:${VERSION}
       - name: Check Docker image
         run: docker image ls
       - name: Log in to Docker Hub
@@ -71,12 +73,13 @@ jobs:
         with:
           images: valaz/grafeo-server
       - name: Build and push Docker image
+        env:
+          VERSION: ${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: valaz/grafeo-server:${VERSION}
 
   web_docker_publish:
     name: Web Docker Publish
@@ -93,6 +96,8 @@ jobs:
       - name: Check Docker image
         run: docker image ls
       - name: Tag Web image
-        run: docker tag grafeo-web:latest valaz/grafeo-web:${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        env:
+          VERSION: ${GITHUB_REF##*/}.$GITHUB_RUN_NUMBER
+        run: docker tag grafeo-web:latest valaz/grafeo-web:${VERSION}
       - name: Check Docker image
         run: docker image ls
