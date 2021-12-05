@@ -14,6 +14,7 @@ import {
 import {NavLink, withRouter} from "react-router-dom";
 import {AccountCircle, Add, Eject, ExpandMore, Home, PermIdentity} from "@material-ui/icons";
 import {FormattedMessage} from "react-intl";
+import settings from "../config";
 
 const styles = theme => ({
     root: {
@@ -88,7 +89,8 @@ class NavigationTopBar extends React.Component {
                     <Toolbar>
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             <NavLink to="/" style={{color: '#FFFFFF', textDecoration: 'none'}}>
-                                {process.env.REACT_APP_TITLE}
+                                {/*{process.env.REACT_APP_TITLE}*/}
+                                {settings.TITLE}
                             </NavLink>
                         </Typography>
                         {profileMenu}
