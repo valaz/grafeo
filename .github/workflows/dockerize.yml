@@ -73,6 +73,7 @@ jobs:
           context: ./grafeo-server
           push: true
           tags: valaz/grafeo-server:${{ env.VERSION }}
+          platforms: linux/amd64,linux/arm64
           build-args: |
             BRANCH=${{ env.BRANCH }}
 
@@ -99,5 +100,6 @@ jobs:
           context: ./grafeo-web
           push: true
           tags: valaz/grafeo-web:${{ env.VERSION }}
+          platforms: linux/amd64,linux/arm64
           build-args: |
             BRANCH=${{ env.BRANCH }}
