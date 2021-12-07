@@ -102,6 +102,7 @@ class App extends React.Component {
     }
 
     removeUserInfo() {
+        console.log("Clearing Local Storage - removeUserInfo")
         localStorage.clear();
 
         ReactGA.set({userId: null});

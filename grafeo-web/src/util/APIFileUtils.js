@@ -1,4 +1,5 @@
 import {ACCESS_TOKEN} from '../constants';
+import settings from "../config";
 
 const requestFile = (options) => {
     const headers = new Headers({
@@ -12,7 +13,8 @@ const requestFile = (options) => {
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
 
-    return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    // return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    return fetch(settings.SERVER_URL + options.url, options)
         .then(response =>
             response.blob().then(blob => {
                 if (!response.ok) {
@@ -33,7 +35,8 @@ const storeFile = (options) => {
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
 
-    return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    // return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    return fetch(settings.SERVER_URL + options.url, options)
         .then(response =>
             response.json().then(json => {
                 if (!response.ok) {
