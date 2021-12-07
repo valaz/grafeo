@@ -1,4 +1,5 @@
 import {ACCESS_TOKEN, INDICATOR_LIST_SIZE} from '../constants';
+import settings from "../config";
 
 const request = (options) => {
     const headers = new Headers({
@@ -12,7 +13,11 @@ const request = (options) => {
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
 
-    return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    console.log('Config Server URL:' + settings.SERVER_URL )
+    console.log('Server URL:' + process.env.REACT_APP_SERVER_URL )
+    console.log('Request URL:' + options.url )
+    // return fetch(process.env.REACT_APP_SERVER_URL + options.url, options)
+    return fetch(settings.SERVER_URL + options.url, options)
         .then(response =>
             response.json().then(json => {
                 if (!response.ok) {
