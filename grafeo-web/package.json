@@ -14,7 +14,7 @@
     "classnames": "^2.2.5",
     "font-awesome": "^4.7.0",
     "material-ui-pickers": "^3.0.0-alpha.3",
-    "moment": "^2.21.0",
+    "moment": "^2.29.2",
     "prop-types": "^15.6.1",
     "react": "^16.14.0",
     "react-async-script": "^0.9.1",
