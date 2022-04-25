@@ -160,10 +160,12 @@ public class DemoService {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         List<Indicator> demoIndicators = new ArrayList<>();
         executorService.execute(() -> demoIndicators.add(fillCryptoDemoIndicator(createDemoIndicator(demoUser, "Bitcoin price", "USD"), "BTC")));
-        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Apple stocks", "USD"), "AAPL")));
-        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Google stocks", "USD"), "GOOG")));
-        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Facebook stocks", "USD"), "FB")));
-        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Amazon stocks", "USD"), "AMZN")));
+        executorService.execute(() -> demoIndicators.add(fillCryptoDemoIndicator(createDemoIndicator(demoUser, "Bitcoin price", "USD"), "ETH")));
+        executorService.execute(() -> demoIndicators.add(fillCryptoDemoIndicator(createDemoIndicator(demoUser, "Bitcoin price", "USD"), "XRP")));
+//        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Apple stocks", "USD"), "AAPL")));
+//        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Google stocks", "USD"), "GOOG")));
+//        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Facebook stocks", "USD"), "FB")));
+//        executorService.execute(() -> demoIndicators.add(fillStockDemoIndicator(createDemoIndicator(demoUser, "Amazon stocks", "USD"), "AMZN")));
 
         executorService.shutdown();
         try {
@@ -206,7 +208,7 @@ public class DemoService {
     }
 
     private Map<LocalDate, Double> loadCryptoData(String cryptoName) {
-        Preconditions.checkArgument("BTC".equals(cryptoName));
+        Preconditions.checkArgument(StringUtils.isNotBlank(cryptoName));
         Stopwatch stopwatch = Stopwatch.createStarted();
         String today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         String url = String.format(BITCOIN_HTTP_URL, START_STRING_DATE, today);
@@ -238,7 +240,7 @@ public class DemoService {
         }
         stopwatch.stop();
         long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-        LOGGER.info("Received crypto data for {}, elapsed time: {} ms", "BTC", elapsed);
+        LOGGER.info("Received crypto data for {}, elapsed time: {} ms", cryptoName, elapsed);
         return values;
     }
 
