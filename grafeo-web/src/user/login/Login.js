@@ -7,6 +7,7 @@ import Notification from "../../common/Notification";
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import FBLoginButton from "./FBLoginButton";
 import LoadingIndicator from "../../common/LoadingIndicator";
+import settings from "../config";
 
 const gridSize = {
     xs: 12,
@@ -179,6 +180,7 @@ class LoginForm extends Component {
                     <LoadingIndicator/>
                 </div>)
         } else {
+            let fbAppId =  settings.FB_APP_ID;
             return (
                 <div>
                     <Notification open={this.state.notification.open} message={this.state.notification.message}
@@ -192,7 +194,7 @@ class LoginForm extends Component {
                                 <Grid container item spacing={0} justify="center" margin='dense'>
                                     <Grid item {...gridSize}>
                                         <FacebookLogin
-                                            appId={process.env.REACT_APP_FB_APP_ID}
+                                            appId={fbAppId}
                                             isMobile={false}
                                             autoLoad={false}
                                             fields="name,email"
