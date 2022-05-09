@@ -78,8 +78,8 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
         @NotBlank String fbUserId = fbLoginRequest.getUserId();
-        @NotBlank String fbEmail = fbLoginRequest.getEmail();
-        @NotBlank String fbName = fbLoginRequest.getName();
+        @NotBlank String fbEmail = facebookService.getUserEmail(fbUserId);
+        @NotBlank String fbName = facebookService.getUserFullName(fbUserId);
         if (!userRepository.existsByFacebookUserId(fbUserId)) {
             if (userRepository.existsByUsernameIgnoreCase(fbEmail) || userRepository.existsByEmailIgnoreCase(fbEmail)) {
                 return ResponseEntity.badRequest().body("Email already used");
@@ -98,7 +98,7 @@ public class AuthController {
             userRepository.save(user);
         } else {
             Optional<User> fbUser = userRepository.findByFacebookUserId(fbUserId);
-            if (!fbUser.isPresent()) {
+            if (fbUser.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             User user = fbUser.get();

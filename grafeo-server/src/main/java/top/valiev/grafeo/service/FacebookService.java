@@ -18,6 +18,7 @@ public class FacebookService extends AbstractService {
 
     private static final String APP_TOKEN_LINK_TEMPLATE = "https://graph.facebook.com/oauth/access_token?client_id={0}&client_secret={1}&grant_type=client_credentials";
     private static final String USER_TOKEN_LINK_TEMPLATE = "https://graph.facebook.com/debug_token?input_token={0}&access_token={1}";
+    private static final String USER_DATA_LINK_TEMPLATE = "https://graph.facebook.com/{0}?fields=id,name,email&access_token={1}";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String DATA = "data";
     private static final String IS_VALID = "is_valid";
@@ -73,6 +74,21 @@ public class FacebookService extends AbstractService {
             }
         }
         return this.accessToken;
+    }
+
+    public String getUserEmail(String userId){
+        return userId + "@fb.com";
+    }
+
+    public String getUserFullName(String userId){
+        String appToken = getAccessToken();
+        String link = MessageFormat.format(USER_DATA_LINK_TEMPLATE, userId, appToken);
+        Request userRequest = new Request.Builder()
+                .url(link)
+                .build();
+        JSONObject userResponse = sendRequest(userRequest);
+
+        return userResponse.getString("name");
     }
 
     @PostConstruct

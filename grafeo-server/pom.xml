@@ -6,7 +6,7 @@
 
     <groupId>top.valiev</groupId>
     <artifactId>grafeo-server</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <packaging>jar</packaging>
 
     <name>grafeo-server</name>

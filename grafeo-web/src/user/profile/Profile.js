@@ -138,7 +138,6 @@ class Profile extends Component {
                                                 <Settings style={{fontSize: 25}}/>
                                             </IconButton>
                                         </div>
-                                        <div className="username">{this.state.user.username}</div>
                                         <div className="user-joined">
                                             <FormattedMessage id="profile.joined" values={{
                                                 date: <FormattedDate

@@ -4,7 +4,7 @@ import {ACCESS_TOKEN} from '../../constants';
 import {FormattedMessage, injectIntl} from "react-intl";
 import {Grid, withStyles} from '@material-ui/core';
 import Notification from "../../common/Notification";
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import FacebookLogin from '@greatsumini/react-facebook-login';
 import FBLoginButton from "./FBLoginButton";
 import LoadingIndicator from "../../common/LoadingIndicator";
 
@@ -68,7 +68,8 @@ class LoginForm extends Component {
 
     responseFacebook(response) {
         console.log(response);
-        if (!response.name || !response.email || !response.userID || !response.accessToken) {
+        // if (!response.name || !response.email || !response.userID || !response.accessToken) {
+        if (!response.userID || !response.accessToken) {
             this.setState({
                 isLoading: false,
                 notification: {
@@ -81,8 +82,6 @@ class LoginForm extends Component {
                 isLoading: true,
             });
             const fbLoginRequest = {
-                name: response.name,
-                email: response.email,
                 userId: response.userID,
                 token: response.accessToken,
             };
@@ -197,7 +196,7 @@ class LoginForm extends Component {
                                             isMobile={false}
                                             autoLoad={false}
                                             fields="name,email"
-                                            callback={this.responseFacebook}
+                                            onSuccess={this.responseFacebook}
                                             render={renderProps => (
                                                 <FBLoginButton onClick={renderProps.onClick}/>
                                             )}

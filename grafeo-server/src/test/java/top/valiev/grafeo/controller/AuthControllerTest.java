@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -47,6 +48,8 @@ public class AuthControllerTest extends AbstractControllerTest {
     @BeforeEach
     public void setup() {
         doReturn(true).when(facebookService).isValidUserToken(anyString(), anyString());
+        doReturn("Facebook Signup").when(facebookService).getUserFullName(anyString());
+        doCallRealMethod().when(facebookService).getUserEmail(anyString());
     }
 
     @Test
@@ -86,8 +89,6 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     public void fbSignupTest() throws Exception {
         FBLoginRequest fbSignUpRequest = new FBLoginRequest();
-        fbSignUpRequest.setName("Facebook Signup");
-        fbSignUpRequest.setEmail("fb_signup@grafeo.pro");
         fbSignUpRequest.setUserId("12345");
         fbSignUpRequest.setToken("sometoken");
 
@@ -96,18 +97,16 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .contentType(contentType))
                 .andExpect(status().isOk());
 
-        Optional<User> signupUser = userRepository.findByUsername("fb_signup@grafeo.pro");
+        Optional<User> signupUser = userRepository.findByUsername("12345@fb.com");
         assertTrue(signupUser.isPresent());
         assertEquals("Facebook Signup", signupUser.get().getName());
-        assertEquals("fb_signup@grafeo.pro", signupUser.get().getEmail());
+        assertEquals("12345@fb.com", signupUser.get().getEmail());
         assertEquals("12345", signupUser.get().getFacebookUserId());
     }
 
     @Test
     public void fbInvalidSignupTest() throws Exception {
         FBLoginRequest fbSignUpRequest = new FBLoginRequest();
-        fbSignUpRequest.setName("Facebook Incorrect");
-        fbSignUpRequest.setEmail("fb_incorrect@grafeo.pro");
         fbSignUpRequest.setUserId("123789");
         fbSignUpRequest.setToken("sometoken");
 
@@ -130,8 +129,6 @@ public class AuthControllerTest extends AbstractControllerTest {
         userRepository.save(facebook_login);
 
         FBLoginRequest fbSignUpRequest = new FBLoginRequest();
-        fbSignUpRequest.setName("Facebook Login");
-        fbSignUpRequest.setEmail("fb_signin_new@grafeo.pro");
         fbSignUpRequest.setUserId("123456");
         fbSignUpRequest.setToken("sometoken");
 
@@ -150,7 +147,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         Optional<User> signupUser = userRepository.findByFacebookUserId("123456");
         assertTrue(signupUser.isPresent());
         assertEquals("Facebook Login", signupUser.get().getName());
-        assertEquals("fb_signin_new@grafeo.pro", signupUser.get().getEmail());
+        assertEquals("123456@fb.com", signupUser.get().getEmail());
         assertEquals("123456", signupUser.get().getFacebookUserId());
     }
 

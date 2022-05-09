@@ -23,6 +23,7 @@ public abstract class AbstractService {
             LOGGER.info("Received response: {}", response);
             if (response.body() != null) {
                 jsonData = response.body().string();
+                LOGGER.info("response body: {}", jsonData);
             }
         } catch (RuntimeException | IOException e) {
             LOGGER.error("Error during request", e);
