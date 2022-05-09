@@ -7,7 +7,7 @@ import Notification from "../../common/Notification";
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import FBLoginButton from "./FBLoginButton";
 import LoadingIndicator from "../../common/LoadingIndicator";
-import settings from "../config";
+import settings from "../../config";
 
 const gridSize = {
     xs: 12,
