@@ -24,7 +24,7 @@
         <java.version>11</java.version>
         <jacoco.version>0.8.7</jacoco.version>
         <hibernate-validator.version>7.0.1.Final</hibernate-validator.version>
-        <postgresql.version>42.3.3</postgresql.version>
+        <postgresql.version>42.4.1</postgresql.version>
         <jjwt.version>0.9.1</jjwt.version>
         <lombok.version>1.18.20</lombok.version>
         <guava.version>30.1.1-jre</guava.version>
