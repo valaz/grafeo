@@ -12,7 +12,7 @@ import {
     withStyles
 } from '@material-ui/core';
 import {NavLink, withRouter} from "react-router-dom";
-import {AccountCircle, Add, Eject, ExpandMore, Home, PermIdentity} from "@material-ui/icons";
+import {AccountCircle, Add, Eject, ExpandMore, Home, PermIdentity, Security} from "@material-ui/icons";
 import {FormattedMessage} from "react-intl";
 import settings from "../config";
 
@@ -48,6 +48,7 @@ class NavigationTopBar extends React.Component {
         this.handleMenu = this.handleMenu.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleProfile = this.handleProfile.bind(this);
+        this.handlePolicy = this.handlePolicy.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleAddIndicator = this.handleAddIndicator.bind(this);
     }
@@ -72,6 +73,11 @@ class NavigationTopBar extends React.Component {
 
     handleProfile() {
         this.props.history.push('/profile');
+        this.handleClose();
+    }
+
+    handlePolicy() {
+        this.props.history.push('/policy');
         this.handleClose();
     }
 
@@ -151,6 +157,12 @@ class NavigationTopBar extends React.Component {
                     </ListItemIcon>
                     <FormattedMessage id="navbar.profile"/>
                 </MenuItem>
+                <MenuItem onClick={this.handlePolicy}>
+                    <ListItemIcon>
+                        <Security/>
+                    </ListItemIcon>
+                    <FormattedMessage id="navbar.policy"/>
+                </MenuItem>
                 <MenuItem onClick={this.handleLogout}>
                     <ListItemIcon>
                         <Eject/>
@@ -164,6 +176,10 @@ class NavigationTopBar extends React.Component {
 
     getUnAuthMenu() {
         return <div>
+            <NavLink to="/policy" style={{color: '#FFFFFF', textDecoration: 'none'}}>
+                <Button color="inherit">
+                    <FormattedMessage id="navbar.policy"/></Button>
+            </NavLink>
             <NavLink to="/login" style={{color: '#FFFFFF', textDecoration: 'none'}}>
                 <Button color="inherit">
                     <FormattedMessage id="navbar.login"/></Button>

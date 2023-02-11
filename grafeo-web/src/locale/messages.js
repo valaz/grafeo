@@ -31,6 +31,7 @@ export default {
             profile: 'Profile',
             logout: 'Logout',
             login: 'Login',
+            policy: 'Privacy Policy',
             signup: "Signup",
             addIndicator: "Add Indicator"
         },
@@ -274,6 +275,7 @@ export default {
             profile: 'Профиль',
             logout: 'Выйти',
             login: 'Вход',
+            policy: 'Политика Конфиденциальности',
             signup: "Регистрация",
             addIndicator: "Создать индикатор"
         },
