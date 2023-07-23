@@ -27,7 +27,7 @@
         <postgresql.version>42.4.3</postgresql.version>
         <jjwt.version>0.9.1</jjwt.version>
         <lombok.version>1.18.20</lombok.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-text.version>1.10.0</commons-text.version>
         <json.version>20230227</json.version>
