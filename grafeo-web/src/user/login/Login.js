@@ -221,8 +221,8 @@ class LoginForm extends Component {
                             <Grid container
                                   justify="center"
                                   direction='column'
-                                  spacing={16}>
-                                <Grid container item spacing={8} justify="center" margin='dense'>
+                                  spacing={2}>
+                                <Grid container item spacing={0} justify="center" margin='dense'>
                                     <Grid item {...gridSize}>
                                         <FacebookLogin
                                             appId={fbAppId}
@@ -239,7 +239,7 @@ class LoginForm extends Component {
                                 <h2 className={classes.header}>
                                     {or}
                                 </h2>
-                                <Grid container item spacing={8} justify="center">
+                                <Grid container item spacing={0} justify="center">
                                     <Grid item {...gridSize}>
                                         <TextField fullWidth autoFocus
                                                 disabled={this.state.isLoading}
@@ -253,7 +253,7 @@ class LoginForm extends Component {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container item spacing={8} justify="center">
+                                <Grid container item spacing={0} justify="center">
                                     <Grid item {...gridSize}>
                                         <TextField fullWidth
                                                 disabled={this.state.isLoading}
@@ -269,7 +269,7 @@ class LoginForm extends Component {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container item spacing={8} justify="center" margin='dense'>
+                                <Grid container item spacing={0} justify="center" margin='dense'>
                                     <Grid item {...gridSize}>
                                         <Button fullWidth type="submit" variant="contained" color="primary" size="large"
                                                 disabled={this.isFormInvalid() || this.state.isLoading}>
