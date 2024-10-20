@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import app.grafeo.exeption.ResourceNotFoundException;
 import app.grafeo.model.User;
-import top.valiev.grafeo.payload.*;
+import app.grafeo.payload.*;
 import app.grafeo.security.CurrentUser;
 import app.grafeo.security.JwtTokenProvider;
 import app.grafeo.security.UserPrincipal;

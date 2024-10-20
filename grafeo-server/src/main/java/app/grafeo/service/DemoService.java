@@ -27,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import top.valiev.grafeo.model.*;
+import app.grafeo.model.*;
 
 import java.io.IOException;
 import java.time.Instant;

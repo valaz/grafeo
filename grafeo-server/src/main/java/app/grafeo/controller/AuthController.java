@@ -20,7 +20,7 @@ import app.grafeo.exeption.AppException;
 import app.grafeo.model.Role;
 import app.grafeo.model.RoleName;
 import app.grafeo.model.User;
-import top.valiev.grafeo.payload.*;
+import app.grafeo.payload.*;
 import app.grafeo.security.JwtTokenProvider;
 import app.grafeo.service.DemoService;
 import app.grafeo.service.FacebookService;
