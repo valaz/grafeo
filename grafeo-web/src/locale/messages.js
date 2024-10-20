@@ -52,6 +52,7 @@ export default {
 
                     }
                 },
+                or: 'Or',
                 submit: 'Login',
                 register: {
                     or: 'Or',
@@ -296,6 +297,7 @@ export default {
 
                     }
                 },
+                or: 'Или',
                 submit: 'Войти',
                 register: {
                     or: 'Или',
