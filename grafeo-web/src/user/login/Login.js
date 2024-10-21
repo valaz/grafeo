@@ -217,11 +217,11 @@ class LoginForm extends Component {
                 <div>
                     {this.notification()}
                     <form onSubmit={this.handleSubmit}>
-                        <Grid item xs={2}>
+                        <Grid item xs={12}>
                             <Grid container
                                   justify="center"
                                   direction='column'
-                                  spacing={16}>
+                                  spacing={2}>
                                 <Grid container item spacing={8} justify="center" margin='dense'>
                                     <Grid item {...gridSize}>
                                         <FacebookLogin
