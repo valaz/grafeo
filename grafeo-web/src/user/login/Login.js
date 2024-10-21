@@ -161,6 +161,14 @@ class LoginForm extends Component {
                         message: this.props.intl.formatMessage({id: 'login.notification.incorrect'})
                     }
                 });
+            } else if (error.status === 405) {
+                this.setState({
+                    isLoading: false,
+                    notification: {
+                        open: true,
+                        message: this.props.intl.formatMessage({id: 'login.notification.use_facebook'})
+                    }
+                });
             } else {
                 this.setState({
                     isLoading: false,

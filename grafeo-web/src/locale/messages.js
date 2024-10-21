@@ -62,7 +62,8 @@ export default {
             },
             notification: {
                 incorrect: 'Your Username or Password is incorrect. Please try again!',
-                success: 'You\'re successfully logged in.'
+                success: 'You\'re successfully logged in.',
+                use_facebook: 'Please Facebook login'
             }
         },
         signup: {
@@ -307,7 +308,8 @@ export default {
             },
             notification: {
                 incorrect: 'Ваши логин и/или пароль неверны. Пожалуйста, попробуйте снова!',
-                success: 'Вы успешно вошли!'
+                success: 'Вы успешно вошли!',
+                use_facebook: 'Пожалуйста, используйте Facebook для входа'
             }
         },
         signup: {

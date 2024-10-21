@@ -3,6 +3,7 @@ package app.grafeo.controller;
 import app.grafeo.payload.*;
 import app.grafeo.repository.RoleRepository;
 import app.grafeo.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import app.grafeo.exeption.AppException;
 import app.grafeo.model.Role;
 import app.grafeo.model.RoleName;
 import app.grafeo.model.User;
-import app.grafeo.payload.*;
 import app.grafeo.security.JwtTokenProvider;
 import app.grafeo.service.DemoService;
 import app.grafeo.service.FacebookService;
@@ -59,6 +59,17 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
+        String usernameOrEmail = loginRequest.getUsernameOrEmail();
+        if (userRepository.existsByUsernameIgnoreCase(usernameOrEmail) || userRepository.existsByEmailIgnoreCase(usernameOrEmail)) {
+            Optional<User> userOpt = userRepository.findByUsername(usernameOrEmail);
+            if (userOpt.isEmpty()) {
+                userOpt = userRepository.findByEmail(usernameOrEmail);
+            }
+            User user = userOpt.get();
+            if(StringUtils.isNotBlank(user.getFacebookUserId())){
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ApiResponse(false, "Please use Facebook login"));
+            }
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsernameOrEmail(),
