@@ -516,7 +516,7 @@ class Signup extends Component {
             }
         } else {
             return {
-                validateStatus: null,
+                validateStatus: 'success',
                 errorMsg: null,
                 hasError: false
             };
@@ -538,7 +538,7 @@ class Signup extends Component {
             }
         } else {
             return {
-                validateStatus: null,
+                validateStatus: 'success',
                 errorMsg: null,
                 hasError: false
             };
@@ -667,21 +667,32 @@ class Signup extends Component {
         if (!password || !passwordConfirm) {
             if (this.state.isSignup) {
                 return;
+            } else{
+                this.setState({
+                    password: {
+                        value: password,
+                        validateStatus: 'success',
+                        errorMsg: null,
+                        hasError: false
+                    },
+                    passwordConfirm: {
+                        value: passwordConfirm,
+                        validateStatus: 'success',
+                        errorMsg: null,
+                        hasError: false
+    
+                    }
+                });
             }
-        }
-        if (password === passwordConfirm) {
+        } else if (password === passwordConfirm) {
             this.setState({
                 password: {
                     value: password,
-                    validateStatus: 'success',
-                    errorMsg: null,
-                    hasError: false
+                    ...this.validatePassword(password)
                 },
                 passwordConfirm: {
                     value: passwordConfirm,
-                    validateStatus: 'success',
-                    errorMsg: null,
-                    hasError: false
+                    ...this.validatePasswordConfirm(passwordConfirm)
                 }
             });
         } else {
