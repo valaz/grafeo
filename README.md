@@ -1,7 +1,7 @@
 # Grafeo
 [![Build and Test](https://github.com/valaz/grafeo/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/valaz/grafeo/actions/workflows/build-and-test.yml)
 
-[![Build and Deploy](https://github.com/valaz/grafeo/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/valaz/grafeo/actions/workflows/build-and-deploy.yml)
+[![Publish to DockerHub](https://github.com/valaz/grafeo/actions/workflows/dockerize.yml/badge.svg)](https://github.com/valaz/grafeo/actions/workflows/dockerize.yml)
 
 
 https://grafeo.app/
@@ -23,6 +23,5 @@ https://grafeo.app/
 * moment.js
 
 ## CI/CD
-* Travis-ci
-* Sonarcloud
-* Dokku
+* Github Actions
+* Docker Hub
