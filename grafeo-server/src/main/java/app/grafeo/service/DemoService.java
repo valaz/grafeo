@@ -52,7 +52,7 @@ public class DemoService {
     private static final String BPI = "bpi";
     private static final String BITCOIN_HTTP_URL = "https://api.coindesk.com/v1/bpi/historical/close.json?start=%s&end=%s";
     private static final String DEMO_USER = "Demo User";
-    private static final String DEMO_EMAIL_POSTFIX = "%s@grafeo.pro";
+    private static final String DEMO_EMAIL_POSTFIX = "%s@grafeo.app";
     private static final String STOCKS_HTTP_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&outputsize=full&apikey=%s";
 
     private LoadingCache<String, Map<LocalDate, Double>> stocks = CacheBuilder.newBuilder()

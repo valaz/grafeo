@@ -48,7 +48,7 @@ public class IndicatorControllerTest extends AbstractControllerTest {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(IndicatorControllerTest.class);
 
-    private static final String TEST_EMAIL = "indicator_test@grafeo.pro";
+    private static final String TEST_EMAIL = "indicator_test@grafeo.app";
     private static final String TEST_PASSWORD = "123456";
 
     @BeforeEach
