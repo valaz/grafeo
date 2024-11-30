@@ -116,14 +116,14 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .contentType(contentType))
                 .andExpect(status().isBadRequest());
 
-        Optional<User> signupUser = userRepository.findByUsername("fb_incorrect@grafeo.pro");
+        Optional<User> signupUser = userRepository.findByUsername("fb_incorrect@grafeo.app");
         assertFalse(signupUser.isPresent());
     }
 
     @Test
     public void fbLoginTest() throws Exception {
-        User facebook_login = userService.createUser("Facebook Login", "fb_signin@grafeo.pro",
-                "fb_signin@grafeo.pro", "123456");
+        User facebook_login = userService.createUser("Facebook Login", "fb_signin@grafeo.app",
+                "fb_signin@grafeo.app", "123456");
         facebook_login.setFacebookUserId("123456");
         userRepository.save(facebook_login);
 

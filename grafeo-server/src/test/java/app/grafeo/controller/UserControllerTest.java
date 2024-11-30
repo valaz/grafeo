@@ -72,7 +72,7 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void getCurrentUser() throws Exception {
-        userService.createUser("Current User", "currentuser", "currentuser@grafeo.pro", "123456");
+        userService.createUser("Current User", "currentuser", "currentuser@grafeo.app", "123456");
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail("currentuser");
@@ -88,7 +88,7 @@ public class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value("Current User"))
                 .andExpect(jsonPath("username").value("currentuser"))
-                .andExpect(jsonPath("email").value("currentuser@grafeo.pro"))
+                .andExpect(jsonPath("email").value("currentuser@grafeo.app"))
                 .andExpect(jsonPath("isSocialLogin").value("false"));
 
     }
@@ -171,10 +171,10 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void getIndicatorsCreatedBy() throws Exception {
-        User user = userService.createUser("User Profile", "user_c_3@grafeo.pro", "user_c_3@grafeo.pro", "123456");
+        User user = userService.createUser("User Profile", "user_c_3@grafeo.app", "user_c_3@grafeo.app", "123456");
 
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsernameOrEmail("user_c_3@grafeo.pro");
+        loginRequest.setUsernameOrEmail("user_c_3@grafeo.app");
         loginRequest.setPassword("123456");
 
         mockMvc.perform(post(AuthControllerTest.API_AUTH_PREFIX + "/signin")
